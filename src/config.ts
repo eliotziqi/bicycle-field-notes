@@ -1,10 +1,10 @@
 /**
- * Inkline — the one file most people need to edit.
+ * Bicycle Field Notes — site identity and features.
  * Only `title` and `url` matter to get started; everything else has a default.
  */
 export const SITE = {
   title: "Bicycle Field Notes",
-  description: "Cycling, travel, and field notes from the road.",
+  description: "Cycling routes, travel notes, and observations from the road.",
   url: "https://eliotziqi.github.io/bicycle-field-notes/", // your deployed URL (used for RSS, sitemap, canonical links)
   author: "Eliot",
   lang: "en",
@@ -28,6 +28,5 @@ export const SITE = {
   // Links shown in the footer. Leave empty to hide.
   social: [
     { label: "RSS", href: "/rss.xml" },
-    // { label: "GitHub", href: "https://github.com/you" },
   ],
 };

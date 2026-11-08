@@ -3,36 +3,25 @@ import { withBase } from "../utils/urls";
 import Base from "../layouts/Base.astro";
 import PostList from "../components/PostList.astro";
 import { SITE } from "../config";
-import { getPosts, formatDate, readingTime } from "../utils/posts";
+import { getPosts } from "../utils/posts";
 
-const posts = await getPosts();
-const featured = posts.find((p) => p.data.featured) ?? posts[0];
-const rest = posts.filter((p) => p !== featured).slice(0, SITE.postsOnHome);
+const posts = (await getPosts()).slice(0, SITE.postsOnHome);
 ---
 
 <Base>
-  {featured ? (
-    <Fragment>
-    <section class="col intro featured">
-      <h1><a href={withBase(`/posts/${featured.id}/`)}>{featured.data.title}</a></h1>
-      <p>{featured.data.description}</p>
-      <div class="meta">
-        <time datetime={featured.data.pubDate.toISOString()}>{formatDate(featured.data.pubDate, SITE.lang)}</time>
-        <span>{readingTime(featured.body)} min read</span>
-      </div>
-    </section>
-    {rest.length > 0 && (
-      <section class="col">
-        <h2 class="section-title">Latest</h2>
-        <PostList posts={rest} />
+  <section class="col intro">
+    <h1 class="page-title">{SITE.title}</h1>
+    <p class="page-lede">{SITE.description}</p>
+  </section>
+  <section class="col">
+    <h2 class="section-title">Recent posts</h2>
+    {posts.length > 0 ? (
+      <Fragment>
+        <PostList posts={posts} />
         <p class="more"><a href={withBase("/posts")}>All posts</a></p>
-      </section>
+      </Fragment>
+    ) : (
+      <p>Field notes coming soon.</p>
     )}
-    </Fragment>
-  ) : (
-    <section class="col intro">
-      <h1 class="page-title">Nothing here yet</h1>
-      <p class="page-lede">Add a Markdown file to <code>src/content/posts/</code> and it will appear here.</p>
-    </section>
-  )}
+  </section>
 </Base>

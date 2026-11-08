@@ -6,7 +6,7 @@ import { SITE } from "../config";
 <footer class="site-footer">
   <div class="frame">
     <span>
-      &copy; {new Date().getFullYear()} Made in Phnom Penh &middot; <a href="https://kokitree.com"> kokitree.com</a>
+      &copy; {new Date().getFullYear()} {SITE.title}
     </span>
     {SITE.social.length > 0 && (
       <ul>{SITE.social.map((l) => <li><a href={withBase(l.href)}>{l.label}</a></li>)}</ul>
