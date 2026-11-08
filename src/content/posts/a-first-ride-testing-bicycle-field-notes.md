@@ -8,6 +8,8 @@ draft: false
 ---
 ## Welcome to Bicycle Field Notes
 
+![Mount Wangwei](/bicycle-field-notes/media/MtWangwei-raw.jpg)
+
 This is a test post for my new cycling and travel blog.
 
 Here, I'll be sharing cycling routes, short trips, practical guides, and observations from places I've explored.
