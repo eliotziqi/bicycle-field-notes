@@ -23,7 +23,7 @@ import Base from "../layouts/Base.astro";
     if (pagefind) return pagefind;
     try {
       // Created by `npm run build`; not available in `npm run dev`.
-      pagefind = await import(/* @vite-ignore */ "/pagefind/pagefind.js");
+      pagefind = await import(/* @vite-ignore */ `${import.meta.env.BASE_URL}pagefind/pagefind.js`);
       await pagefind.init();
     } catch {
       status.textContent = "Search works on the built site. Run npm run build, then npm run preview.";

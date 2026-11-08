@@ -1,23 +1,27 @@
 ---
+import { withBase } from "../utils/urls";
 import { SITE } from "../config";
 import ReadingMode from "./ReadingMode.astro";
 
 const { reading = false } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
-const isCurrent = (href: string) => path === href || (href !== "/" && path.startsWith(href + "/"));
+const isCurrent = (href: string) => {
+  const target = withBase(href).replace(/\/$/, "") || "/";
+  return path === target || (href !== "/" && path.startsWith(target + "/"));
+};
 ---
 
 <header class="site-header">
   <div class="frame">
-    <a class="brand" href="/">
+    <a class="brand" href={withBase("/")}>
       <svg class="mark" viewBox="0 0 30 24" aria-hidden="true"><path d="M3 12h24" stroke="currentColor" stroke-opacity=".25" stroke-width="3" stroke-linecap="round" /><path d="M3 12h15" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" /></svg>
       {SITE.title}
     </a>
     <nav class="site-nav" aria-label="Main">
-      {SITE.nav.map((l) => <a href={l.href} aria-current={isCurrent(l.href) ? "page" : undefined}>{l.label}</a>)}
+      {SITE.nav.map((l) => <a href={withBase(l.href)} aria-current={isCurrent(l.href) ? "page" : undefined}>{l.label}</a>)}
       <span class="tools">
         {SITE.features.search && (
-          <a class="icon-btn" href="/search" aria-label="Search">
+          <a class="icon-btn" href={withBase("/search")} aria-label="Search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
           </a>
         )}

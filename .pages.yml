@@ -1,11 +1,44 @@
-media: media
+media:
+  input: public/media
+  output: /bicycle-field-notes/media
 content:
   - name: posts
     label: Blog Posts
     type: collection
     path: src/content/posts
+    format: yaml-frontmatter
+    filename: "{primary}.md"
+    view:
+      primary: title
+      sort: pubDate
+      order: desc
     fields:
       - name: title
         type: string
+        required: true
+      - name: description
+        type: text
+        required: true
+      - name: pubDate
+        label: Publication date
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: updatedDate
+        label: Updated date
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd
+      - name: tags
+        type: string
+        list: true
+      - name: featured
+        type: boolean
+        default: false
+      - name: draft
+        type: boolean
+        default: true
       - name: body
         type: rich-text

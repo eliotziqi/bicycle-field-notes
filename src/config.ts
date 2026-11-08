@@ -5,7 +5,7 @@
 export const SITE = {
   title: "Bicycle Field Notes",
   description: "Cycling, travel, and field notes from the road.",
-  url: "https://inkline.example.com", // your deployed URL (used for RSS, sitemap, canonical links)
+  url: "https://eliotziqi.github.io/bicycle-field-notes/", // your deployed URL (used for RSS, sitemap, canonical links)
   author: "Eliot",
   lang: "en",
 

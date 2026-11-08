@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../../utils/urls";
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { SITE } from "../../config";
@@ -25,7 +26,7 @@ const jsonLd = {
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
   author: { "@type": "Person", name: SITE.author },
-  ...(SITE.features.ogImages && { image: new URL(`/og/${post.id}.png`, Astro.site).href }),
+  ...(SITE.features.ogImages && { image: new URL(withBase(`/og/${post.id}.png`), Astro.site).href }),
   mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
 };
 ---
@@ -36,7 +37,7 @@ const jsonLd = {
     <header class="article-head">
       {tags.length > 0 && (
         <ul class="tags" data-pagefind-ignore>
-          {tags.map((t) => <li><a href={`/tags/${slugify(t)}/`}>{t}</a></li>)}
+          {tags.map((t) => <li><a href={withBase(`/tags/${slugify(t)}/`)}>{t}</a></li>)}
         </ul>
       )}
       <h1>{title}</h1>
@@ -67,8 +68,8 @@ const jsonLd = {
     {updatedDate && <p class="updated">Updated {formatDate(updatedDate, SITE.lang)}</p>}
 
     <nav class="pager" aria-label="More posts" data-pagefind-ignore>
-      {older && <a class="prev" href={`/posts/${older.id}/`}><small>Older</small><span>{older.data.title}</span></a>}
-      {newer && <a class="next" href={`/posts/${newer.id}/`}><small>Newer</small><span>{newer.data.title}</span></a>}
+      {older && <a class="prev" href={withBase(`/posts/${older.id}/`)}><small>Older</small><span>{older.data.title}</span></a>}
+      {newer && <a class="next" href={withBase(`/posts/${newer.id}/`)}><small>Newer</small><span>{newer.data.title}</span></a>}
     </nav>
   </article>
 </Base>

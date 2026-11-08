@@ -14,6 +14,8 @@ if (site.includes("example.com")) {
 
 export default defineConfig({
   site,
+  base: new URL(site).pathname,
+  trailingSlash: "always",
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {

@@ -1,3 +1,4 @@
+import { withBase } from "../utils/urls";
 import rss from "@astrojs/rss";
 import type { APIContext } from "astro";
 import { SITE } from "../config";
@@ -13,7 +14,7 @@ export async function GET(context: APIContext) {
       title: p.data.title,
       description: p.data.description,
       pubDate: p.data.pubDate,
-      link: `/posts/${p.id}/`,
+      link: new URL(withBase(`/posts/${p.id}/`), context.site).href,
     })),
   });
 }

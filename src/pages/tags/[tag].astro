@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../../utils/urls";
 import Base from "../../layouts/Base.astro";
 import PostList from "../../components/PostList.astro";
 import { getPosts, tagCounts, slugify } from "../../utils/posts";
@@ -16,7 +17,7 @@ const { tag, posts } = Astro.props;
 <Base title={`Tagged: ${tag}`} description={`Posts tagged ${tag}.`}>
   <div class="col">
     <h1 class="page-title">{tag}</h1>
-    <p class="page-lede">{posts.length} {posts.length === 1 ? "post" : "posts"}. <a href="/tags">All tags</a></p>
+    <p class="page-lede">{posts.length} {posts.length === 1 ? "post" : "posts"}. <a href={withBase("/tags")}>All tags</a></p>
     <PostList posts={posts} />
   </div>
 </Base>
