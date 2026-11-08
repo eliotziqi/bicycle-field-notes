@@ -1,0 +1,16 @@
+{
+  // The name must match your Worker's name in the Cloudflare dashboard.
+  "name": "inkline",
+  "compatibility_date": "2026-01-01",
+
+  // Cloudflare runs this before publishing, so no separate build command is needed.
+  "build": {
+    "command": "npm install && npm run build"
+  },
+
+  // The built site that gets published.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}
