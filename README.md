@@ -4,7 +4,7 @@ A personal notebook for cycling routes, travel, and observations from the road.
 
 [Visit Bicycle Field Notes](https://eliotziqi.github.io/bicycle-field-notes/)
 
-Built with Astro, TypeScript, and the minimalist Inkline theme, with Markdown/MDX posts managed through Pages CMS and hosted on GitHub Pages. The unified Posts browser combines multi-select tags and Pagefind full-text search. Other features include light and dark themes, reading controls, RSS, a sitemap, and generated social preview images. The responsive homepage includes a curated photo slideshow, introduction, recent posts, and quick links. Gallery offers category filters, a keyboard-accessible lightbox, and related posts; Atlas and Contact are ready for future content.
+Built with Astro, TypeScript, and the minimalist Inkline theme, with Markdown/MDX posts managed through Pages CMS and hosted on GitHub Pages. The unified Posts browser combines multi-select tags and Pagefind full-text search. Other features include light and dark themes, reading controls, RSS, a sitemap, and generated social preview images. The responsive homepage includes a curated photo slideshow, introduction, recent posts, and quick links. Gallery offers category filters, a keyboard-accessible lightbox, and related posts. Atlas explores CMS-managed Places and ordered Trips on an interactive globe; Contact is ready for future content.
 
 ## Local development
 

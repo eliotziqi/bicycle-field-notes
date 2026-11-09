@@ -50,7 +50,8 @@ const optionalDate = z.preprocess(
 );
 
 const places = defineCollection({
-  loader: glob({ pattern: "**/*.json", base: "./src/content/places" }),
+  // File-based loader IDs keep duplicate data.id values visible to graph validation.
+  loader: glob({ pattern: "**/*.json", base: "./src/content/places", generateId: ({ entry }) => entry.replace(/\.json$/i, "") }),
   schema: z.object({
     id: stableId,
     name: z.string().trim().min(1),
@@ -63,7 +64,7 @@ const places = defineCollection({
 });
 
 const trips = defineCollection({
-  loader: glob({ pattern: "**/*.json", base: "./src/content/trips" }),
+  loader: glob({ pattern: "**/*.json", base: "./src/content/trips", generateId: ({ entry }) => entry.replace(/\.json$/i, "") }),
   schema: z.object({
     id: stableId,
     name: z.string().trim().min(1),

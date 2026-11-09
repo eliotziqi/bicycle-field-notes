@@ -2,6 +2,8 @@
 
 ## 2026-11-09
 
+- Added the Atlas MVP with route-local MapLibre globe, OpenFreeMap light/dark maps and attribution, Place/Trip deep links, manual Focus, status/Trip/search filters, selection-aware clustering and responsive panel controls. Added shared relationship/validation utilities and developer documentation; existing CMS test entries are preserved. Posts integration and Wiki remain deferred.
+- Recorded owner acceptance of hosted ordered references and set verified CMS coordinate `step: 0.000001` for six-decimal inputs while retaining numeric schemas and bounds.
 - Updated Pages CMS collection view syntax and added minimal Places/Trips JSON collections with stable IDs, ordered single-reference visit rows, and Astro schemas. Added a manual CMS compatibility guide with name-change and referenced-Place deletion rules; hosted save/reopen testing remains pending. Atlas and Posts integration are deferred.
 - Added a CMS-managed Gallery with shared category options, responsive thumbnails, OR filtering, a keyboard-accessible lightbox, and optional related-post links. Seeded the existing Mount Wangwei upload without copying it.
 - Added the shared header subtitle and moved the Home welcome below a curated, manually controlled Gallery slideshow with empty/single-photo states and no autoplay.

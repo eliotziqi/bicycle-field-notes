@@ -6,13 +6,26 @@ Astro generates static pages from `src/pages/` and Markdown/MDX articles from `s
 
 Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home with the existing introduction and a curated Gallery slideshow; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. RSS, sitemap, social previews, themes, and reading controls remain active.
 
-## Current phase — Places/Trips CMS compatibility only
+## Current phase — Atlas MVP and shared data layer
+
+- [x] Owner accepted hosted CMS ordered/repeated reference creation, reordering, saving and reopening. Preserve remaining owner-created test records.
+- [x] Fix coordinate input using verified CMS `options.step: 0.000001`, retaining numeric JSON and coordinate bounds; native Chromium precision tests pass. Hosted decimal save/reopen acceptance remains below.
+- [x] Add a renderer-independent graph resolver with ordered visits, derived inverse links, duplicate/missing-ID errors and cover-path validation; leave Posts fields/UI unchanged.
+- [x] Implement Atlas-only MapLibre 6.17.0 globe, OpenFreeMap Positron/Dark styles, random global overview, explicit Place/Trip selection, manual Focus, clustering, filters, deep links and responsive sidebar/sheet controls.
+- [x] Pure data/state tests and production builds pass, including empty/single/multiple data and deliberately failing missing-reference/duplicate-ID fixtures. Real Chromium checks pass for selection/filter precedence, cluster expansion, style/selection/camera persistence, reduced motion and 1280/768/390/320px layouts.
+- [x] Deep-link/history, unknown IDs, empty/single/shared-Trip cases, style-outage/Retry and Posts/Gallery browser regressions pass. Unrelated pages request no MapLibre resources. See [Atlas development notes](docs/atlas-development.md).
+- [ ] Owner accepts hosted decimal save/reopen and physical-phone gestures/keyboard/screen-reader behavior.
+- [x] Owner reviewed the local preview and authorized releasing the Atlas MVP directly to `origin/main`, including its existing Pages deployment workflow. Posts integration and Wiki remain outside this release.
+
+See [Atlas architecture, provider licenses and limitations](docs/atlas-development.md) and [CMS authoring/precision](docs/cms-compatibility-test.md). Region filtering lacks source data and is deferred. Posts integration, Wiki/help icon, GPX and terrain are separate later phases.
+
+## Completed Phase 1 — Places/Trips CMS compatibility
 
 - [x] Fast-forward the clean checkout to the latest `origin/main`, preserving CMS content and uploads.
 - [x] Update collection view syntax while retaining default sort order; add minimal Places/Trips CMS JSON collections and Astro schemas with ordered single-reference visit rows.
 - [x] Validate actual CMS configuration, ordered/repeated reference serialization, Astro validation, and production builds with empty collections and isolated demo data.
 - [x] Owner authorized review and commit/push on successful review; scope/content checks pass. Add explicit referenced-Place deletion guidance.
-- [ ] Hosted CMS create/reorder/save/reopen/name-edit checks remain pending. Follow [the manual test guide](docs/cms-compatibility-test.md) on a disposable nonpublishing branch.
+- [x] Owner completed and accepted hosted CMS ordered-reference compatibility testing. Test records remain preserved; see [the manual test guide](docs/cms-compatibility-test.md).
 
 No Atlas, Posts integration, Wiki, or relationship graph is included in this phase. The owner authorized committing and pushing the reviewed compatibility changes; the existing `main` push deployment workflow remains unchanged. Collection IDs must remain stable; cross-entry integrity validation is deferred. Detailed test steps and current limitations live in the guide.
 
@@ -49,7 +62,7 @@ Create JSON entries through Pages CMS **Gallery**. Required fields are image, ti
 ## Next steps (future)
 
 - Owner supplies further introduction, route/travel content, resource links, and contact details. Add a form only with a working submission service.
-- Plan the Atlas MapLibre 3D globe with markers linking to posts, then optional post terrain maps, GPX tracks, and downloads. Choose data/style/elevation sources, attribution, content schema, performance limits, and accessible fallbacks before implementation. No map dependencies yet.
+- Phase 3: optional Post relationships, Atlas links and advanced Posts filtering. Phase 4: Wiki and help icon. Future post-only terrain maps, GPX tracks, statistics and downloads require separate data/elevation sources and validation; no Atlas routes or connecting lines.
 
 ## Acceptance criteria
 

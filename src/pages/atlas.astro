@@ -1,10 +1,84 @@
 ---
 import Base from "../layouts/Base.astro";
+import { getAtlas } from "../utils/atlas";
+import { withBase } from "../utils/urls";
+import "../styles/atlas.css";
+const data = await getAtlas();
 ---
 
-<Base title="Atlas" description="A place for routes and locations from Bicycle Field Notes.">
-  <div class="col">
+<Base title="Atlas" description="Explore Places and Trips from Bicycle Field Notes.">
+  <div class="atlas-heading frame">
     <h1 class="page-title">Atlas</h1>
-    <p class="page-lede">Routes and locations will appear here as the atlas takes shape.</p>
+    <p class="page-lede">Places and journeys. Select to explore; Focus to move closer.</p>
   </div>
+  <section id="atlas" class="atlas" aria-label="Places and Trips atlas" data-sheet="compact">
+    <div class="atlas-map-area">
+      <div id="atlas-map" aria-label="Interactive globe" role="region"></div>
+      <div class="atlas-toolbar" hidden>
+        <button id="atlas-panel-toggle" type="button" aria-controls="atlas-panel" aria-expanded="true">Hide panel</button>
+        <button id="atlas-focus" type="button" disabled>Focus</button>
+        <label>Map theme
+          <select id="atlas-theme"><option value="site">Follow site</option><option value="light">Light</option><option value="dark">Dark</option></select>
+        </label>
+      </div>
+      <p id="atlas-map-message" role="status">Loading globe…</p>
+      <button id="atlas-retry" type="button" hidden>Retry map style</button>
+      <p class="atlas-credit"><a href="https://openfreemap.org/">OpenFreeMap</a> · <a href="https://openmaptiles.org/">© OpenMapTiles</a> · <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a> · <a href={withBase("/atlas/#map-credits")}>Style credits</a></p>
+    </div>
+    <aside id="atlas-panel" class="atlas-panel" aria-label="Explore Places and Trips">
+      <div class="atlas-sheet-controls" hidden aria-label="Panel height">
+        <button type="button" data-sheet="compact" aria-pressed="true">Compact</button>
+        <button type="button" data-sheet="half" aria-pressed="false">Half</button>
+        <button type="button" data-sheet="full" aria-pressed="false">Full</button>
+      </div>
+      <div class="atlas-panel-content">
+        <form id="atlas-filters" hidden>
+          <label for="atlas-query">Search Places and Trips</label>
+          <input id="atlas-query" type="search" placeholder="Place or Trip name" autocomplete="off" />
+          <details class="atlas-filters-more">
+            <summary>Filters</summary>
+            <fieldset><legend>Status (match any)</legend>
+              {[["ridden", "Ridden"], ["visited", "Visited"], ["wishlist", "Wishlist"]].map(([value, label]) => (
+                <label><input type="checkbox" name="status" value={value} /> {label}</label>
+              ))}
+            </fieldset>
+            <fieldset><legend>Trips (match any)</legend>
+              {data.trips.length ? data.trips.map((trip) => <label><input type="checkbox" name="trip" value={trip.id} /> {trip.name}</label>) : <p>No Trips yet.</p>}
+            </fieldset>
+            <label>Display <select id="atlas-mode"><option value="highlight">Highlight matches</option><option value="only">Show only matches</option></select></label>
+          </details>
+          <button id="atlas-clear-filters" type="button" hidden>Clear filters</button>
+        </form>
+        <p id="atlas-count" role="status" aria-live="polite">{data.places.length} Places</p>
+        <div id="atlas-details" aria-live="polite"></div>
+        <div id="atlas-list-controls" class="atlas-tabs" hidden aria-label="Browse">
+          <button type="button" data-tab="places" aria-pressed="true">Places</button>
+          <button type="button" data-tab="trips" aria-pressed="false">Trips</button>
+          <button id="atlas-clear-selection" type="button" hidden>Clear selection</button>
+        </div>
+        <div id="atlas-places">
+          <h2>Places</h2>
+          <ul class="atlas-list">{data.places.map((place) => <li data-place-row={place.id}><a data-select-place={place.id} href={`${withBase("/atlas/")}?place=${encodeURIComponent(place.id)}`}>{place.name}</a><span class="atlas-status">{place.status.join(" · ")}</span></li>)}</ul>
+          {!data.places.length && <p>No Places yet.</p>}
+        </div>
+        <div id="atlas-trips">
+          <h2>Trips</h2>
+          <ul class="atlas-list">{data.trips.map((trip) => <li data-trip-row={trip.id}><a data-select-trip={trip.id} href={`${withBase("/atlas/")}?trip=${encodeURIComponent(trip.id)}`}>{trip.name}</a><span class="atlas-status">{trip.places.length} visits</span></li>)}</ul>
+          {!data.trips.length && <p>No Trips yet.</p>}
+        </div>
+        <p id="atlas-empty" hidden>No Places match these filters.</p>
+        <noscript><p>Enable JavaScript for globe interactions, selection details and filters. Places and Trips remain listed here.</p></noscript>
+      </div>
+    </aside>
+    <script id="atlas-data" type="application/json" set:html={JSON.stringify(data).replace(/</g, "\\u003c")}></script>
+  </section>
+  <details id="map-credits" class="frame atlas-licenses">
+    <summary>Map credits and availability</summary>
+    <p>Tiles by <a href="https://openfreemap.org/">OpenFreeMap</a>, using <a href="https://openmaptiles.org/">OpenMapTiles</a> and <a href="https://www.openstreetmap.org/copyright">OpenStreetMap data (ODbL)</a>. Public service is free without an API key, with no availability guarantee.</p>
+    <p>Positron / Dark styles: OpenMapTiles contributors and CartoDB; derived from CartoDB Basemaps by Stamen and Paul Norman. <a href="https://github.com/hyperknot/openfreemap-styles/blob/main/styles/positron/LICENSE.md">Positron license</a> / <a href="https://github.com/hyperknot/openfreemap-styles/blob/main/styles/dark/LICENSE.md">Dark license</a>: BSD-3-Clause code, CC-BY-4.0 design, inherited CC-BY-3.0 credits. Renderer: <a href={withBase("/maplibre-license.txt")}>MapLibre GL JS (BSD-3-Clause)</a>.</p>
+  </details>
 </Base>
+
+<script>
+  import "../scripts/atlas";
+</script>
