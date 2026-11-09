@@ -5,16 +5,27 @@ import { resolveAtlas } from "./atlas-graph";
 import { getPosts } from "./posts";
 import { withBase } from "./urls";
 
+let productionGraph: ReturnType<typeof loadAtlas> | undefined;
+
+/** Reuse the derived graph within a production build, but never cache watched dev data. */
+export function getAtlas() {
+  if (import.meta.env.DEV) return loadAtlas();
+  return productionGraph ??= loadAtlas();
+}
+
 /** Resolve only published Post summaries; no article bodies/drafts reach the client. */
-export async function getAtlas() {
+async function loadAtlas() {
   const [places, trips, posts] = await Promise.all([
     getCollection("places"), getCollection("trips"), getPosts(),
   ]);
   const data = resolveAtlas(
     places.map((entry) => ({ source: entry.filePath ?? `${entry.id}.json`, data: entry.data })),
     trips.map((entry) => ({ source: entry.filePath ?? `${entry.id}.json`, data: entry.data })),
-    // Post relationship fields are intentionally deferred to Phase 3.
-    posts.map((post) => ({ id: post.id, title: post.data.title, url: withBase(`/posts/${post.id}/`) })),
+    posts.map((post) => ({
+      id: post.id, title: post.data.title, url: withBase(`/posts/${post.id}/`),
+      source: post.filePath ?? `Post ${post.id}`, draft: post.data.draft,
+      relatedPlaces: post.data.relatedPlaces, relatedTrips: post.data.relatedTrips,
+    })),
   );
   const mediaRoot = resolve("public/media");
   for (const place of data.places) {

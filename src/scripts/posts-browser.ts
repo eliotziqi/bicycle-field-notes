@@ -1,68 +1,121 @@
-interface SearchResult {
-  data(): Promise<{ url: string }>;
-}
-interface Pagefind {
-  init(): Promise<void>;
-  search(query: string): Promise<{ results: SearchResult[] }>;
-}
+import { comparePosts, matchesPost, postYear, readPostFilters, writePostFilters, type Dimension, type DiscoverablePost, type PostSort } from "../utils/post-discovery";
+
+interface SearchResult { data(): Promise<{ url: string }> }
+interface Pagefind { init(): Promise<void>; search(query: string): Promise<{ results: SearchResult[] }> }
 
 const form = document.querySelector<HTMLFormElement>("#post-filters")!;
 const input = form.querySelector<HTMLInputElement>("[name=q]");
-const checkboxes = [...form.querySelectorAll<HTMLInputElement>("[name=tags]")];
+const checkboxes = [...form.querySelectorAll<HTMLInputElement>("input[type=checkbox]")];
+const sort = document.querySelector<HTMLSelectElement>("#post-sort")!;
 const clear = document.querySelector<HTMLButtonElement>("#clear-filters")!;
 const count = document.querySelector<HTMLElement>("#result-count")!;
 const empty = document.querySelector<HTMLElement>("#empty-results")!;
 const error = document.querySelector<HTMLElement>("#search-error")!;
 const results = document.querySelector<HTMLElement>(".posts-results")!;
-const years = [...document.querySelectorAll<HTMLElement>("[data-post-year]")];
+const list = document.querySelector<HTMLElement>("#post-results-list")!;
+const summary = document.querySelector<HTMLElement>("#post-active-filters")!;
+const advanced = document.querySelector<HTMLDetailsElement>("#post-advanced")!;
+const dimensions: Dimension[] = ["types", "tags", "places", "trips"];
+const dimensionLabels = { types: "Content type", tags: "Tags", places: "Places", trips: "Trips" };
+const sortLabels = { "published-desc": "Publication: newest first", "experience-desc": "Experience: newest first", "experience-asc": "Experience: oldest first" };
+const labels = new Map(checkboxes.map((checkbox) => [`${checkbox.name}:${checkbox.value}`, checkbox.dataset.label!]));
 const pathKey = (url: string) => decodeURI(new URL(url, location.href).pathname).replace(/\/$/, "");
 const rows = [...document.querySelectorAll<HTMLLIElement>("[data-post-tags]")].map((element) => ({
   element,
-  tags: JSON.parse(element.dataset.postTags!) as string[],
+  ...JSON.parse(element.dataset.postInfo!) as DiscoverablePost,
   path: pathKey(element.querySelector<HTMLAnchorElement>("a")!.href),
+  time: element.querySelector<HTMLTimeElement>("time")!,
+  publishedLabel: element.querySelector("time")!.textContent!,
 }));
-let selected = new Set<string>();
+let state = readPostFilters(new URLSearchParams(location.search));
 let revision = 0;
 let pagefind: Promise<Pagefind> | undefined;
 
 function loadSearch(): Promise<Pagefind> {
-  // One shared promise prevents duplicate imports/initialization while typing.
+  // Retain the shared promise and the one existing Pagefind full-text index.
   pagefind ??= import(/* @vite-ignore */ `${import.meta.env.BASE_URL}pagefind/pagefind.js`)
     .then(async (module: Pagefind) => { await module.init(); return module; })
     .catch((reason: unknown) => { pagefind = undefined; throw reason; });
   return pagefind;
 }
 
-function readURL() {
-  const params = new URLSearchParams(location.search);
-  if (input) input.value = params.get("q") ?? "";
-  // Repeated parameters also support tag names containing commas.
-  selected = new Set(params.has("tag")
-    ? params.getAll("tag")
-    : params.getAll("tags").flatMap((value) => value.split(",")).filter(Boolean));
-  checkboxes.forEach((checkbox) => { checkbox.checked = selected.has(checkbox.value); });
+function syncControls() {
+  if (input) input.value = state.query;
+  checkboxes.forEach((checkbox) => { checkbox.checked = state[checkbox.name as Dimension].has(checkbox.value); });
+  sort.value = state.sort;
+  if (state.places.size || state.trips.size || state.sort !== "published-desc") advanced.open = true;
 }
 
-function writeURL() {
+function writeURL(push: boolean) {
   const url = new URL(location.href);
-  url.searchParams.delete("q");
-  url.searchParams.delete("tags");
-  url.searchParams.delete("tag");
-  const query = input?.value.trim() ?? "";
-  if (query) url.searchParams.set("q", query);
-  if ([...selected].some((tag) => tag.includes(","))) {
-    selected.forEach((tag) => url.searchParams.append("tag", tag));
-  } else if (selected.size) {
-    url.searchParams.set("tags", [...selected].join(","));
+  url.search = writePostFilters(url.searchParams, state).toString();
+  if (url.href !== location.href) history[push ? "pushState" : "replaceState"](null, "", url);
+}
+
+function clearDimension(dimension: Dimension | "query" | "sort") {
+  if (dimension === "query") state = { ...state, query: "" };
+  else if (dimension === "sort") state = { ...state, sort: "published-desc" };
+  else state = { ...state, [dimension]: new Set<string>() };
+  syncControls(); writeURL(true); void update();
+  // The activated summary/clear button may disappear; leave focus on a usable control.
+  const control = dimension === "query" ? input : dimension === "sort" ? sort
+    : checkboxes.find((checkbox) => checkbox.name === dimension);
+  if ((dimension === "places" || dimension === "trips" || dimension === "sort") && (!advanced.open || !control)) {
+    advanced.querySelector("summary")?.focus();
+  } else (control ?? input ?? checkboxes[0])?.focus();
+}
+
+function renderSummary() {
+  summary.replaceChildren();
+  function chip(text: string, dimension: Dimension | "query" | "sort") {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = `${text} ×`;
+    button.setAttribute("aria-label", `Clear ${text}`);
+    button.addEventListener("click", () => clearDimension(dimension));
+    summary.append(button);
   }
-  // Replace keeps typing from filling the browser history; popstate restores shared URLs.
-  history.replaceState(null, "", url);
+  if (state.query.trim()) chip(`Search: ${state.query.trim()}`, "query");
+  for (const dimension of dimensions) {
+    const selected = state[dimension];
+    form.querySelector<HTMLButtonElement>(`[data-clear-dimension=${dimension}]`)!.hidden = !selected.size;
+    if (selected.size) chip(`${dimensionLabels[dimension]}: ${[...selected].map((value) => labels.get(`${dimension}:${value}`) ?? value).join(", ")}`, dimension);
+  }
+  if (state.sort !== "published-desc") chip(`Sort: ${sortLabels[state.sort]}`, "sort");
+  summary.hidden = !summary.childElementCount;
+  clear.hidden = summary.hidden;
+}
+
+function regroup(currentSort: PostSort) {
+  const groups = new Map<string, { section: HTMLElement; items: HTMLUListElement }>();
+  const fragment = document.createDocumentFragment();
+  for (const row of [...rows].sort((a, b) => comparePosts(a, b, currentSort))) {
+    const year = postYear(row, currentSort);
+    if (!groups.has(year)) {
+      const section = document.createElement("section");
+      section.dataset.postYear = "";
+      const label = currentSort === "published-desc" || year === "Undated experience" ? year : `Experience ${year}`;
+      section.setAttribute("aria-label", label);
+      const heading = document.createElement("h2"); heading.className = "year"; heading.textContent = label;
+      const items = document.createElement("ul"); items.className = "list";
+      section.append(heading, items); fragment.append(section); groups.set(year, { section, items });
+    }
+    const experience = currentSort !== "published-desc" ? row.experience : undefined;
+    row.time.dateTime = experience ?? row.published;
+    row.time.textContent = experience ? new Date(`${experience}T00:00:00Z`).toLocaleDateString(document.documentElement.lang || "en", { month: "short", day: "numeric", timeZone: "UTC" })
+      : currentSort === "published-desc" ? row.publishedLabel : `Published ${row.publishedLabel}`;
+    row.time.title = experience ? "Experience date" : "Publication date";
+    groups.get(year)!.items.append(row.element);
+  }
+  groups.forEach(({ section, items }) => { section.hidden = !items.querySelector("li:not([hidden])"); });
+  list.replaceChildren(fragment);
 }
 
 async function update() {
   const current = ++revision;
-  const query = input?.value.trim() ?? "";
-  clear.hidden = !query && selected.size === 0;
+  const snapshot = state;
+  const query = snapshot.query.trim();
+  renderSummary();
   error.hidden = true;
   results.setAttribute("aria-busy", query ? "true" : "false");
   let matches: Set<string> | undefined;
@@ -81,37 +134,35 @@ async function update() {
       matches = new Set();
     }
   }
-  // Discard old searches that finish after a more recent query or Clear Filters.
+  // Searches finishing after a newer query, filter, sort or reset cannot replace it.
   if (current !== revision) return;
   let visible = 0;
   for (const row of rows) {
-    const tagMatch = selected.size === 0 || row.tags.some((tag) => selected.has(tag));
-    const textMatch = !matches || matches.has(row.path);
-    row.element.hidden = !(tagMatch && textMatch);
+    row.element.hidden = !(matchesPost(row, snapshot) && (!matches || matches.has(row.path)));
     if (!row.element.hidden) visible++;
   }
-  years.forEach((year) => { year.hidden = !year.querySelector("li:not([hidden])"); });
+  regroup(snapshot.sort);
   count.textContent = `${visible} ${visible === 1 ? "post" : "posts"}`;
   empty.hidden = visible > 0 || !error.hidden;
   results.setAttribute("aria-busy", "false");
 }
 
-input?.addEventListener("input", () => { writeURL(); void update(); });
+input?.addEventListener("input", () => { state = { ...state, query: input.value }; writeURL(false); void update(); });
 checkboxes.forEach((checkbox) => checkbox.addEventListener("change", () => {
-  if (checkbox.checked) selected.add(checkbox.value);
-  else selected.delete(checkbox.value);
-  writeURL();
-  void update();
+  const dimension = checkbox.name as Dimension;
+  const selected = new Set(state[dimension]);
+  if (checkbox.checked) selected.add(checkbox.value); else selected.delete(checkbox.value);
+  state = { ...state, [dimension]: selected };
+  writeURL(true); void update();
 }));
-form.addEventListener("submit", (event) => { event.preventDefault(); writeURL(); void update(); });
+sort.addEventListener("change", () => { state = { ...state, sort: sort.value as PostSort }; writeURL(true); void update(); });
+form.querySelectorAll<HTMLButtonElement>("[data-clear-dimension]").forEach((button) => button.addEventListener("click", () => clearDimension(button.dataset.clearDimension as Dimension)));
+form.addEventListener("submit", (event) => { event.preventDefault(); writeURL(false); void update(); });
 clear.addEventListener("click", () => {
-  selected.clear();
-  checkboxes.forEach((checkbox) => { checkbox.checked = false; });
-  if (input) input.value = "";
-  writeURL();
-  void update();
+  state = readPostFilters(new URLSearchParams());
+  syncControls(); writeURL(true); void update();
   (input ?? checkboxes[0])?.focus();
 });
-window.addEventListener("popstate", () => { readURL(); void update(); });
-readURL();
+window.addEventListener("popstate", () => { state = readPostFilters(new URLSearchParams(location.search)); syncControls(); void update(); });
+syncControls();
 void update();

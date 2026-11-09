@@ -16,7 +16,7 @@ test("ordered visits stay intact; inverse relationships and map membership are u
 });
 
 test("empty/single data, decimal coordinates and name changes", () => {
-  assert.deepEqual(resolveAtlas([], []), { places: [], trips: [] });
+  assert.deepEqual(resolveAtlas([], []), { places: [], trips: [], posts: [] });
   const data = resolveAtlas(entries([place("a", { name: "Renamed" })]), entries([trip("one", ["a", "a"])]));
   assert.deepEqual(tripPlaces(data.trips[0], data.places).map(p => p.name), ["Renamed", "Renamed"]);
   assert.equal(data.places[0].latitude, 30.123456);

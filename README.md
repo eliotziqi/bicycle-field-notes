@@ -24,7 +24,7 @@ npm run preview
 
 Manage photos in Pages CMS’s **Gallery** collection; reuse existing media and select **Show on homepage** to include a photo in the slideshow. **Gallery Categories** maintains the shared category options. Uploading a file alone does not publish it.
 
-See [PLAN.md](PLAN.md) for architecture, publishing details, and the development roadmap.
+Posts can optionally link Places and Trips in narrative order. The unified browser combines text, tags, content types, geographic references and experience-date sorting. See the [Post publishing guide](docs/posts-discovery.md) for editorial rules and [PLAN.md](PLAN.md) for the development roadmap.
 
 ## Attribution and license
 

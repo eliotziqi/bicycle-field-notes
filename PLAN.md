@@ -6,7 +6,22 @@ Astro generates static pages from `src/pages/` and Markdown/MDX articles from `s
 
 Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home with the existing introduction and a curated Gallery slideshow; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. RSS, sitemap, social previews, themes, and reading controls remain active.
 
-## Current phase — Atlas MVP and shared data layer
+## Current phase — Phase 3 Posts integration and discovery
+
+- [x] Synchronize safely with `origin/main`, preserving the latest owner CMS coordinate edit and all existing records.
+- [x] Add optional content type, ordered/repeated Place and Trip rows, and optional experience dates to Post schemas/CMS without rewriting articles or adding cover/GPX controls.
+- [x] Extend the shared graph for explicit narrative order, unique discovery membership and published reverse associations. Trip-derived Place discovery does not assert visits or change statuses.
+- [x] Add lightweight article geography/date links to Atlas, preserving manual Focus and base-aware URLs; no article map dependency.
+- [x] Extend the existing Pagefind/tag browser with compact types, advanced Place/Trip filters, experience sorting, removable summaries and shareable history state. Keep publication newest-first as default.
+- [x] Seventeen pure tests, upstream CMS configuration/frontmatter round trips, and actual/isolated production builds pass. Real Chromium covers combinations, history, dates/grouping, article links, drafts, both themes, narrow layouts and Gallery regressions. Invalid published references and date-range fixtures fail as expected.
+- [ ] Owner checks the new Post fields in hosted Pages CMS and physical-phone/keyboard/screen-reader behavior using [the acceptance procedure](docs/posts-discovery.md).
+- [x] Owner approved releasing the reviewed Phase 3 changes directly to `origin/main` after final checks; the existing Pages workflow handles deployment.
+
+The existing cover/image/social-preview system remains unchanged. No Wiki, terrain or GPX implementation is included. See [editorial rules, URL semantics, date-parser limitations and validation](docs/posts-discovery.md).
+
+## Released Phase 2 — Atlas MVP and shared data layer
+
+Released in `988ea88`; GitHub Pages deployment and live browser smoke checks passed.
 
 - [x] Owner accepted hosted CMS ordered/repeated reference creation, reordering, saving and reopening. Preserve remaining owner-created test records.
 - [x] Fix coordinate input using verified CMS `options.step: 0.000001`, retaining numeric JSON and coordinate bounds; native Chromium precision tests pass. Hosted decimal save/reopen acceptance remains below.
@@ -62,7 +77,7 @@ Create JSON entries through Pages CMS **Gallery**. Required fields are image, ti
 ## Next steps (future)
 
 - Owner supplies further introduction, route/travel content, resource links, and contact details. Add a form only with a working submission service.
-- Phase 3: optional Post relationships, Atlas links and advanced Posts filtering. Phase 4: Wiki and help icon. Future post-only terrain maps, GPX tracks, statistics and downloads require separate data/elevation sources and validation; no Atlas routes or connecting lines.
+- Review Phase 3, then Phase 4: Wiki and help icon, reusing current developer/publishing explanations. Future post-only terrain maps, GPX tracks, statistics and downloads require separate data/elevation sources and validation; no Atlas routes or connecting lines.
 
 ## Acceptance criteria
 

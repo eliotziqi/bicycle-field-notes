@@ -4,6 +4,10 @@ import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { SITE } from "../../config";
 import { getPosts, formatDate, readingTime } from "../../utils/posts";
+import { getAtlas } from "../../utils/atlas";
+import { resolvePostReferences } from "../../utils/atlas-graph";
+import PostGeography from "../../components/PostGeography.astro";
+import { CONTENT_TYPE_LABELS } from "../../utils/post-discovery";
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -17,6 +21,11 @@ const { post, newer, older } = Astro.props;
 const { Content, headings } = await render(post);
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const { title, description, pubDate, updatedDate, tags } = post.data;
+const graph = await getAtlas();
+const references = graph.posts.find((entry) => entry.id === post.id) ?? resolvePostReferences({
+  id: post.id, title, url: withBase(`/posts/${post.id}/`), source: post.filePath,
+  relatedPlaces: post.data.relatedPlaces, relatedTrips: post.data.relatedTrips,
+}, graph.places, graph.trips);
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -45,6 +54,7 @@ const jsonLd = {
       <div class="meta">
         <time datetime={pubDate.toISOString()}>{formatDate(pubDate, SITE.lang)}</time>
         <span>{readingTime(post.body)} min read</span>
+        {post.data.contentType && <span>{CONTENT_TYPE_LABELS[post.data.contentType]}</span>}
       </div>
     </header>
 
@@ -66,6 +76,7 @@ const jsonLd = {
     </div>
 
     {updatedDate && <p class="updated">Updated {formatDate(updatedDate, SITE.lang)}</p>}
+    <PostGeography references={references} experience={post.data.experience} />
 
     <nav class="pager" aria-label="More posts" data-pagefind-ignore>
       {older && <a class="prev" href={withBase(`/posts/${older.id}/`)}><small>Older</small><span>{older.data.title}</span></a>}

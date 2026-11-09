@@ -80,7 +80,14 @@ function postList(posts: RelatedPost[]) {
   if (!posts.length) return;
   details.append(node("h3", "Related Posts"));
   const list = node("ul");
-  for (const post of posts) { const li = node("li"); const a = node("a", post.title); a.href = post.url; li.append(a); list.append(li); }
+  for (const post of posts) {
+    const li = node("li");
+    const a = node("a", post.title);
+    a.href = post.url;
+    li.append(a);
+    if (post.viaTrip) li.append(node("span", " — via related Trip"));
+    list.append(li);
+  }
   details.append(list);
 }
 function renderDetails() {

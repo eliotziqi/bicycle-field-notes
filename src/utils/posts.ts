@@ -1,10 +1,11 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import { isPostVisible } from "./post-discovery";
 
 export type Post = CollectionEntry<"posts">;
 
 /** All published posts, newest first. Drafts are hidden in production builds. */
 export async function getPosts(): Promise<Post[]> {
-  const posts = await getCollection("posts", ({ data }) => import.meta.env.DEV || !data.draft);
+  const posts = await getCollection("posts", ({ data }) => isPostVisible(data, import.meta.env.DEV));
   return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 

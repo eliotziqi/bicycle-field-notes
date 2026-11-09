@@ -2,6 +2,8 @@
 
 ## 2026-11-09
 
+- Added optional Post content types, ordered Place/Trip references and experience dates to Astro/Pages CMS, with shared graph resolution and lightweight article links to Atlas. Preserved existing article files, images and generated social previews; GPX controls remain deferred.
+- Extended the unified Pagefind Posts browser with type/Place/Trip filters, experience-date sorting, active summaries, per-dimension clears and Back/Forward restoration. Documented explicit versus Trip-derived discovery and added schema/graph/filter regression tests; Wiki remains deferred.
 - Added the Atlas MVP with route-local MapLibre globe, OpenFreeMap light/dark maps and attribution, Place/Trip deep links, manual Focus, status/Trip/search filters, selection-aware clustering and responsive panel controls. Added shared relationship/validation utilities and developer documentation; existing CMS test entries are preserved. Posts integration and Wiki remain deferred.
 - Recorded owner acceptance of hosted ordered references and set verified CMS coordinate `step: 0.000001` for six-decimal inputs while retaining numeric schemas and bounds.
 - Updated Pages CMS collection view syntax and added minimal Places/Trips JSON collections with stable IDs, ordered single-reference visit rows, and Astro schemas. Added a manual CMS compatibility guide with name-change and referenced-Place deletion rules; hosted save/reopen testing remains pending. Atlas and Posts integration are deferred.

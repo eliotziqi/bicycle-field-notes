@@ -1,0 +1,20 @@
+---
+import type { Dimension } from "../utils/post-discovery";
+interface Props {
+  name: Dimension;
+  label: string;
+  hint?: string;
+  options: { value: string; label: string; count: number }[];
+}
+const { name, label, hint, options } = Astro.props;
+---
+<fieldset data-filter-dimension={name}>
+  <legend>{label}</legend>
+  {hint && <p class="filter-hint">{hint}</p>}
+  {options.length ? (
+    <div class="tag-filters">{options.map((option) => (
+      <label><input type="checkbox" name={name} value={option.value} data-label={option.label} /><span>{option.label} <span class="n">({option.count})</span></span></label>
+    ))}</div>
+  ) : <p class="filter-hint">No {label.toLowerCase()} available for these posts.</p>}
+  <button type="button" class="filter-clear" data-clear-dimension={name} hidden>Clear {label.toLowerCase()}</button>
+</fieldset>

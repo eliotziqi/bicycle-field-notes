@@ -4,45 +4,66 @@ import PostList from "../../components/PostList.astro";
 import SearchField from "../../components/SearchField.astro";
 import { SITE } from "../../config";
 import { getPosts, tagCounts } from "../../utils/posts";
+import PostFilterGroup from "../../components/PostFilterGroup.astro";
+import { getAtlas } from "../../utils/atlas";
+import { resolvePostReferences } from "../../utils/atlas-graph";
+import { CONTENT_TYPES, CONTENT_TYPE_LABELS, type DiscoverablePost } from "../../utils/post-discovery";
 
 const posts = await getPosts();
 const years = [...new Set(posts.map((p) => p.data.pubDate.getUTCFullYear()))];
 const tags = tagCounts(posts);
+const graph = await getAtlas();
+const references = new Map(graph.posts.map((post) => [post.id, post]));
+const discovery = new Map<string, DiscoverablePost>(posts.map((post) => {
+  const resolved = references.get(post.id) ?? resolvePostReferences({
+    id: post.id, title: post.data.title, url: "", source: post.filePath,
+    relatedPlaces: post.data.relatedPlaces, relatedTrips: post.data.relatedTrips,
+  }, graph.places, graph.trips);
+  return [post.id, {
+    id: post.id, tags: post.data.tags, contentType: post.data.contentType,
+    placeIds: resolved.discoveryPlaceIds, tripIds: resolved.tripIds,
+    published: post.data.pubDate.toISOString(), experience: post.data.experience?.startDate ?? post.data.experience?.endDate,
+  }];
+}));
+const typeOptions = CONTENT_TYPES.map((type) => ({ value: type, label: CONTENT_TYPE_LABELS[type], count: posts.filter((post) => post.data.contentType === type).length }));
+const placeOptions = graph.places.map((place) => ({ value: place.id, label: place.name, count: [...discovery.values()].filter((post) => post.placeIds.includes(place.id)).length })).filter((place) => place.count);
+const tripOptions = graph.trips.map((trip) => ({ value: trip.id, label: trip.name, count: [...discovery.values()].filter((post) => post.tripIds.includes(trip.id)).length })).filter((trip) => trip.count);
 ---
 
-<Base title="Posts" description="Browse, search, and filter all posts, newest first.">
+<Base title="Posts" description="Browse, search, and filter posts by topic, type, Place or Trip.">
   <div class="frame posts-browser">
     <h1 class="page-title">Posts</h1>
-    <p class="page-lede">Field notes, newest first.</p>
+    <p class="page-lede">Field notes, newest first. Explore by topic, Place or journey.</p>
     <div class="posts-layout">
       <form id="post-filters" class="posts-filters" role="search" aria-label="Filter posts">
         {SITE.features.search && <SearchField id="post-query" />}
-        <fieldset>
-          <legend>Tags</legend>
-          <p class="filter-hint">Match any selected tag.</p>
-          {tags.length > 0 ? (
-            <div class="tag-filters">
-              {tags.map((t) => (
-                <label>
-                  <input type="checkbox" name="tags" value={t.tag} />
-                  <span>{t.tag} <span class="n">({t.count})</span></span>
-                </label>
-              ))}
-            </div>
-          ) : <p class="filter-hint">No tags yet.</p>}
-        </fieldset>
+        <PostFilterGroup name="types" label="Content type" options={typeOptions} hint="Match any selected type." />
+        <PostFilterGroup name="tags" label="Tags" options={tags.map(({ tag, count }) => ({ value: tag, label: tag, count }))} hint="Match any selected tag." />
+        <details id="post-advanced" class="post-advanced">
+          <summary>Places, Trips and sorting</summary>
+          <PostFilterGroup name="places" label="Places" options={placeOptions} hint="Explicit Place references or Places in a related Trip. Match any." />
+          <PostFilterGroup name="trips" label="Trips" options={tripOptions} hint="Explicit Trip references. Match any." />
+          <label class="post-sort-label" for="post-sort">Sort by</label>
+          <select id="post-sort" name="sort">
+            <option value="published-desc">Publication: newest first</option>
+            <option value="experience-desc">Experience: newest first</option>
+            <option value="experience-asc">Experience: oldest first</option>
+          </select>
+          <p class="filter-hint">Experience start date (or end date if only that is known). Undated posts come last.</p>
+        </details>
         <button id="clear-filters" class="clear-filters" type="button" hidden>Clear Filters</button>
       </form>
       <section class="posts-results" aria-label="Articles" aria-busy="false">
         <p id="result-count" class="result-count" role="status" aria-live="polite">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+        <div id="post-active-filters" class="post-active-filters" role="group" aria-label="Active filters" hidden></div>
         <p id="search-error" role="alert" hidden></p>
         <noscript><p>Enable JavaScript to search and filter. All posts are listed below.</p></noscript>
-        {years.map((y) => (
+        <div id="post-results-list">{years.map((y) => (
           <section data-post-year aria-label={`${y}`}>
             <h2 class="year">{y}</h2>
-            <PostList posts={posts.filter((p) => p.data.pubDate.getUTCFullYear() === y)} filterable />
+            <PostList posts={posts.filter((p) => p.data.pubDate.getUTCFullYear() === y)} filterable discovery={discovery} />
           </section>
-        ))}
+        ))}</div>
         <p id="empty-results" hidden={posts.length > 0}>No posts match these filters. Try another search or clear the filters.</p>
       </section>
     </div>

@@ -3,7 +3,8 @@ import Base from "../layouts/Base.astro";
 import { getAtlas } from "../utils/atlas";
 import { withBase } from "../utils/urls";
 import "../styles/atlas.css";
-const data = await getAtlas();
+const { places, trips } = await getAtlas();
+const data = { places, trips };
 ---
 
 <Base title="Atlas" description="Explore Places and Trips from Bicycle Field Notes.">

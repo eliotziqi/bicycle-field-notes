@@ -1,6 +1,6 @@
 # Places and Trips — Pages CMS compatibility test
 
-The owner completed and accepted the hosted test for ordered references, repeated visits, reordering, saving and reopening. The shared resolver and Atlas now consume Places and Trips; Posts integration remains deferred. The owner-created `test-place-a`, `test-place-b` and `test-trip-order` entries remain untouched and are explicitly described as tests in their content.
+The owner completed and accepted the hosted Trip test for ordered references, repeated visits, reordering, saving and reopening. The shared resolver, Atlas and Post integration consume Places and Trips. Post fields reuse the same pattern, but their hosted interactions still need acceptance using [the Post publishing guide](posts-discovery.md). The owner-created `test-place-a`, `test-place-b` and `test-trip-order` entries remain untouched and are explicitly described as tests in their content.
 
 ## Configuration and storage
 
@@ -8,7 +8,7 @@ Places are JSON files in `src/content/places/`: `id`, `name`, numeric `latitude`
 
 Each visit is an object with a single Place reference. The picker displays the Place name and ID, but stores only its stable ID. Repeating a visit adds a row; it does not duplicate the Place. IDs use lowercase letters/digits separated by single hyphens. Filenames are generated from IDs, independently of display names. Keep IDs and filenames unchanged after creating an entry.
 
-Existing collection views now use `sort: [field]` and `default.sort`/`default.order`, retaining their previous default sorting. Posts fields and Media settings are unchanged. Sources: [collection views](https://pagescms.org/docs/configuration/content/view/), [reference fields](https://pagescms.org/docs/configuration/fields/reference/), [object fields](https://pagescms.org/docs/configuration/fields/object/), [filename templates](https://pagescms.org/docs/configuration/content/filename/).
+Existing collection views use `sort: [field]` and `default.sort`/`default.order`, retaining their previous default sorting. All original Post fields and Media settings are preserved; optional editorial fields are documented in the Post guide. Sources: [collection views](https://pagescms.org/docs/configuration/content/view/), [reference fields](https://pagescms.org/docs/configuration/fields/reference/), [object fields](https://pagescms.org/docs/configuration/fields/object/), [filename templates](https://pagescms.org/docs/configuration/content/filename/).
 
 ## Hosted test procedure (owner accepted)
 
@@ -55,10 +55,10 @@ These automated tests inject upstream function imports using installed Zod/YAML;
 
 The editor uses repeated object rows rather than a single multi-select: that distinction enables ordering and repeated visits. Collapsed row summaries use IDs; pickers display names plus IDs. Optional date fields normalize empty strings/null to absence; Astro enforces date ordering, while the CMS does not provide cross-field date-range validation here.
 
-ID immutability remains an authoring rule. The shared resolver now rejects duplicate stable IDs, filename/ID disagreement, missing Place targets and invalid cover files during the Atlas production build. Do not rename IDs or manually duplicate them. No related-post arrays or Post fields were added; the graph accepts a visible-Post adapter for later integration.
+ID immutability remains an authoring rule. The shared resolver rejects duplicate stable IDs, filename/ID disagreement, missing Place/Trip targets and invalid cover files during production builds. Do not rename IDs or manually duplicate them. Post references are authored only on Posts; reverse Post associations are computed, with no manually maintained related-post arrays on Places or Trips.
 
 Changing a Place's display **name** (its title in the editor) keeps Trip references valid because the stored value is `{fields.id}`, not `{primary}`. Its generated filename also uses the ID. This depends on preserving the ID and filename; the ID field remains editable and is not automatically locked after creation.
 
-**Deleting referenced Places:** the CMS does not provide a configured deletion guard or cascading repair. Atlas builds now reject dangling references with a file and visit-row error. Before deleting a Place, inspect every Trip's `places` array for its exact ID, including repeated visits. Update every occurrence to an appropriate existing Place or deliberately remove the visit, then save and verify each affected Trip before deleting the Place. Trips must retain at least one visit; retain the Place if removing it would invalidate a Trip you intend to keep. Do not recreate a deleted Place under a different ID expecting old references to follow it. This is a manual maintenance procedure, not automatic relationship management. See [Atlas architecture](atlas-development.md).
+**Deleting referenced Places or Trips:** the CMS does not provide a configured deletion guard or cascading repair. Builds reject dangling published references with a file and row error. Before deleting a Place, inspect every Trip's `places` array and Post's `relatedPlaces` array for its exact ID, including repeated rows. Before deleting a Trip, inspect Post `relatedTrips` arrays. Update every occurrence deliberately, then save and verify affected entries before deleting the target. Trips must retain at least one visit; retain the Place if removing it would invalidate a Trip you intend to keep. Recreating a record under a different ID does not repair references. See [Atlas architecture](atlas-development.md) and [Post editorial rules](posts-discovery.md).
 
 Empty collections produce harmless Astro glob warnings. The latest existing Post is a draft and remains excluded from production. With no published articles, existing Pagefind behavior falls back to indexing page bodies; this change does not alter the Posts browser or search configuration.

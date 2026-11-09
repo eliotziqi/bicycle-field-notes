@@ -42,6 +42,70 @@ content:
       - name: draft
         type: boolean
         default: true
+      - name: contentType
+        label: Content type (optional)
+        type: select
+        options:
+          values:
+            - label: Ride
+              value: ride
+            - label: Travel
+              value: travel
+            - label: Guide
+              value: guide
+            - label: Field Note
+              value: field-note
+      - name: relatedPlaces
+        label: Related Places (narrative order)
+        type: object
+        list:
+          collapsible:
+            collapsed: false
+            summary: "{index}: {fields.place}"
+        description: "Optional. Add one row per mention, including repeats. This is article order, independent of a Trip's visiting order."
+        fields:
+          - name: place
+            type: reference
+            required: true
+            options:
+              collection: places
+              search: "name,fields.name,fields.id"
+              value: "{fields.id}"
+              label: "{primary} ({fields.id})"
+      - name: relatedTrips
+        label: Related Trips (narrative order)
+        type: object
+        list:
+          collapsible:
+            collapsed: false
+            summary: "{index}: {fields.trip}"
+        description: "Optional. Order the Trips mentioned in this article. Adding a Trip does not assert a visit to all its Places."
+        fields:
+          - name: trip
+            type: reference
+            required: true
+            options:
+              collection: trips
+              search: "name,fields.name,fields.id"
+              value: "{fields.id}"
+              label: "{primary} ({fields.id})"
+      - name: experience
+        label: Experience dates (optional)
+        type: object
+        description: "When the experience happened, independently of publication. Leave unknown dates blank."
+        fields:
+          - name: startDate
+            label: Start date
+            type: date
+            default: ""
+            options:
+              format: yyyy-MM-dd
+          - name: endDate
+            label: End date
+            type: date
+            default: ""
+            options:
+              format: yyyy-MM-dd
       - name: body
         type: rich-text
   - name: gallery
