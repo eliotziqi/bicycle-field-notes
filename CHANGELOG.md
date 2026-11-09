@@ -2,6 +2,7 @@
 
 ## 2026-11-09
 
+- Updated Pages CMS collection view syntax and added minimal Places/Trips JSON collections with stable IDs, ordered single-reference visit rows, and Astro schemas. Added a manual CMS compatibility guide with name-change and referenced-Place deletion rules; hosted save/reopen testing remains pending. Atlas and Posts integration are deferred.
 - Added a CMS-managed Gallery with shared category options, responsive thumbnails, OR filtering, a keyboard-accessible lightbox, and optional related-post links. Seeded the existing Mount Wangwei upload without copying it.
 - Added the shared header subtitle and moved the Home welcome below a curated, manually controlled Gallery slideshow with empty/single-photo states and no autoplay.
 

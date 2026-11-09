@@ -10,8 +10,10 @@ content:
     filename: "{primary}.md"
     view:
       primary: title
-      sort: pubDate
-      order: desc
+      sort: [pubDate]
+      default:
+        sort: pubDate
+        order: desc
     fields:
       - name: title
         type: string
@@ -50,8 +52,10 @@ content:
     filename: "{primary}.json"
     view:
       primary: title
-      sort: title
-      order: asc
+      sort: [title]
+      default:
+        sort: title
+        order: asc
     fields:
       - name: image
         type: image
@@ -92,9 +96,121 @@ content:
     filename: "{primary}.json"
     view:
       primary: title
-      sort: title
-      order: asc
+      sort: [title]
+      default:
+        sort: title
+        order: asc
     fields:
       - name: title
         type: string
         required: true
+  - name: places
+    label: Places
+    type: collection
+    path: src/content/places
+    format: json
+    filename: "{fields.id}.json"
+    view:
+      primary: name
+      sort: [name]
+      default:
+        sort: name
+        order: asc
+    fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: "^[a-z0-9]+(-[a-z0-9]+)*$"
+        description: "Choose a unique ID on creation. Keep it and the filename unchanged; Trips store this ID. Do not delete a Place used by a Trip: references are not automatically repaired."
+      - name: name
+        type: string
+        required: true
+      - name: latitude
+        type: number
+        required: true
+        options:
+          min: -90
+          max: 90
+      - name: longitude
+        type: number
+        required: true
+        options:
+          min: -180
+          max: 180
+      - name: description
+        type: text
+        required: true
+      - name: status
+        type: select
+        required: true
+        options:
+          multiple: true
+          values:
+            - label: Ridden
+              value: ridden
+            - label: Visited
+              value: visited
+            - label: Wishlist
+              value: wishlist
+      - name: coverImage
+        label: Cover photo (optional)
+        type: image
+        options:
+          extensions: [jpg, jpeg, png, webp, avif]
+  - name: trips
+    label: Trips
+    type: collection
+    path: src/content/trips
+    format: json
+    filename: "{fields.id}.json"
+    view:
+      primary: name
+      sort: [name]
+      default:
+        sort: name
+        order: asc
+    fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: "^[a-z0-9]+(-[a-z0-9]+)*$"
+        description: "Choose a unique ID on creation. Keep it and the filename unchanged after saving."
+      - name: name
+        type: string
+        required: true
+      - name: startDate
+        label: Start date (optional)
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd
+      - name: endDate
+        label: End date (optional)
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd
+      - name: places
+        label: Places in visiting order
+        type: object
+        required: true
+        list:
+          min: 1
+          collapsible:
+            collapsed: false
+            summary: "{index}: {fields.place}"
+        description: "Add one row per visit, including return visits. Drag rows to change visiting order."
+        fields:
+          - name: place
+            type: reference
+            required: true
+            options:
+              collection: places
+              search: "name,fields.name,fields.id"
+              value: "{fields.id}"
+              label: "{primary} ({fields.id})"
+      - name: description
+        label: Description (optional)
+        type: text

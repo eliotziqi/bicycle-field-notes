@@ -6,7 +6,17 @@ Astro generates static pages from `src/pages/` and Markdown/MDX articles from `s
 
 Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home with the existing introduction and a curated Gallery slideshow; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. RSS, sitemap, social previews, themes, and reading controls remain active.
 
-## Current phase — Home and Gallery
+## Current phase — Places/Trips CMS compatibility only
+
+- [x] Fast-forward the clean checkout to the latest `origin/main`, preserving CMS content and uploads.
+- [x] Update collection view syntax while retaining default sort order; add minimal Places/Trips CMS JSON collections and Astro schemas with ordered single-reference visit rows.
+- [x] Validate actual CMS configuration, ordered/repeated reference serialization, Astro validation, and production builds with empty collections and isolated demo data.
+- [x] Owner authorized review and commit/push on successful review; scope/content checks pass. Add explicit referenced-Place deletion guidance.
+- [ ] Hosted CMS create/reorder/save/reopen/name-edit checks remain pending. Follow [the manual test guide](docs/cms-compatibility-test.md) on a disposable nonpublishing branch.
+
+No Atlas, Posts integration, Wiki, or relationship graph is included in this phase. The owner authorized committing and pushing the reviewed compatibility changes; the existing `main` push deployment workflow remains unchanged. Collection IDs must remain stable; cross-entry integrity validation is deferred. Detailed test steps and current limitations live in the guide.
+
+## Completed phase — Home and Gallery
 
 - [x] Add the shared responsive subtitle; move the welcome heading/introduction below the hero.
 - [x] Add Gallery metadata and centrally maintained Gallery Categories collections to Pages CMS, preserving Posts and Media. Seed only the existing Mount Wangwei photo; media uploads are never automatically published.

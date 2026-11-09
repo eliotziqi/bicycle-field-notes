@@ -39,4 +39,43 @@ const gallery = defineCollection({
   }),
 });
 
-export const collections = { posts, gallery, galleryCategories };
+const stableId = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+const optionalText = z.preprocess(
+  (value) => value === "" || value === null ? undefined : value,
+  z.string().trim().min(1).optional(),
+);
+const optionalDate = z.preprocess(
+  (value) => value === "" || value === null ? undefined : value,
+  z.string().date().optional(),
+);
+
+const places = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/places" }),
+  schema: z.object({
+    id: stableId,
+    name: z.string().trim().min(1),
+    latitude: z.number().min(-90).max(90),
+    longitude: z.number().min(-180).max(180),
+    description: z.string().trim().min(1),
+    status: z.array(z.enum(["ridden", "visited", "wishlist"])).min(1),
+    coverImage: optionalText,
+  }),
+});
+
+const trips = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/trips" }),
+  schema: z.object({
+    id: stableId,
+    name: z.string().trim().min(1),
+    startDate: optionalDate,
+    endDate: optionalDate,
+    // Keep one object per visit: A → B → A must retain both visits to A.
+    places: z.array(z.object({ place: stableId })).min(1),
+    description: optionalText,
+  }).refine((trip) => !trip.startDate || !trip.endDate || trip.endDate >= trip.startDate, {
+    message: "End date must not be before start date.",
+    path: ["endDate"],
+  }),
+});
+
+export const collections = { posts, gallery, galleryCategories, places, trips };
