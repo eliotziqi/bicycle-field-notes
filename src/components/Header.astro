@@ -7,14 +7,14 @@ const { reading = false } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 const isCurrent = (href: string) => {
   const target = withBase(href).replace(/\/$/, "") || "/";
-  return path === target || (href !== "/" && path.startsWith(target + "/"));
+  return path === target || (href !== "/" && path.startsWith(target + "/"))
+    || (href === "/posts/" && path.startsWith(withBase("/tags").replace(/\/$/, "")));
 };
 ---
 
 <header class="site-header">
   <div class="frame">
     <a class="brand" href={withBase("/")}>
-      <svg class="mark" viewBox="0 0 30 24" aria-hidden="true"><path d="M3 12h24" stroke="currentColor" stroke-opacity=".25" stroke-width="3" stroke-linecap="round" /><path d="M3 12h15" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" /></svg>
       {SITE.title}
     </a>
     <nav class="site-nav" aria-label="Main">

@@ -9,19 +9,60 @@ const posts = (await getPosts()).slice(0, SITE.postsOnHome);
 ---
 
 <Base>
-  <section class="col intro">
+  <div class="frame home">
     <h1 class="page-title">{SITE.title}</h1>
     <p class="page-lede">{SITE.description}</p>
-  </section>
-  <section class="col">
-    <h2 class="section-title">Recent posts</h2>
-    {posts.length > 0 ? (
-      <Fragment>
-        <PostList posts={posts} />
-        <p class="more"><a href={withBase("/posts")}>All posts</a></p>
-      </Fragment>
-    ) : (
-      <p>Field notes coming soon.</p>
-    )}
-  </section>
+    <img class="home-hero" src={withBase("/media/MtWangwei-raw.jpg")} alt="Mount Wangwei" width="2674" height="1448" fetchpriority="high" />
+    <div class="home-layout">
+      <div class="home-main">
+        <section aria-labelledby="welcome">
+          <h2 id="welcome" class="home-heading">Welcome</h2>
+          <div class="prose home-introduction">
+            <p>
+              Bicycle Field Notes is a notebook for cycling routes, travel, and observations along the way.
+              It brings together ride reports, practical notes, and details from the places a bicycle can take you.
+            </p>
+            <p>More about the rider coming soon.</p>
+          </div>
+          <p>Explore the <a href={withBase("/posts/")}>posts</a> for the latest field notes.</p>
+        </section>
+        <section aria-labelledby="recent-posts">
+          <h2 id="recent-posts" class="section-title">Recent posts</h2>
+          {posts.length > 0 ? (
+            <Fragment>
+              <PostList posts={posts} />
+              <p class="more"><a href={withBase("/posts/")}>All posts</a></p>
+            </Fragment>
+          ) : <p>Field notes coming soon.</p>}
+        </section>
+      </div>
+      <aside class="home-sidebar" aria-label="Explore Bicycle Field Notes">
+        {SITE.features.search && (
+          <section aria-labelledby="home-search">
+            <h2 id="home-search" class="home-heading">Search</h2>
+            <form role="search" action={withBase("/search/")} method="get">
+              <label class="search-label" for="home-query">Search posts</label>
+              <input class="search-input" id="home-query" name="q" type="search" placeholder="Search posts" required />
+              <button class="search-submit" type="submit">Search</button>
+            </form>
+          </section>
+        )}
+        <nav aria-labelledby="quick-links">
+          <h2 id="quick-links" class="home-heading">Quick links</h2>
+          <ul class="home-links">
+            <li><a href={withBase("/posts/")}>All posts</a></li>
+            <li><a href={withBase("/atlas/")}>Atlas</a></li>
+            <li><a href={withBase("/contact/")}>Contact</a></li>
+            <li><a href={withBase("/rss.xml")}>RSS feed</a></li>
+          </ul>
+        </nav>
+        <section aria-labelledby="resources">
+          <h2 id="resources" class="home-heading">Resources</h2>
+          <ul class="home-links">
+            <li><a href="https://ridewithgps.com/">Ride with GPS</a></li>
+          </ul>
+        </section>
+      </aside>
+    </div>
+  </div>
 </Base>

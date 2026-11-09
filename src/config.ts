@@ -4,16 +4,17 @@
  */
 export const SITE = {
   title: "Bicycle Field Notes",
-  description: "Cycling routes, travel notes, and observations from the road.",
+  description: "By and for cyclists | Self-supported tourer | Workshop apprentice",
   url: "https://eliotziqi.github.io/bicycle-field-notes/", // your deployed URL (used for RSS, sitemap, canonical links)
   author: "Eliot",
   lang: "en",
 
   // Header navigation. Remove or add links freely.
   nav: [
-    { label: "Posts", href: "/posts" },
-    { label: "Tags", href: "/tags" },
-    { label: "About", href: "/about" },
+    { label: "Home", href: "/" },
+    { label: "Posts", href: "/posts/" },
+    { label: "Atlas", href: "/atlas/" },
+    { label: "Contact", href: "/contact/" },
   ],
 
   // Turn features on or off.

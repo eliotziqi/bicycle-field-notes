@@ -1,4 +1,5 @@
 ---
+import { withBase } from "../../utils/urls";
 import Base from "../../layouts/Base.astro";
 import PostList from "../../components/PostList.astro";
 import { getPosts } from "../../utils/posts";
@@ -11,6 +12,7 @@ const years = [...new Set(posts.map((p) => p.data.pubDate.getUTCFullYear()))];
   <div class="col">
     <h1 class="page-title">Posts</h1>
     <p class="page-lede">{posts.length} {posts.length === 1 ? "post" : "posts"}, newest first.</p>
+    <p><a href={withBase("/tags/")}>Browse posts by tag</a></p>
     {years.map((y) => (
       <Fragment>
       <h2 class="year">{y}</h2>
