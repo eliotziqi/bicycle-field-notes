@@ -1,0 +1,10 @@
+{
+  "id": "test-place-a",
+  "name": "Test Place A",
+  "latitude": 30,
+  "longitude": 120,
+  "description": "Temporary test place A for validating ordered references in Pages CMS.",
+  "status": [
+    "visited"
+  ]
+}
