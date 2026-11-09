@@ -4,7 +4,7 @@ A personal notebook for cycling routes, travel, and observations from the road.
 
 [Visit Bicycle Field Notes](https://eliotziqi.github.io/bicycle-field-notes/)
 
-Built with Astro, TypeScript, and the minimalist Inkline theme, with Markdown/MDX posts managed through Pages CMS and hosted on GitHub Pages. Features include tag browsing, Pagefind search, light and dark themes, reading controls, RSS, a sitemap, and generated social preview images. The responsive homepage brings together the introduction, recent posts, and quick links; Atlas and Contact are ready for future content.
+Built with Astro, TypeScript, and the minimalist Inkline theme, with Markdown/MDX posts managed through Pages CMS and hosted on GitHub Pages. The unified Posts browser combines multi-select tags and Pagefind full-text search. Other features include light and dark themes, reading controls, RSS, a sitemap, and generated social preview images. The responsive homepage brings together the introduction, recent posts, and quick links; Atlas and Contact are ready for future content.
 
 ## Local development
 
@@ -26,4 +26,6 @@ See [PLAN.md](PLAN.md) for architecture, publishing details, and the development
 
 ## Attribution and license
 
-Based on Inkline by the Inkline contributors. Theme code is provided under the [MIT license](LICENSE); retain its copyright and permission notice. Posts and uploaded photographs are user-created content and should not be assumed to share the theme's license.
+Based on Inkline by the Inkline contributors. Theme code is provided under the [MIT license](LICENSE); retain its copyright and permission notice. User-authored posts, photographs, and GPX files are not automatically licensed under MIT; their reuse requires the applicable content license or the owner’s permission.
+
+Newsreader fonts are by the Newsreader Project Authors and distributed under the [SIL Open Font License 1.1](public/newsreader-license.txt).

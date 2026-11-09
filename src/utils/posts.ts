@@ -8,15 +8,11 @@ export async function getPosts(): Promise<Post[]> {
   return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
-export function slugify(tag: string): string {
-  return tag.toLowerCase().trim().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "");
-}
-
-export function tagCounts(posts: Post[]): { tag: string; slug: string; count: number }[] {
+export function tagCounts(posts: Post[]): { tag: string; count: number }[] {
   const map = new Map<string, number>();
   for (const p of posts) for (const t of p.data.tags) map.set(t, (map.get(t) ?? 0) + 1);
   return [...map]
-    .map(([tag, count]) => ({ tag, slug: slugify(tag), count }))
+    .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
 }
 

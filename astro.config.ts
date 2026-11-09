@@ -7,7 +7,7 @@ import { SITE } from "./src/config";
 const site = process.env.SITE_URL ?? SITE.url;
 if (site.includes("example.com")) {
   console.warn(
-    "\n[inkline] Set your real address as `url` in src/config.ts (or the SITE_URL variable).\n" +
+    "\n[bicycle-field-notes] Set your real address as `url` in src/config.ts (or the SITE_URL variable).\n" +
       "          RSS, the sitemap and social images use it.\n",
   );
 }
