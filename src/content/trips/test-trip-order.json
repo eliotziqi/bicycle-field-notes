@@ -1,0 +1,15 @@
+{
+  "id": "test-trip-order",
+  "name": "CMS Ordering Test",
+  "places": [
+    {
+      "place": "test-place-b"
+    },
+    {
+      "place": "test-place-a"
+    },
+    {
+      "place": "test-place-a"
+    }
+  ]
+}
