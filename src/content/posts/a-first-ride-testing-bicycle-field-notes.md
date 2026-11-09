@@ -1,10 +1,10 @@
 ---
-title: A First Ride — Testing Bicycle Field Notes
+title: A First Post — Testing
 description: A sample post to test the blog's writing and publishing workflow.
 pubDate: 2026-11-09
 updatedDate: 2026-11-09
 featured: false
-draft: false
+draft: true
 ---
 ## Welcome to Bicycle Field Notes
 
