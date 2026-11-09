@@ -1,6 +1,6 @@
 {
   "id": "test-place-a",
-  "name": "Test Place A",
+  "name": "Test Place A Renamed",
   "latitude": 30,
   "longitude": 120,
   "description": "Temporary test place A for validating ordered references in Pages CMS.",
