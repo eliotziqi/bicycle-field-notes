@@ -1,7 +1,7 @@
 import { comparePosts, matchesPost, postYear, readPostFilters, writePostFilters, type Dimension, type DiscoverablePost, type PostSort } from "../utils/post-discovery";
 
 interface SearchResult { data(): Promise<{ url: string }> }
-interface Pagefind { init(): Promise<void>; search(query: string): Promise<{ results: SearchResult[] }> }
+interface Pagefind { init(): Promise<void>; search(query: string, options: { filters: { kind: string } }): Promise<{ results: SearchResult[] }> }
 
 const form = document.querySelector<HTMLFormElement>("#post-filters")!;
 const input = form.querySelector<HTMLInputElement>("[name=q]");
@@ -122,7 +122,7 @@ async function update() {
   if (query) {
     count.textContent = "Searching…";
     try {
-      const search = await (await loadSearch()).search(query);
+      const search = await (await loadSearch()).search(query, { filters: { kind: "Post" } });
       const data = await Promise.all(search.results.map((result) => result.data()));
       matches = new Set(data.map((result) => pathKey(result.url)));
     } catch {

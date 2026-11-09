@@ -1,0 +1,14 @@
+---
+import Wiki from "../../layouts/Wiki.astro";
+import SearchField from "../../components/SearchField.astro";
+import { getWiki, wikiPath } from "../../utils/wiki";
+const pages = await getWiki();
+---
+<Wiki title="Search documentation" description="Search the User, Publishing and Developer Guides. Article search remains in Posts." id="search" indexed={false}>
+  <form id="wiki-search" role="search" aria-label="Search documentation"><SearchField id="wiki-query" label="Search documentation" /><button type="submit">Search</button></form>
+  <p id="wiki-search-status" role="status" aria-live="polite">Enter a term, or browse the documentation below.</p>
+  <ol id="wiki-search-results" aria-label="Wiki search results"></ol>
+  <noscript><p>Search needs JavaScript. All documentation is available through these links.</p></noscript>
+  <details open><summary>Browse all documentation</summary><ul>{pages.map((page) => <li><a href={wikiPath(page.id)}>{page.data.title}</a></li>)}</ul></details>
+</Wiki>
+<script src="../../scripts/wiki-search.ts"></script>

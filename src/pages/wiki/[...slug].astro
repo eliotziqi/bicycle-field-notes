@@ -1,0 +1,11 @@
+---
+import { render } from "astro:content";
+import Wiki from "../../layouts/Wiki.astro";
+import { getWiki } from "../../utils/wiki";
+export async function getStaticPaths() {
+  return (await getWiki()).map((page) => ({ params: { slug: page.id === "index" ? undefined : page.id.replace(/\/index$/, "") }, props: { page } }));
+}
+const { page } = Astro.props;
+const { Content, headings } = await render(page);
+---
+<Wiki {...page.data} id={page.id} headings={headings}><Content /></Wiki>

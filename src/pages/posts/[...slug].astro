@@ -42,7 +42,7 @@ const jsonLd = {
 
 <Base title={title} description={description} type="article" reading image={SITE.features.ogImages ? `/og/${post.id}.png` : undefined}>
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
-  <article class="article" data-pagefind-body>
+  <article class="article" data-pagefind-body data-pagefind-filter="kind:Post">
     <header class="article-head">
       {tags.length > 0 && (
         <ul class="tags" data-pagefind-ignore>

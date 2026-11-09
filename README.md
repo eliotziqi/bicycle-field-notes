@@ -1,33 +1,31 @@
 # Bicycle Field Notes
 
-A personal notebook for cycling routes, travel, and observations from the road.
+A personal notebook for cycling, travel and observations from the road, built with Astro, the minimalist Inkline theme, Pages CMS and GitHub Pages.
 
-[Visit Bicycle Field Notes](https://eliotziqi.github.io/bicycle-field-notes/)
+[Live website](https://eliotziqi.github.io/bicycle-field-notes/) · [Project Wiki](https://eliotziqi.github.io/bicycle-field-notes/wiki/) · [Wiki source](src/content/wiki/index.md)
 
-Built with Astro, TypeScript, and the minimalist Inkline theme, with Markdown/MDX posts managed through Pages CMS and hosted on GitHub Pages. The unified Posts browser combines multi-select tags and Pagefind full-text search. Other features include light and dark themes, reading controls, RSS, a sitemap, and generated social preview images. The responsive homepage includes a curated photo slideshow, introduction, recent posts, and quick links. Gallery offers category filters, a keyboard-accessible lightbox, and related posts. Atlas explores CMS-managed Places and ordered Trips on an interactive globe; Contact is ready for future content.
+Browse articles through the unified Posts search and filters, explore Places and ordered Trips in Atlas, and view curated photos in Gallery. The Wiki is the detailed source for using the site, publishing content and maintaining the code.
 
 ## Local development
 
-Use Node 24 and npm:
+Use Node 24:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the `/bicycle-field-notes/` path shown by Astro. To preview the production site, including search:
+Open `/bicycle-field-notes/` at the address Astro prints. Production search requires:
 
 ```sh
 npm run build
 npm run preview
 ```
 
-Manage photos in Pages CMS’s **Gallery** collection; reuse existing media and select **Show on homepage** to include a photo in the slideshow. **Gallery Categories** maintains the shared category options. Uploading a file alone does not publish it.
-
-Posts can optionally link Places and Trips in narrative order. The unified browser combines text, tags, content types, geographic references and experience-date sorting. See the [Post publishing guide](docs/posts-discovery.md) for editorial rules and [PLAN.md](PLAN.md) for the development roadmap.
+See [development and validation](src/content/wiki/developer/testing.md), [publishing](src/content/wiki/publishing/index.md) and [roadmap](PLAN.md). No commit, push or deployment without owner approval.
 
 ## Attribution and license
 
-Based on Inkline by the Inkline contributors. Theme code is provided under the [MIT license](LICENSE); retain its copyright and permission notice. User-authored posts, photographs, and GPX files are not automatically licensed under MIT; their reuse requires the applicable content license or the owner’s permission.
+Based on Inkline by the Inkline contributors under the [MIT license](LICENSE); retain the original notice. User articles, photographs and GPX files do not automatically inherit that license.
 
-Newsreader fonts are by the Newsreader Project Authors and distributed under the [SIL Open Font License 1.1](public/newsreader-license.txt).
+Newsreader is distributed under the [SIL Open Font License](public/newsreader-license.txt). Preserve the [MapLibre notice](public/maplibre-license.txt) and [map/style/data attribution](src/content/wiki/developer/atlas.md#provider-and-licenses).

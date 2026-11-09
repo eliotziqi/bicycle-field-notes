@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-10
+
+- Added the canonical Project Wiki with User, Publishing and Developer Guides, static responsive navigation, heading anchors, breadcrumbs, previous/next links and a documentation icon beside theme. Migrated technical guides and compatibility evidence; old docs paths remain pointers.
+- Reused Pagefind with isolated Wiki/Post result kinds, documented four publishing workflows and 14 architecture decisions, and added documentation link/browser validation. GPX and terrain remain unimplemented.
+
 ## 2026-11-09
 
 - Added optional Post content types, ordered Place/Trip references and experience dates to Astro/Pages CMS, with shared graph resolution and lightweight article links to Atlas. Preserved existing article files, images and generated social previews; GPX controls remain deferred.

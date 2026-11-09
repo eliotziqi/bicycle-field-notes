@@ -81,4 +81,14 @@ const trips = defineCollection({
   }),
 });
 
-export const collections = { posts, gallery, galleryCategories, places, trips };
+const wiki = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/wiki" }),
+  schema: z.object({
+    title: z.string().min(1),
+    description: z.string().min(1),
+    section: z.enum(["user", "publishing", "developer"]).optional(),
+    order: z.number().int().nonnegative(),
+  }),
+});
+
+export const collections = { posts, gallery, galleryCategories, places, trips, wiki };

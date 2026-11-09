@@ -1,0 +1,63 @@
+---
+import Base from "./Base.astro";
+import { getWiki, wikiPath, WIKI_SECTIONS } from "../utils/wiki";
+import { withBase } from "../utils/urls";
+import "../styles/wiki.css";
+interface Props {
+  title: string;
+  description: string;
+  id: string;
+  section?: keyof typeof WIKI_SECTIONS;
+  headings?: { depth: number; slug: string; text: string }[];
+  indexed?: boolean;
+}
+const { title, description, id, section, headings = [], indexed = true } = Astro.props;
+const pages = await getWiki();
+const siblings = pages.filter((page) => page.data.section === section);
+const position = siblings.findIndex((page) => page.id === id);
+const previous = position > 0 ? siblings[position - 1] : undefined;
+const next = position >= 0 ? siblings[position + 1] : undefined;
+const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+<Base title={`${title} · Wiki`} description={description}>
+  <div class="frame wiki-shell">
+    <details class="wiki-navigation" open>
+      <summary>Wiki navigation</summary>
+      <nav aria-label="Documentation">
+        <a href={wikiPath("index")} aria-current={id === "index" ? "page" : undefined}>Project Wiki</a>
+        <a href={withBase("/wiki/search/")} aria-current={id === "search" ? "page" : undefined}>Search documentation</a>
+        {Object.entries(WIKI_SECTIONS).map(([key, label]) => (
+          <div><h2>{label}</h2><ul>{pages.filter((page) => page.data.section === key).map((page) => (
+            <li><a href={wikiPath(page.id)} aria-current={id === page.id ? "page" : undefined}>{page.data.title}</a></li>
+          ))}</ul></div>
+        ))}
+      </nav>
+    </details>
+    <div class="wiki-reading">
+      <nav class="wiki-breadcrumbs" aria-label="Breadcrumb">
+        <a href={withBase("/")}>Home</a><span aria-hidden="true"> / </span>
+        {id === "index" ? <span aria-current="page">Wiki</span> : <Fragment><a href={wikiPath("index")}>Wiki</a><span aria-hidden="true"> / </span>
+          {section && id !== `${section}/index` && <Fragment><a href={wikiPath(`${section}/index`)}>{WIKI_SECTIONS[section]}</a><span aria-hidden="true"> / </span></Fragment>}
+          <span aria-current="page">{title}</span></Fragment>}
+      </nav>
+      <article class="wiki-article" data-pagefind-body={indexed || undefined} data-pagefind-filter={indexed ? "kind:Wiki" : undefined}>
+        <header><p class="wiki-section">{section ? WIKI_SECTIONS[section] : "Project documentation"}</p><h1 data-pagefind-meta="title">{title}</h1><p class="page-lede">{description}</p></header>
+        {toc.length >= 3 && <nav class="wiki-toc" aria-label="On this page" data-pagefind-ignore><h2>On this page</h2><ul>{toc.map((heading) => <li class:list={{ nested: heading.depth === 3 }}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ul></nav>}
+        <div class="wiki-prose"><slot /></div>
+      </article>
+      {(previous || next) && <nav class="wiki-pager" aria-label="Documentation pages">
+        {previous && <a rel="prev" href={wikiPath(previous.id)}>← Previous: {previous.data.title}</a>}
+        {next && <a rel="next" href={wikiPath(next.id)}>Next: {next.data.title} →</a>}
+      </nav>}
+      <p class="wiki-source"><a href={`https://github.com/eliotziqi/bicycle-field-notes/blob/main/${id === "search" ? "src/pages/wiki/search.astro" : `src/content/wiki/${id}.md`}`}>View source on GitHub</a></p>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const navigation = document.querySelector<HTMLDetailsElement>(".wiki-navigation")!;
+  const narrow = matchMedia("(max-width: 55.99rem)");
+  const resizeNavigation = () => { navigation.open = !narrow.matches; };
+  resizeNavigation();
+  narrow.addEventListener("change", resizeNavigation);
+</script>
