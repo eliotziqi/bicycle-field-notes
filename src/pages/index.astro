@@ -1,23 +1,24 @@
 ---
 import { withBase } from "../utils/urls";
 import Base from "../layouts/Base.astro";
+import HomeSlideshow from "../components/HomeSlideshow.astro";
+import { getGallery } from "../utils/gallery";
 import SearchField from "../components/SearchField.astro";
 import PostList from "../components/PostList.astro";
 import { SITE } from "../config";
 import { getPosts } from "../utils/posts";
 
 const posts = (await getPosts()).slice(0, SITE.postsOnHome);
+const { photos } = await getGallery();
 ---
 
 <Base>
   <div class="frame home">
-    <h1 class="page-title">{SITE.title}</h1>
-    <p class="page-lede">{SITE.description}</p>
-    <img class="home-hero" src={withBase("/media/MtWangwei-raw.jpg")} alt="Mount Wangwei" width="2674" height="1448" fetchpriority="high" />
+    <HomeSlideshow photos={photos.filter((photo) => photo.showOnHomepage)} />
     <div class="home-layout">
       <div class="home-main">
         <section aria-labelledby="welcome">
-          <h2 id="welcome" class="home-heading">Welcome</h2>
+          <h1 id="welcome" class="page-title">Welcome to Bicycle Field Notes</h1>
           <div class="prose home-introduction">
             <p>
               Bicycle Field Notes is a notebook for cycling routes, travel, and observations along the way.
@@ -48,6 +49,7 @@ const posts = (await getPosts()).slice(0, SITE.postsOnHome);
           <ul class="home-links">
             <li><a href={withBase("/posts/")}>All posts</a></li>
             <li><a href={withBase("/atlas/")}>Atlas</a></li>
+            <li><a href={withBase("/gallery/")}>Gallery</a></li>
             <li><a href={withBase("/contact/")}>Contact</a></li>
             <li><a href={withBase("/rss.xml")}>RSS feed</a></li>
           </ul>

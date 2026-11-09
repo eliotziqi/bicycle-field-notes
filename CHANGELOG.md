@@ -2,6 +2,9 @@
 
 ## 2026-11-09
 
+- Added a CMS-managed Gallery with shared category options, responsive thumbnails, OR filtering, a keyboard-accessible lightbox, and optional related-post links. Seeded the existing Mount Wangwei upload without copying it.
+- Added the shared header subtitle and moved the Home welcome below a curated, manually controlled Gallery slideshow with empty/single-photo states and no autoplay.
+
 - Audited tracked source, configuration, assets, dependencies, and documentation. Removed the original theme contributor guide and unused tag-slug/template-style remnants; renamed the package to `bicycle-field-notes`.
 - Added hidden search labels, clarified that posts/photos/GPX do not automatically inherit MIT, preserved the upstream MIT notice, and included the Newsreader font license in published assets.
 - Condensed the project plan and expanded local generated-file ignores.

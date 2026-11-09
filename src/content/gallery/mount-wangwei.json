@@ -1,0 +1,10 @@
+{
+  "image": "/bicycle-field-notes/media/MtWangwei-raw.jpg",
+  "title": "Mount Wangwei",
+  "description": "Mount Wangwei, from Bicycle Field Notes.",
+  "categories": [
+    "Landscape"
+  ],
+  "relatedPost": "src/content/posts/a-first-ride-testing-bicycle-field-notes.md",
+  "showOnHomepage": true
+}

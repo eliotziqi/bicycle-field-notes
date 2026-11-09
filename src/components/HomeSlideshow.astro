@@ -1,0 +1,52 @@
+---
+import { withBase } from "../utils/urls";
+import type { GalleryPhoto } from "../utils/gallery";
+const { photos } = Astro.props as { photos: GalleryPhoto[] };
+---
+
+{photos.length > 0 ? (
+  <section class="home-slideshow" aria-label="Photos from the gallery" aria-roledescription="carousel" tabindex="0">
+    {photos.map((photo, index) => (
+      <figure class="home-slide" data-slide hidden={index !== 0} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${photos.length}`}>
+        <img class="home-hero" src={photo.hero} srcset={photo.heroSet} sizes="(max-width: 1024px) 90vw, 960px" alt={photo.title} width={photo.width} height={photo.height} loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} decoding="async" />
+        <figcaption><a href={`${withBase("/gallery/")}#photo-${photo.id}`}>{photo.title}</a></figcaption>
+      </figure>
+    ))}
+    {photos.length > 1 && (
+      <div class="slideshow-controls" hidden>
+        <button type="button" data-slide-previous aria-label="Previous photo">←</button>
+        <p data-slide-status role="status" aria-live="polite">1 / {photos.length}</p>
+        <button type="button" data-slide-next aria-label="Next photo">→</button>
+      </div>
+    )}
+  </section>
+) : (
+  <div class="hero-fallback"><p>Photos from the road will appear here.</p><a href={withBase("/gallery/")}>Visit the Gallery</a></div>
+)}
+
+<script>
+  const slideshow = document.querySelector<HTMLElement>(".home-slideshow");
+  if (slideshow) {
+    const slides = [...slideshow.querySelectorAll<HTMLElement>("[data-slide]")];
+    const controls = slideshow.querySelector<HTMLElement>(".slideshow-controls");
+    let current = 0;
+    const show = (offset: number) => {
+      const refocus = slides[current].contains(document.activeElement);
+      slides[current].hidden = true;
+      current = (current + offset + slides.length) % slides.length;
+      slides[current].hidden = false;
+      if (refocus) slideshow.focus();
+      const status = slideshow.querySelector("[data-slide-status]");
+      if (status) status.textContent = `${current + 1} / ${slides.length}`;
+    };
+    if (controls) controls.hidden = false;
+    slideshow.querySelector("[data-slide-previous]")?.addEventListener("click", () => show(-1));
+    slideshow.querySelector("[data-slide-next]")?.addEventListener("click", () => show(1));
+    slideshow.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        show(event.key === "ArrowLeft" ? -1 : 1);
+      }
+    });
+  }
+</script>

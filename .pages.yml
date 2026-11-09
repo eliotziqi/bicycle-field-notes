@@ -42,3 +42,59 @@ content:
         default: true
       - name: body
         type: rich-text
+  - name: gallery
+    label: Gallery
+    type: collection
+    path: src/content/gallery
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: title
+      sort: title
+      order: asc
+    fields:
+      - name: image
+        type: image
+        required: true
+        options:
+          extensions: [jpg, jpeg, png, webp, avif]
+      - name: title
+        type: string
+        required: true
+      - name: description
+        type: text
+        required: true
+      - name: categories
+        type: reference
+        required: true
+        options:
+          collection: galleryCategories
+          multiple: true
+          min: 1
+          value: "{primary}"
+          label: "{primary}"
+      - name: relatedPost
+        label: Related post (optional)
+        type: reference
+        options:
+          collection: posts
+          value: "{path}"
+          label: "{primary}"
+      - name: showOnHomepage
+        label: Show on homepage
+        type: boolean
+        default: false
+  - name: galleryCategories
+    label: Gallery Categories
+    type: collection
+    path: src/content/gallery-categories
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: title
+      sort: title
+      order: asc
+    fields:
+      - name: title
+        type: string
+        required: true

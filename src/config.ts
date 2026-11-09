@@ -14,6 +14,7 @@ export const SITE = {
     { label: "Home", href: "/" },
     { label: "Posts", href: "/posts/" },
     { label: "Atlas", href: "/atlas/" },
+    { label: "Gallery", href: "/gallery/" },
     { label: "Contact", href: "/contact/" },
   ],
 

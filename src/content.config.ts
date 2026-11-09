@@ -19,4 +19,24 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { posts };
+const galleryCategories = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/gallery-categories" }),
+  schema: z.object({ title: z.string().trim().min(1) }),
+});
+
+const gallery = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/gallery" }),
+  schema: z.object({
+    image: z.string().min(1),
+    title: z.string().trim().min(1),
+    description: z.string().trim().min(1),
+    categories: z.array(z.string().min(1)).min(1),
+    relatedPost: z.preprocess(
+      (value) => value === "" || value === null ? undefined : value,
+      z.string().optional(),
+    ),
+    showOnHomepage: z.boolean().default(false),
+  }),
+});
+
+export const collections = { posts, gallery, galleryCategories };

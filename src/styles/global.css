@@ -245,3 +245,42 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Keep accessible labels available to assistive technology without visual clutter. */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Shared identity and curated photography. */
+[hidden] { display: none !important; }
+.site-identity { flex: 1 1 22rem; min-width: 0; }
+.brand { font-size: clamp(1.35rem, 3vw, 1.65rem); line-height: 1.15; }
+.site-subtitle { margin: 0.45rem 0 0; max-width: 36rem; color: var(--muted); font-size: clamp(0.75rem, 1.6vw, 0.875rem); line-height: 1.5; text-wrap: balance; }
+.home-slideshow, .hero-fallback { margin-top: 2rem; }
+.home-slide { margin: 0; }
+.home-slide figcaption { margin-top: 0.5rem; color: var(--muted); font-size: 0.875rem; }
+.home-main > section:first-child .page-title { margin-top: 0; margin-bottom: 1.25rem; }
+.hero-fallback { min-height: 12rem; display: grid; place-content: center; text-align: center; padding: 2rem; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); }
+.slideshow-controls { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: 0.75rem; }
+.slideshow-controls p { margin: 0; font-size: 0.875rem; color: var(--muted); }
+.slideshow-controls button, .lightbox-close { min-width: 2.75rem; min-height: 2.75rem; padding: 0.35rem 0.75rem; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--text); }
+.slideshow-controls button:hover, .lightbox-close:hover { border-color: var(--muted); }
+.gallery-filters { margin-bottom: 1.5rem; }
+.gallery-filters fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.gallery-filters legend { font: 600 1.1rem/1.4 var(--font-serif); }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1.25rem; margin-top: 1.5rem; }
+.gallery-card { margin: 0; min-width: 0; scroll-margin-top: 12rem; }
+.gallery-image-link { display: block; }
+.gallery-card img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; }
+.gallery-card h2 { font: 600 1.3rem/1.3 var(--font-serif); margin: 0.8rem 0 0.4rem; }
+.gallery-card p { margin: 0.5rem 0; overflow-wrap: anywhere; }
+.photo-description { font-size: 0.95rem; }
+.photo-categories { color: var(--muted); font-size: 0.8rem; }
+.photo-related { font-size: 0.875rem; }
+.gallery-lightbox { width: min(68rem, calc(100% - 2rem)); max-height: calc(100dvh - 2rem); padding: 1rem; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); }
+.gallery-lightbox::backdrop { background: rgb(0 0 0 / 0.75); }
+.lightbox-close { display: block; margin: 0 0 0.75rem auto; }
+.gallery-lightbox > img { display: block; margin-inline: auto; max-width: 100%; max-height: 60dvh; width: auto; object-fit: contain; }
+.lightbox-caption h2 { margin: 1rem 0 0.5rem; font: 600 1.4rem/1.3 var(--font-serif); }
+.lightbox-caption p { margin: 0.5rem 0; }
+@media (max-width: 55rem) { .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 36rem) {
+  .gallery-grid { grid-template-columns: minmax(0, 1fr); }
+  .home-hero { aspect-ratio: 16 / 10; }
+  .site-identity { flex-basis: 100%; }
+}

@@ -4,16 +4,18 @@
 
 Astro generates static pages from `src/pages/` and Markdown/MDX articles from `src/content/posts/`. `Base.astro` handles shared layout and SEO; `src/config.ts` defines identity, navigation, and features. Pages CMS uses `.pages.yml`; GitHub Actions builds and publishes `dist/` to GitHub Pages.
 
-Completed: Home, Posts, Atlas, and Contact navigation; responsive Home with the existing introduction/photo; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. RSS, sitemap, social previews, themes, and reading controls remain active.
+Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home with the existing introduction and a curated Gallery slideshow; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. RSS, sitemap, social previews, themes, and reading controls remain active.
 
-## Cleanup checklist
+## Current phase — Home and Gallery
 
-- [x] Inspect all tracked files and references; preserve existing content and publishing configuration.
-- [x] Remove the unused theme contributor guide, tag-slug helper/output, and unused intro/featured/tag-count styles.
-- [x] Rename package/lockfile identity, add hidden search labels, clarify content licensing, and distribute the Newsreader license notice.
-- [x] Condense working documentation and update generated-file ignores.
-- [x] Clean install and production build pass. Chrome checks cover full-text search, multi-tag OR/text AND, ordering, draft exclusion, clear/empty states, shared URLs, Back restoration, and stale searches. Layouts pass at 1280/768/390/320px. Generated links/fragments, RSS, SEO/JSON-LD, sitemap, robots, and project base paths pass. Multi-tag/draft fixtures were built in a temporary copy only.
-- [ ] Owner reviews cleanup. No commit, push, or deployment is authorized for this task.
+- [x] Add the shared responsive subtitle; move the welcome heading/introduction below the hero.
+- [x] Add Gallery metadata and centrally maintained Gallery Categories collections to Pages CMS, preserving Posts and Media. Seed only the existing Mount Wangwei photo; media uploads are never automatically published.
+- [x] Add responsive Gallery thumbnails, OR category filters, descriptions, related-post links, and a native keyboard-accessible lightbox.
+- [x] Drive Home from `showOnHomepage` entries, with manual previous/next and arrow-key controls, single/empty states, and no autoplay or animation.
+- [x] Production build and CMS YAML/reference checks pass; Posts/Media configuration is unchanged. Chrome checks pass for 1280/768/390/320px, category OR and clear/empty states, lightbox arrows/Escape/focus return, related/draft links, and manual slideshow wrap/keyboard/reduced-motion behavior. Isolated multiple/empty-entry builds verify fallback states. Internal links, image paths/srcsets, RSS, sitemap, and project base paths pass.
+- [x] Owner reviewed this phase and authorized committing and pushing; pushes to `main` trigger the configured Pages deployment.
+
+The earlier repository cleanup is complete: package identity, template cleanup, content/license clarification, and clean-install/build/browser checks passed.
 
 ## Repository audit
 
@@ -26,6 +28,14 @@ Completed: Home, Posts, Atlas, and Contact navigation; responsive Home with the 
 | Generated files | No generated build/cache/dependency files are tracked. `.astro/`, `dist/`, `node_modules/`, npm logs, and TypeScript build caches are ignored. The lockfile is required reproducibility metadata and stays tracked. |
 | Uncertain or intentionally retained | The user-created test post and its placeholders remain content, not disposable demos. Keep `featured` metadata/CMS fields and reusable `.callout` content styling. Original icon reuse permissions are not documented beyond their source; retain assets and source attribution without assuming MIT coverage. |
 
+## Gallery publishing
+
+Create JSON entries through Pages CMS **Gallery**. Required fields are image, title (also the image’s accessible text), description, and one or more categories. `relatedPost` is an optional Posts reference; production omits links to drafts or missing posts. `showOnHomepage` defaults to false. The starter Mount Wangwei entry reuses the existing upload and post link.
+
+**Gallery Categories** is the central list shared by CMS references and the site: Landscape, Routes & Maps, Travel, Bicycles, Other. Add categories there without code changes; coordinate category title renames/deletions with existing entry values. Entry titles determine filenames; preserve filenames to keep photo anchors stable. Gallery entries are deliberately published records; curate the entry before saving to the publishing branch.
+
+`getGallery()` reads only explicit entries, validates local media/category references, and creates 320/640px thumbnails and 800/1600px display images through Astro’s existing image pipeline (never upscaled). Generated WebP files stay in ignored build output; originals are not duplicated in source. The first Home image loads eagerly; Gallery thumbnails and later slides are lazy. No autoplay or animation means reduced-motion users get the same manual control.
+
 ## Next steps (future)
 
 - Owner supplies further introduction, route/travel content, resource links, and contact details. Add a form only with a working submission service.
@@ -33,7 +43,8 @@ Completed: Home, Posts, Atlas, and Contact navigation; responsive Home with the 
 
 ## Acceptance criteria
 
-- `/posts/` is the sole browsing/search/filter interface. No standalone Search/Tags routes or internal links; published article URLs remain stable.
+- `/gallery/` appears between Atlas and Contact; categories use OR, lightbox supports keyboard/focus return, and only opted-in entries appear on Home. Empty and single-photo states remain usable.
+- `/posts/` is the sole article browsing/search/filter interface. No standalone Search/Tags routes or internal links; published article URLs remain stable.
 - Tags use OR; text and tags use AND. Counts, Clear Filters, empty/error states, shareable URLs, and Back/Forward restoration work without changing newest-first order or production draft exclusions.
 - Home and Posts share a compact accessible search input; Home submits on Enter. Layouts remain usable at desktop and phone widths.
 - `npm ci` and `npm run build` succeed; Pagefind, RSS, SEO, generated links, and GitHub Pages project paths work.

@@ -1,0 +1,64 @@
+---
+import Base from "../layouts/Base.astro";
+import { getGallery } from "../utils/gallery";
+const { photos, categories } = await getGallery();
+---
+
+<Base title="Gallery" description="A curated collection of photographs from Bicycle Field Notes.">
+  <div class="frame gallery-page">
+    <h1 class="page-title">Gallery</h1>
+    <p class="page-lede">Photos and details from along the way.</p>
+    {photos.length > 0 ? (
+      <Fragment>
+        <form class="gallery-filters" aria-label="Filter gallery" hidden>
+          <fieldset>
+            <legend>Categories</legend>
+            <p class="filter-hint">Match any selected category.</p>
+            <div class="tag-filters">
+              {categories.map((category) => (
+                <label><input type="checkbox" name="category" value={category} /><span>{category}</span></label>
+              ))}
+            </div>
+          </fieldset>
+          <button class="clear-filters" id="clear-gallery" type="button" hidden>Clear Filters</button>
+        </form>
+        <p id="gallery-count" class="result-count" role="status" aria-live="polite">{photos.length} {photos.length === 1 ? "photo" : "photos"}</p>
+        <div class="gallery-grid">
+          {photos.map((photo) => (
+            <figure class="gallery-card" id={`photo-${photo.id}`} data-categories={JSON.stringify(photo.categories)}>
+              <a class="gallery-image-link" href={photo.original} data-lightbox data-full={photo.hero} aria-label={`View ${photo.title}`}>
+                <img src={photo.thumbnail} srcset={photo.thumbnailSet} sizes="(max-width: 36rem) 90vw, (max-width: 55rem) 45vw, 310px" alt={photo.title} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
+              </a>
+              <figcaption>
+                <h2>{photo.title}</h2>
+                <p class="photo-description">{photo.description}</p>
+                <p class="photo-categories">{photo.categories.join(" · ")}</p>
+                {photo.related && <p><a class="photo-related" href={photo.related.url}>Read: {photo.related.title}</a></p>}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <p id="gallery-empty" hidden>No photos match these categories. Try another category or clear the filters.</p>
+        <dialog id="gallery-lightbox" class="gallery-lightbox" aria-labelledby="lightbox-title" aria-describedby="lightbox-description">
+          <button class="lightbox-close" type="button" aria-label="Close photo" autofocus>Close ×</button>
+          <img id="lightbox-image" alt="" />
+          <div class="lightbox-caption">
+            <h2 id="lightbox-title"></h2>
+            <p id="lightbox-description"></p>
+            <p><a id="lightbox-related" hidden></a></p>
+            <a id="lightbox-original">Original image</a>
+          </div>
+          <div class="slideshow-controls">
+            <button type="button" data-lightbox-previous aria-label="Previous photo">←</button>
+            <p id="lightbox-status" role="status" aria-live="polite"></p>
+            <button type="button" data-lightbox-next aria-label="Next photo">→</button>
+          </div>
+        </dialog>
+      </Fragment>
+    ) : <p>No gallery photos yet. Check back for photos from the road.</p>}
+  </div>
+</Base>
+
+<script>
+  import "../scripts/gallery";
+</script>
