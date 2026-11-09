@@ -1,0 +1,10 @@
+{
+  "image": "/bicycle-field-notes/media/幻灯片16 edit.jpg",
+  "title": "16",
+  "description": "prep",
+  "categories": [
+    "Other"
+  ],
+  "relatedPost": "src/content/posts/a-first-ride-testing-bicycle-field-notes.md",
+  "showOnHomepage": true
+}
