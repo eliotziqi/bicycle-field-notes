@@ -2,12 +2,12 @@
 import { withBase } from "../utils/urls";
 import { formatShort, type Post } from "../utils/posts";
 import { SITE } from "../config";
-const { posts } = Astro.props as { posts: Post[] };
+const { posts, filterable = false } = Astro.props as { posts: Post[]; filterable?: boolean };
 ---
 
 <ul class="list">
   {posts.map((p) => (
-    <li>
+    <li data-post-tags={filterable ? JSON.stringify(p.data.tags) : undefined}>
       <a href={withBase(`/posts/${p.id}/`)}>
         <time datetime={p.data.pubDate.toISOString()}>{formatShort(p.data.pubDate, SITE.lang)}</time>
         <span class="t">{p.data.title}</span>

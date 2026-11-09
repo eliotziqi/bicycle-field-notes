@@ -1,6 +1,7 @@
 ---
 import { withBase } from "../utils/urls";
 import Base from "../layouts/Base.astro";
+import SearchField from "../components/SearchField.astro";
 import PostList from "../components/PostList.astro";
 import { SITE } from "../config";
 import { getPosts } from "../utils/posts";
@@ -38,14 +39,9 @@ const posts = (await getPosts()).slice(0, SITE.postsOnHome);
       </div>
       <aside class="home-sidebar" aria-label="Explore Bicycle Field Notes">
         {SITE.features.search && (
-          <section aria-labelledby="home-search">
-            <h2 id="home-search" class="home-heading">Search</h2>
-            <form role="search" action={withBase("/search/")} method="get">
-              <label class="search-label" for="home-query">Search posts</label>
-              <input class="search-input" id="home-query" name="q" type="search" placeholder="Search posts" required />
-              <button class="search-submit" type="submit">Search</button>
-            </form>
-          </section>
+          <form role="search" action={withBase("/posts/")} method="get">
+            <SearchField id="home-query" />
+          </form>
         )}
         <nav aria-labelledby="quick-links">
           <h2 id="quick-links" class="home-heading">Quick links</h2>

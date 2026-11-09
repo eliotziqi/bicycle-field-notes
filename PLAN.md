@@ -4,7 +4,7 @@
 
 Keep a simple, readable cycling and travel notebook with user-owned content, accessible navigation, and a reliable Pages CMS publishing workflow. Preserve Inkline's typography, themes, and reading tools.
 
-Astro generates static pages from `src/pages/` and Markdown/MDX posts in `src/content/posts/`. `Base.astro` owns shared metadata and layout; Header and Footer use `src/config.ts`. `getPosts()` filters production drafts. Pagefind indexes post bodies after the Astro build. RSS, sitemap, and social images are generated at build time. GitHub Actions builds and deploys `dist/` to GitHub Pages. No new runtime dependencies are needed for the current structure.
+Astro generates static pages from `src/pages/` and Markdown/MDX posts in `src/content/posts/`. `Base.astro` owns shared metadata and layout; Header and Footer use `src/config.ts`. `getPosts()` filters production drafts. Pagefind indexes post bodies after the Astro build. The unified `/posts/` browser intersects Pagefind full-text matches with client-side tag filtering; it retains the generated newest-first article list. RSS, sitemap, and social images are generated at build time. GitHub Actions builds and deploys `dist/` to GitHub Pages. No new runtime dependencies are needed for the current structure.
 
 ## Phases and checklist
 
@@ -14,7 +14,7 @@ Astro generates static pages from `src/pages/` and Markdown/MDX posts in `src/co
 - [x] Move the About introduction into Home and remove the redundant About page.
 - [x] Reuse the Mount Wangwei photo for a wide hero; show recent posts beside a sidebar of search, quick links, and the existing Ride with GPS resource.
 - [x] Stack the sidebar below main content at widths up to 48rem.
-- [x] Expose existing tag browsing from Posts; retain tag URLs and post tag links.
+- [x] Initially exposed tag browsing from Posts; the unified browser below supersedes the standalone tag pages.
 - [x] Add minimal Atlas and Contact pages without sample data, maps, or forms.
 - [x] Create working project documentation and simplify README.
 
@@ -22,6 +22,16 @@ Astro generates static pages from `src/pages/` and Markdown/MDX posts in `src/co
 
 - [x] Production build and generated internal href/src/action audit pass under `/bicycle-field-notes/`. Headless Chrome checks at 1280, 768, 390, and 320 pixels confirm no horizontal overflow, hero loading, and sidebar positioning. Home search returns the published post at its project-prefixed URL; theme switching persists and post reading controls are present.
 - [x] Owner reviewed the changes and authorized committing and pushing. Pushes to `main` trigger the configured Pages deployment.
+
+### Unified Posts browser (completed)
+
+- [x] Consolidate search and tag browsing into `/posts/`; remove standalone search and tag routes and update article/header links.
+- [x] Reuse Pagefind for full-text search, with OR across selected tags and AND between tags and text; retain newest-first order and production draft exclusions.
+- [x] Add live result counts, Clear Filters, empty/error states, query/tag URL parameters, initial URL restoration, and Back/Forward handling.
+- [x] Share a compact accessible search field between Home and Posts. Home submits to Posts on Enter.
+- [x] Put filters right of the desktop list and above the mobile list.
+- [x] Production build and generated internal URL/sitemap checks pass. Chrome checks cover full-text search, multi-tag OR/query AND, newest-first order, draft exclusion, shared URL restoration, Clear Filters, empty states, Unicode/comma tags, Back navigation, and stale-search protection. Filters are right of the list at 1280px and above it at 768/390/320px without horizontal overflow. Multi-tag/draft fixtures were built only in a temporary copy; user content was unchanged.
+- [x] Owner reviewed the changes and authorized committing and pushing; pushes to `main` trigger the configured Pages deployment.
 
 ### Phase 3 — content and contact (future, next priority)
 
@@ -37,9 +47,9 @@ Astro generates static pages from `src/pages/` and Markdown/MDX posts in `src/co
 
 ## Acceptance criteria
 
-- Navigation targets exist beneath `/bicycle-field-notes/`; no placeholder links. Tag browsing is reachable from Posts.
+- Navigation targets exist beneath `/bicycle-field-notes/`; no placeholder links. Search and tag filtering are integrated in Posts; obsolete Search/Tags routes do not appear in the sitemap or internal links.
 - Home uses the existing introduction and image, displays recent published posts, and puts the sidebar on the right on desktop and below content on narrow screens.
-- Search submitted from Home reaches the existing Pagefind search; theme controls and post reading controls remain functional.
+- Search submitted from Home reaches `/posts/?q=…` and uses Pagefind full-text matches; theme controls and post reading controls remain functional.
 - Atlas and Contact explain that content is forthcoming, without mock maps, invented details, or inactive forms.
 - User content, media, favicon, Pages CMS, RSS, SEO, and deployment configuration are preserved.
 - `npm run build` succeeds, links resolve in generated output, and documentation accurately separates completed work from future plans.

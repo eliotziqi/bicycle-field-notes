@@ -1,23 +1,54 @@
 ---
-import { withBase } from "../../utils/urls";
 import Base from "../../layouts/Base.astro";
 import PostList from "../../components/PostList.astro";
-import { getPosts } from "../../utils/posts";
+import SearchField from "../../components/SearchField.astro";
+import { SITE } from "../../config";
+import { getPosts, tagCounts } from "../../utils/posts";
 
 const posts = await getPosts();
 const years = [...new Set(posts.map((p) => p.data.pubDate.getUTCFullYear()))];
+const tags = tagCounts(posts);
 ---
 
-<Base title="Posts" description="Every post, newest first.">
-  <div class="col">
+<Base title="Posts" description="Browse, search, and filter all posts, newest first.">
+  <div class="frame posts-browser">
     <h1 class="page-title">Posts</h1>
-    <p class="page-lede">{posts.length} {posts.length === 1 ? "post" : "posts"}, newest first.</p>
-    <p><a href={withBase("/tags/")}>Browse posts by tag</a></p>
-    {years.map((y) => (
-      <Fragment>
-      <h2 class="year">{y}</h2>
-      <PostList posts={posts.filter((p) => p.data.pubDate.getUTCFullYear() === y)} />
-      </Fragment>
-    ))}
+    <p class="page-lede">Field notes, newest first.</p>
+    <div class="posts-layout">
+      <form id="post-filters" class="posts-filters" role="search" aria-label="Filter posts">
+        {SITE.features.search && <SearchField id="post-query" />}
+        <fieldset>
+          <legend>Tags</legend>
+          <p class="filter-hint">Match any selected tag.</p>
+          {tags.length > 0 ? (
+            <div class="tag-filters">
+              {tags.map((t) => (
+                <label>
+                  <input type="checkbox" name="tags" value={t.tag} />
+                  <span>{t.tag} <span class="n">({t.count})</span></span>
+                </label>
+              ))}
+            </div>
+          ) : <p class="filter-hint">No tags yet.</p>}
+        </fieldset>
+        <button id="clear-filters" class="clear-filters" type="button" hidden>Clear Filters</button>
+      </form>
+      <section class="posts-results" aria-label="Articles" aria-busy="false">
+        <p id="result-count" class="result-count" role="status" aria-live="polite">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
+        <p id="search-error" role="alert" hidden></p>
+        <noscript><p>Enable JavaScript to search and filter. All posts are listed below.</p></noscript>
+        {years.map((y) => (
+          <section data-post-year aria-label={`${y}`}>
+            <h2 class="year">{y}</h2>
+            <PostList posts={posts.filter((p) => p.data.pubDate.getUTCFullYear() === y)} filterable />
+          </section>
+        ))}
+        <p id="empty-results" hidden={posts.length > 0}>No posts match these filters. Try another search or clear the filters.</p>
+      </section>
+    </div>
   </div>
 </Base>
+
+<script>
+  import "../../scripts/posts-browser";
+</script>

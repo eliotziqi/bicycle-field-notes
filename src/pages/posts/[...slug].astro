@@ -3,7 +3,7 @@ import { withBase } from "../../utils/urls";
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { SITE } from "../../config";
-import { getPosts, formatDate, readingTime, slugify } from "../../utils/posts";
+import { getPosts, formatDate, readingTime } from "../../utils/posts";
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -37,7 +37,7 @@ const jsonLd = {
     <header class="article-head">
       {tags.length > 0 && (
         <ul class="tags" data-pagefind-ignore>
-          {tags.map((t) => <li><a href={withBase(`/tags/${slugify(t)}/`)}>{t}</a></li>)}
+          {tags.map((t) => <li><a href={`${withBase("/posts/")}?${new URLSearchParams(t.includes(",") ? { tag: t } : { tags: t })}`}>{t}</a></li>)}
         </ul>
       )}
       <h1>{title}</h1>
