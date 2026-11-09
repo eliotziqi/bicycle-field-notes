@@ -2,7 +2,7 @@
   "id": "test-place-b",
   "name": "Test Place B",
   "latitude": 34,
-  "longitude": 90,
+  "longitude": 120.9,
   "description": "Temporary test place B for validating ordered references in Pages CMS.",
   "status": [
     "ridden"
