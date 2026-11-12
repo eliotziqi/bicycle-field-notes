@@ -4,7 +4,7 @@ description: A sample post to test the blog's writing and publishing workflow.
 pubDate: 2026-11-09
 updatedDate: 2026-11-09
 featured: false
-draft: true
+draft: false
 ---
 ## Welcome to Bicycle Field Notes
 
