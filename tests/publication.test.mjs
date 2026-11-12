@@ -20,6 +20,21 @@ test("publishing gates source, candidate build and metadata commit before artifa
   assert(steps.some((step) => step.run?.includes("publication-report.mjs") && step.if === "always()"));
 });
 
+test("runner-only report paths initialize in a step, never in job-level env", () => {
+  const workflow = parse(fs.readFileSync(".github/workflows/deploy.yml", "utf8"));
+  // GitHub allows runner in step contexts, but rejects it in jobs.<id>.env.
+  for (const job of Object.values(workflow.jobs)) {
+    for (const value of Object.values(job.env ?? {})) assert(!/\$\{\{[^}]*\brunner\./.test(value));
+  }
+  const steps = workflow.jobs["validate-build"].steps;
+  const initialize = steps.findIndex((step) => step.run?.includes("PUBLICATION_REPORT_DIR=$RUNNER_TEMP/publishing-report"));
+  assert(initialize >= 0);
+  assert.match(steps[initialize].run, />> "\$GITHUB_ENV"/);
+  assert.match(steps[initialize].run, /mkdir -p "\$RUNNER_TEMP\/publishing-report"/);
+  assert(initialize < steps.findIndex((step) => step.id === "validation"));
+  assert(steps.some((step) => step.with?.path === "${{ runner.temp }}/publishing-report/"));
+});
+
 test("failed validation reports every saved edit; correction preserves unrelated committed work", () => {
   const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "bfn-publication-"));
   const git = (...args) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: "pipe" }).trim();

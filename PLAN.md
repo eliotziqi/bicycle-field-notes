@@ -8,6 +8,8 @@ Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home 
 
 ## Publishing reliability
 
+- [x] Correct runner-only context placement after GitHub rejected workflow initialization; add a startup regression check.
+
 - [x] Audit all CMS collections and reproduce native optional-object validation gaps using `559caf6` and upstream helpers.
 - [x] Share Astro contracts with read-only file/field diagnostics, reference/media/syntax checks and regression fixtures.
 - [x] Keep main authoring saves; gate full-snapshot publication and automatic metadata commits behind validation/build, with pending-edit reports and native CMS retry action.

@@ -27,8 +27,6 @@ jobs:
       pages: write
     outputs:
       validated_revision: ${{ steps.commit.outputs.revision }}
-    env:
-      PUBLICATION_REPORT_DIR: ${{ runner.temp }}/publishing-report
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,7 +36,10 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - run: mkdir -p "$PUBLICATION_REPORT_DIR"
+      - name: Initialize diagnostic directory on the runner
+        run: |
+          echo "PUBLICATION_REPORT_DIR=$RUNNER_TEMP/publishing-report" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/publishing-report"
       - run: npm ci
       - name: Validate saved source before changing metadata
         id: validation

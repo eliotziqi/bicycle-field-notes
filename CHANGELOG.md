@@ -2,6 +2,8 @@
 
 ## 2026-11-13
 
+- Fixed workflow startup rejection by initializing diagnostic paths inside a runner step; added coverage for GitHub context availability.
+
 - Added shared-schema, read-only validation for all collections, local media and Markdown/MDX, with actionable file/field errors and regressions for incomplete CMS rows.
 - Gate metadata commits and full-snapshot publication behind validation/build. Preserve saved edits and the previous live site on failure; report pending content and offer a native CMS retry action.
 - Preserve manual month overrides and support recovery from invalid prior revisions. Removed only the owner-approved empty Experience row from the existing test Post.
