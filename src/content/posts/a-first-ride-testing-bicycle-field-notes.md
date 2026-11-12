@@ -15,6 +15,7 @@ relatedPlaces:
   - place: test-place-b
 relatedTrips:
   - trip: test-trip-order
+pubDate: 2026-11
 ---
 ## Welcome to Bicycle Field Notes2
 
