@@ -5,7 +5,7 @@
 export const SITE = {
   title: "Bicycle Field Notes",
   description: "By and for cyclists | Self-supported tourer | Workshop apprentice",
-  url: "https://eliotziqi.github.io/bicycle-field-notes/", // your deployed URL (used for RSS, sitemap, canonical links)
+  url: "https://eliotziqi.github.io/bicycle-field-notes/", // your deployed URL (used for sitemap and canonical links)
   author: "Eliot",
   lang: "en",
 
@@ -28,7 +28,5 @@ export const SITE = {
 
   postsOnHome: 6,
   // Links shown in the footer. Leave empty to hide.
-  social: [
-    { label: "RSS", href: "/rss.xml" },
-  ],
+  social: [],
 };

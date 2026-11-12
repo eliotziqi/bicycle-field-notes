@@ -11,7 +11,7 @@ CMS saves commit to the selected branch. On `main`, follow the matching commit i
 
 ## Content is missing
 
-A Post with `draft: true` is excluded from production Posts, Home, RSS and Atlas reverse links. Development previews include drafts. This is not repository privacy. Places, Trips and Gallery have no draft flag. Places/Trips need not have a Post to appear in Atlas; article filter options include only those associated with published articles.
+A Post with `draft: true` is excluded from production Posts, Home and Atlas reverse links. Development previews include drafts. This is not repository privacy. Places, Trips and Gallery have no draft flag. Places/Trips need not have a Post to appear in Atlas; article filter options include only those associated with published articles.
 
 Future `pubDate` is not a scheduler. Use `draft` to control publication. A Gallery `relatedPost` targeting a draft/missing article produces no link; it does not hide the photo.
 
@@ -23,7 +23,7 @@ Empty Trip visit lists fail validation. Repeated visits are valid; do not dedupl
 
 ## Dates and coordinates
 
-Experience and Trip end dates cannot precede their starts. Blank optional dates are accepted. For hand-edited Markdown use quoted ISO dates; malformed unquoted YAML timestamps may normalize before validation. Coordinates must be numeric, finite and in latitude/longitude bounds. The CMS six-decimal input step is configured; report an older hosted input that still rejects decimals rather than saving integers. [Precision evidence](../developer/cms-compatibility.md#decimal-coordinates) describes the verified configuration.
+Post Experience end months and Trip end dates cannot precede their starts. Post months use quoted `YYYY-MM` strings and Experience may be an empty list. Automatic Published/Updated months appear after the metadata workflow and a CMS refresh; manual Updated changes win for that save. Trip dates retain `YYYY-MM-DD`; malformed unquoted YAML timestamps may normalize before validation. Coordinates must be numeric, finite and in latitude/longitude bounds. The CMS six-decimal input step is configured; report an older hosted input that still rejects decimals rather than saving integers. [Precision evidence](../developer/cms-compatibility.md#decimal-coordinates) describes the verified configuration.
 
 ## Photo failures
 

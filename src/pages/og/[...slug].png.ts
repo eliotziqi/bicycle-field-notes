@@ -8,7 +8,7 @@ export async function getStaticPaths() {
   const posts = await getPosts();
   const pages = posts.map((p) => ({
     params: { slug: p.id },
-    props: { title: p.data.title, subtitle: p.data.description, footer: formatDate(p.data.pubDate, SITE.lang) },
+    props: { title: p.data.title, subtitle: p.data.description, footer: p.data.pubDate ? formatDate(p.data.pubDate, SITE.lang) : "" },
   }));
   pages.push({ params: { slug: "default" }, props: { title: SITE.title, subtitle: SITE.description, footer: "" } });
   return pages;

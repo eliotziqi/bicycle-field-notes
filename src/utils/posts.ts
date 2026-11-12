@@ -6,7 +6,7 @@ export type Post = CollectionEntry<"posts">;
 /** All published posts, newest first. Drafts are hidden in production builds. */
 export async function getPosts(): Promise<Post[]> {
   const posts = await getCollection("posts", ({ data }) => isPostVisible(data, import.meta.env.DEV));
-  return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  return posts.sort((a, b) => (b.data.pubDate ?? "").localeCompare(a.data.pubDate ?? "") || a.id.localeCompare(b.id));
 }
 
 export function tagCounts(posts: Post[]): { tag: string; count: number }[] {
@@ -22,10 +22,4 @@ export function readingTime(body = ""): number {
   return Math.max(1, Math.round(words / 225));
 }
 
-export function formatDate(date: Date, lang = "en"): string {
-  return date.toLocaleDateString(lang, { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
-}
-
-export function formatShort(date: Date, lang = "en"): string {
-  return date.toLocaleDateString(lang, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
-}
+export { formatMonth as formatDate, formatMonth as formatShort } from "./post-dates";

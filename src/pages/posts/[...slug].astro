@@ -3,11 +3,11 @@ import { withBase } from "../../utils/urls";
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { SITE } from "../../config";
-import { getPosts, formatDate, readingTime } from "../../utils/posts";
+import { getPosts, readingTime } from "../../utils/posts";
 import { getAtlas } from "../../utils/atlas";
 import { resolvePostReferences } from "../../utils/atlas-graph";
 import PostGeography from "../../components/PostGeography.astro";
-import { CONTENT_TYPE_LABELS } from "../../utils/post-discovery";
+import { formatMonth, formatMonthRange } from "../../utils/post-dates";
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -32,8 +32,7 @@ const jsonLd = {
   "@type": "BlogPosting",
   headline: title,
   description,
-  datePublished: pubDate.toISOString(),
-  dateModified: (updatedDate ?? pubDate).toISOString(),
+  // Schema.org Date requires day precision; omit rather than invent a day.
   author: { "@type": "Person", name: SITE.author },
   ...(SITE.features.ogImages && { image: new URL(withBase(`/og/${post.id}.png`), Astro.site).href }),
   mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
@@ -51,10 +50,11 @@ const jsonLd = {
       )}
       <h1>{title}</h1>
       <p class="lede">{description}</p>
-      <div class="meta">
-        <time datetime={pubDate.toISOString()}>{formatDate(pubDate, SITE.lang)}</time>
+      <div class="meta article-metadata" data-pagefind-ignore>
+        {pubDate && <span><strong>Published:</strong> <time datetime={pubDate}>{formatMonth(pubDate, SITE.lang)}</time></span>}
+        {updatedDate && <span><strong>Updated:</strong> <time datetime={updatedDate}>{formatMonth(updatedDate, SITE.lang)}</time></span>}
+        {post.data.experience.length > 0 && <span class="metadata-experience"><strong>Experience:</strong> {post.data.experience.map((range, index) => <Fragment>{index > 0 && ", "}{formatMonthRange(range, SITE.lang)}</Fragment>)}</span>}
         <span>{readingTime(post.body)} min read</span>
-        {post.data.contentType && <span>{CONTENT_TYPE_LABELS[post.data.contentType]}</span>}
       </div>
     </header>
 
@@ -75,8 +75,7 @@ const jsonLd = {
       <Content />
     </div>
 
-    {updatedDate && <p class="updated">Updated {formatDate(updatedDate, SITE.lang)}</p>}
-    <PostGeography references={references} experience={post.data.experience} />
+    <PostGeography references={references} />
 
     <nav class="pager" aria-label="More posts" data-pagefind-ignore>
       {older && <a class="prev" href={withBase(`/posts/${older.id}/`)}><small>Older</small><span>{older.data.title}</span></a>}

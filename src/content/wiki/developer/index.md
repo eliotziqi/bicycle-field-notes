@@ -24,6 +24,7 @@ src/layouts/                Base and Wiki layouts
 src/components/             shared UI, rows, filters and related content
 src/utils/                  graph, adapters, filters, media and URL helpers
 src/scripts/                route-specific interactions
+scripts/post-metadata.mjs   month migration and post-save date maintenance
 src/styles/                 global tokens and feature styles
 public/media/               uploaded originals
 public/                     static assets and license notices
@@ -47,15 +48,15 @@ The theme initializer reads browser preferences before paint; the header stores 
 
 ## Build, SEO and deployment
 
-`npm ci` uses the lockfile. `npm run build` runs Astro, then the existing Pagefind CLI against `dist`. Article social previews, RSS, robots and sitemap are generated through existing routes/integrations. Wiki pages have canonical URLs, descriptions and sitemap entries, but are not Posts and do not enter RSS or article social-preview generation.
+`npm ci` uses the lockfile. `npm run build` runs Astro, then the existing Pagefind CLI against `dist`. Article social previews, robots and sitemap are generated through existing routes/integrations. Wiki pages have canonical URLs, descriptions and sitemap entries, but are not Posts and do not enter article social-preview generation.
 
 `SITE.url`, overridden by `SITE_URL`, determines the site/base. Internal UI paths go through `withBase()`. Preserve `/bicycle-field-notes/` and trailing slashes. Markdown Wiki links use the scoped build-time link resolver; author relative `.md` links and site-root UI paths. CMS media output must be coordinated separately for a future base migration; existing body paths are not automatically rewritten.
 
-The [deployment workflow](https://github.com/eliotziqi/bicycle-field-notes/blob/main/.github/workflows/deploy.yml) runs on pushes to `main` or manual dispatch, uses Node 24, installs with `npm ci`, builds/uploads the artifact, then deploys in `github-pages`. No server runtime is required. Never commit/push/deploy without explicit owner approval. See [testing and safe refactoring](testing.md).
+The [deployment workflow](https://github.com/eliotziqi/bicycle-field-notes/blob/main/.github/workflows/deploy.yml) runs on pushes to `main` or manual dispatch, uses Node 24, installs with `npm ci`, maintains month metadata before building that exact commit, builds/uploads the artifact, then deploys in `github-pages`. No server runtime is required. Never commit/push/deploy without explicit owner approval. See [testing and safe refactoring](testing.md).
 
 ## Dependencies and licenses
 
-Use existing Astro/MDX/sitemap/RSS, Pagefind and image tooling. MapLibre is the only map renderer and is route-local. No documentation framework or new dependency is required for Wiki. Preserve the original Inkline MIT notice, Newsreader OFL notice and MapLibre BSD notice; user photos, articles and future GPX files do not inherit the code license. Map/provider/data licensing is detailed in [Atlas notes](atlas.md#provider-and-licenses). Check current advisories and provider terms before dependency/provider changes rather than treating historical test evidence as a current security audit.
+Use existing Astro/MDX/sitemap, Pagefind and image tooling. MapLibre is the only map renderer and is route-local. No documentation framework or new dependency is required for Wiki. Preserve the original Inkline MIT notice, Newsreader OFL notice and MapLibre BSD notice; user photos, articles and future GPX files do not inherit the code license. Map/provider/data licensing is detailed in [Atlas notes](atlas.md#provider-and-licenses). Check current advisories and provider terms before dependency/provider changes rather than treating historical test evidence as a current security audit.
 
 ## Planned extension points
 

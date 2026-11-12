@@ -32,7 +32,6 @@ const ogUrl = ogPath ? new URL(withBase(ogPath), Astro.site).href : undefined;
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" type="application/rss+xml" title={SITE.title} href={withBase("/rss.xml")} />
     <link rel="icon" href={withBase("/favicon.ico")} type="image/vnd.microsoft.icon" sizes="16x16 32x32 48x48" />
     <link rel="apple-touch-icon" href={withBase("/apple-touch-icon.png")} sizes="180x180" />
     {noindex && <meta name="robots" content="noindex" />}

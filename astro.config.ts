@@ -10,7 +10,7 @@ const site = process.env.SITE_URL ?? SITE.url;
 if (site.includes("example.com")) {
   console.warn(
     "\n[bicycle-field-notes] Set your real address as `url` in src/config.ts (or the SITE_URL variable).\n" +
-      "          RSS, the sitemap and social images use it.\n",
+      "          The sitemap and social images use it.\n",
   );
 }
 

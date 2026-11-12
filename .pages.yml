@@ -22,17 +22,38 @@ content:
         type: text
         required: true
       - name: pubDate
-        label: Publication date
-        type: date
-        required: true
-        options:
-          format: yyyy-MM-dd
-      - name: updatedDate
-        label: Updated date
-        type: date
+        label: Published
+        type: string
         default: ""
-        options:
-          format: yyyy-MM-dd
+        pattern: '^$|^[0-9]{4}-(0[1-9]|1[0-2])$'
+        description: "YYYY-MM. Leave blank to initialize to the current UTC month after saving; refresh after the workflow finishes."
+      - name: updatedDate
+        label: Updated
+        type: string
+        default: ""
+        pattern: '^$|^[0-9]{4}-(0[1-9]|1[0-2])$'
+        description: "YYYY-MM. Subsequent edits update this month automatically; a manual change takes precedence for that save."
+      - name: experience
+        label: Experience
+        type: object
+        list:
+          collapsible:
+            collapsed: false
+            summary: "{fields.start} – {fields.end}"
+        description: "Optional month ranges in display order. Add one row per range; end must be at or after start (checked by the build)."
+        fields:
+          - name: start
+            label: Start month
+            type: string
+            required: true
+            pattern: '^[0-9]{4}-(0[1-9]|1[0-2])$'
+            description: "YYYY-MM"
+          - name: end
+            label: End month
+            type: string
+            required: true
+            pattern: '^[0-9]{4}-(0[1-9]|1[0-2])$'
+            description: "YYYY-MM; repeat the start month for a single month."
       - name: tags
         type: string
         list: true
@@ -42,19 +63,6 @@ content:
       - name: draft
         type: boolean
         default: true
-      - name: contentType
-        label: Content type (optional)
-        type: select
-        options:
-          values:
-            - label: Ride
-              value: ride
-            - label: Travel
-              value: travel
-            - label: Guide
-              value: guide
-            - label: Field Note
-              value: field-note
       - name: relatedPlaces
         label: Related Places (narrative order)
         type: object
@@ -89,24 +97,6 @@ content:
               search: "name,fields.name,fields.id"
               value: "{fields.id}"
               label: "{primary} ({fields.id})"
-      - name: experience
-        label: Experience dates (optional)
-        type: object
-        required: true
-        description: "When the experience happened, independently of publication. Leave unknown dates blank."
-        fields:
-          - name: startDate
-            label: Start date
-            type: date
-            default: ""
-            options:
-              format: yyyy-MM-dd
-          - name: endDate
-            label: End date
-            type: date
-            default: ""
-            options:
-              format: yyyy-MM-dd
       - name: body
         type: rich-text
   - name: gallery

@@ -28,11 +28,11 @@ Inspect saved files in GitHub when checking the CMS result: [Posts](https://gith
 
 1. Search **Places** before creating locations. Reuse an existing geographic entity; do not create a second Place for a return visit. Add missing Places using [workflow B](places-trips.md#b-add-a-place).
 2. Create a **Trip** with a stable `id`, `name` and chronological `places` rows. Include return visits as new rows. Optional Trip dates describe the journey; [workflow C](places-trips.md#c-create-a-trip) covers saving and Atlas verification.
-3. In **Blog Posts**, create a clearly titled draft with required `title`, `description`, `pubDate` and body. Optional `contentType`, `tags` and `experience` describe editorial purpose, topics and actual experience dates. Do not invent dates.
+3. In **Blog Posts**, create a clearly titled draft with `title`, `description` and body. Published/Updated months are maintained after saving; optional `tags` and ordered `experience` month ranges describe topics and experiences. Do not invent dates.
 4. Add `relatedPlaces` in article narrative order, including repeated mentions where intended. Add `relatedTrips` in article order. These fields are optional; a Trip article need not explicitly list every Place in that Trip.
 5. Upload photos via Media or an image picker. Insert selected images into the Post body with useful alternative text. This does not create Gallery records.
 6. If desired, separately create **Gallery** records with `image`, `title`, `description` and `categories`. Use `relatedPost` to associate them with the article. Enable `showOnHomepage` only for selected homepage photos. [Photo workflow](media-gallery.md) explains the five independent actions.
-7. Save and reopen the Post; inspect reference order, repeats and date endpoints. Preview using development mode for drafts, and an isolated production snapshot for public relationship/filter checks. Keep demo content off `main` unless deliberately publishing it.
+7. Save and reopen the Post; inspect reference order, repeats and month ranges. Preview using development mode for drafts, and an isolated production snapshot for public relationship/filter checks. Keep demo content off `main` unless deliberately publishing it.
 8. Set `draft` to false only when ready and save. Watch [GitHub Actions](https://github.com/eliotziqi/bicycle-field-notes/actions) for the correct commit. Build success precedes deployment success; allow time for Pages/CDN/browser caches.
 9. Verify the published article, body images, Place/Trip Atlas links, manual Focus behavior, Posts filters and any Gallery related link/homepage choice. Test both themes and a phone. If content is missing, use [troubleshooting](troubleshooting.md).
 

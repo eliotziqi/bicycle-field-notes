@@ -1,12 +1,9 @@
 /** Shared browser semantics; no DOM, Astro or search-engine dependency. */
-export const CONTENT_TYPES = ["ride", "travel", "guide", "field-note"] as const;
-export const CONTENT_TYPE_LABELS: Record<string, string> = { ride: "Ride", travel: "Travel", guide: "Guide", "field-note": "Field Note" };
-export type Dimension = "tags" | "types" | "places" | "trips";
+export type Dimension = "tags" | "places" | "trips";
 export type PostSort = "published-desc" | "experience-desc" | "experience-asc";
 export interface PostFilters {
   query: string;
   tags: Set<string>;
-  types: Set<string>;
   places: Set<string>;
   trips: Set<string>;
   sort: PostSort;
@@ -14,7 +11,6 @@ export interface PostFilters {
 export interface DiscoverablePost {
   id: string;
   tags: string[];
-  contentType?: string;
   placeIds: string[];
   tripIds: string[];
   published: string;
@@ -26,7 +22,6 @@ export function readPostFilters(params: URLSearchParams): PostFilters {
     query: params.get("q") ?? "",
     // Keep legacy tags links and repeated `tag` values for comma-containing names.
     tags: new Set(params.has("tag") ? params.getAll("tag") : params.getAll("tags").flatMap((value) => value.split(",")).filter(Boolean)),
-    types: new Set(params.getAll("type").filter(Boolean)),
     places: new Set(params.getAll("place").filter(Boolean)),
     trips: new Set(params.getAll("trip").filter(Boolean)),
     sort: params.get("sort") === "experience-desc" || params.get("sort") === "experience-asc" ? params.get("sort") as PostSort : "published-desc",
@@ -39,7 +34,6 @@ export function writePostFilters(params: URLSearchParams, state: PostFilters): U
   if (state.query.trim()) next.set("q", state.query.trim());
   if ([...state.tags].some((tag) => tag.includes(","))) state.tags.forEach((tag) => next.append("tag", tag));
   else if (state.tags.size) next.set("tags", [...state.tags].join(","));
-  state.types.forEach((value) => next.append("type", value));
   state.places.forEach((value) => next.append("place", value));
   state.trips.forEach((value) => next.append("trip", value));
   if (state.sort !== "published-desc") next.set("sort", state.sort);
@@ -48,7 +42,7 @@ export function writePostFilters(params: URLSearchParams, state: PostFilters): U
 
 export function matchesPost(post: DiscoverablePost, state: PostFilters): boolean {
   const any = (selected: Set<string>, values: string[]) => !selected.size || values.some((value) => selected.has(value));
-  return any(state.tags, post.tags) && any(state.types, post.contentType ? [post.contentType] : [])
+  return any(state.tags, post.tags)
     && any(state.places, post.placeIds) && any(state.trips, post.tripIds);
 }
 
@@ -64,7 +58,7 @@ export function comparePosts(a: DiscoverablePost, b: DiscoverablePost, sort: Pos
 }
 
 export function postYear(post: DiscoverablePost, sort: PostSort): string {
-  return sort === "published-desc" ? post.published.slice(0, 4) : post.experience?.slice(0, 4) ?? "Undated experience";
+  return sort === "published-desc" ? (post.published.slice(0, 4) || "Undated publication") : post.experience?.slice(0, 4) ?? "Undated experience";
 }
 
 export function isPostVisible(data: { draft?: boolean }, development = false): boolean {

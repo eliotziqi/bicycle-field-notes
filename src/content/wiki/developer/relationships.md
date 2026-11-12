@@ -28,7 +28,7 @@ Post identity remains the existing loader ID/route, not a new editable field. Pl
 
 ## Visibility and serialization
 
-`getPosts()` excludes drafts in production and includes them in development. The graph also defensively excludes `draft: true`. Production Atlas serializes only Places/Trips and public reverse summaries, never article bodies or full resolved Post metadata/source paths. Browser facets and RSS derive from visible Posts. Development draft article previews can resolve their own references without publishing draft reverse associations.
+`getPosts()` excludes drafts in production and includes them in development. The graph also defensively excludes `draft: true`. Production Atlas serializes only Places/Trips and public reverse summaries, never article bodies or full resolved Post metadata/source paths. Browser facets derive from visible Posts. Development draft article previews can resolve their own references without publishing draft reverse associations.
 
 Draft syntax is still schema-validated. Missing draft relationship targets can remain work in progress until publication; published missing references fail graph validation. Drafts and uploads are public source files in a public repository even if absent from generated pages.
 

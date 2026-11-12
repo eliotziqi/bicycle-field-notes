@@ -39,7 +39,8 @@ for (const [file, html] of wiki) {
 }
 const sitemap = walk("dist").filter((file) => /sitemap.*\.xml$/.test(file)).map((file) => fs.readFileSync(file, "utf8")).join("");
 for (const [file] of wiki) assert(sitemap.includes(base + file.replace(/^dist\//, "").replace(/index\.html$/, "")), file);
-assert(!fs.readFileSync("dist/rss.xml", "utf8").includes("/wiki/"));
+assert(!fs.existsSync("dist/rss.xml"), "RSS route must be absent");
+for (const [file, html] of pages) assert(!html.includes("rss.xml") && !html.includes("application/rss+xml"), file);
 assert(!fs.readFileSync("dist/posts/index.html", "utf8").includes("data-pagefind-filter=\"kind:Wiki"));
 assert(fs.readFileSync("dist/pagefind/pagefind.js", "utf8").length > 0);
-console.log(`PASS ${wiki.length} Wiki routes; all production internal links/fragments/base paths, SEO/sitemap/RSS, index boundaries and public-path checks`);
+console.log(`PASS ${wiki.length} Wiki routes; all production internal links/fragments/base paths, SEO/sitemap, RSS removal, index boundaries and public-path checks`);

@@ -7,10 +7,11 @@ import { getPosts, tagCounts } from "../../utils/posts";
 import PostFilterGroup from "../../components/PostFilterGroup.astro";
 import { getAtlas } from "../../utils/atlas";
 import { resolvePostReferences } from "../../utils/atlas-graph";
-import { CONTENT_TYPES, CONTENT_TYPE_LABELS, type DiscoverablePost } from "../../utils/post-discovery";
+import type { DiscoverablePost } from "../../utils/post-discovery";
+import { experienceMonth } from "../../utils/post-dates";
 
 const posts = await getPosts();
-const years = [...new Set(posts.map((p) => p.data.pubDate.getUTCFullYear()))];
+const years = [...new Set(posts.map((p) => p.data.pubDate?.slice(0, 4) ?? "Undated publication"))];
 const tags = tagCounts(posts);
 const graph = await getAtlas();
 const references = new Map(graph.posts.map((post) => [post.id, post]));
@@ -20,24 +21,22 @@ const discovery = new Map<string, DiscoverablePost>(posts.map((post) => {
     relatedPlaces: post.data.relatedPlaces, relatedTrips: post.data.relatedTrips,
   }, graph.places, graph.trips);
   return [post.id, {
-    id: post.id, tags: post.data.tags, contentType: post.data.contentType,
+    id: post.id, tags: post.data.tags,
     placeIds: resolved.discoveryPlaceIds, tripIds: resolved.tripIds,
-    published: post.data.pubDate.toISOString(), experience: post.data.experience?.startDate ?? post.data.experience?.endDate,
+    published: post.data.pubDate ?? "", experience: experienceMonth(post.data.experience),
   }];
 }));
-const typeOptions = CONTENT_TYPES.map((type) => ({ value: type, label: CONTENT_TYPE_LABELS[type], count: posts.filter((post) => post.data.contentType === type).length }));
 const placeOptions = graph.places.map((place) => ({ value: place.id, label: place.name, count: [...discovery.values()].filter((post) => post.placeIds.includes(place.id)).length })).filter((place) => place.count);
 const tripOptions = graph.trips.map((trip) => ({ value: trip.id, label: trip.name, count: [...discovery.values()].filter((post) => post.tripIds.includes(trip.id)).length })).filter((trip) => trip.count);
 ---
 
-<Base title="Posts" description="Browse, search, and filter posts by topic, type, Place or Trip.">
+<Base title="Posts" description="Browse, search, and filter posts by topic, Place or Trip.">
   <div class="frame posts-browser">
     <h1 class="page-title">Posts</h1>
     <p class="page-lede">Field notes, newest first. Explore by topic, Place or journey.</p>
     <div class="posts-layout">
       <form id="post-filters" class="posts-filters" role="search" aria-label="Filter posts">
         {SITE.features.search && <SearchField id="post-query" />}
-        <PostFilterGroup name="types" label="Content type" options={typeOptions} hint="Match any selected type." />
         <PostFilterGroup name="tags" label="Tags" options={tags.map(({ tag, count }) => ({ value: tag, label: tag, count }))} hint="Match any selected tag." />
         <details id="post-advanced" class="post-advanced">
           <summary>Places, Trips and sorting</summary>
@@ -49,7 +48,7 @@ const tripOptions = graph.trips.map((trip) => ({ value: trip.id, label: trip.nam
             <option value="experience-desc">Experience: newest first</option>
             <option value="experience-asc">Experience: oldest first</option>
           </select>
-          <p class="filter-hint">Experience start date (or end date if only that is known). Undated posts come last.</p>
+          <p class="filter-hint">Latest experience range start month. Undated posts come last.</p>
         </details>
         <button id="clear-filters" class="clear-filters" type="button" hidden>Clear Filters</button>
       </form>
@@ -61,7 +60,7 @@ const tripOptions = graph.trips.map((trip) => ({ value: trip.id, label: trip.nam
         <div id="post-results-list">{years.map((y) => (
           <section data-post-year aria-label={`${y}`}>
             <h2 class="year">{y}</h2>
-            <PostList posts={posts.filter((p) => p.data.pubDate.getUTCFullYear() === y)} filterable discovery={discovery} />
+            <PostList posts={posts.filter((p) => (p.data.pubDate?.slice(0, 4) ?? "Undated publication") === y)} filterable discovery={discovery} />
           </section>
         ))}</div>
         <p id="empty-results" hidden={posts.length > 0}>No posts match these filters. Try another search or clear the filters.</p>

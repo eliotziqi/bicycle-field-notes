@@ -13,13 +13,47 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      revision: ${{ steps.revision.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node scripts/post-metadata.mjs
+      - name: Commit automatic month metadata when needed
+        env:
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          if ! git diff --quiet -- src/content/posts/; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add src/content/posts/
+            git commit -m "chore(posts): maintain month metadata"
+            git push origin "HEAD:$TARGET_BRANCH"
+          fi
+      - id: revision
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: metadata
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pages: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.metadata.outputs.revision }}
       - uses: actions/setup-node@v4
         with:
           node-version: 24

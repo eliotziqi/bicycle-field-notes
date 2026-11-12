@@ -4,7 +4,14 @@
 
 Astro generates static pages from `src/pages/` and Markdown/MDX articles from `src/content/posts/`. `Base.astro` handles shared layout and SEO; `src/config.ts` defines identity, navigation, and features. Pages CMS uses `.pages.yml`; GitHub Actions builds and publishes `dist/` to GitHub Pages.
 
-Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home with the existing introduction and a curated Gallery slideshow; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. RSS, sitemap, social previews, themes, and reading controls remain active.
+Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home with the existing introduction and a curated Gallery slideshow; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. Sitemap, social previews, themes, and reading controls remain active. Post dates use month precision; content types and RSS are removed.
+
+## Current Post metadata update
+
+- [x] Use month-only publication/update values and ordered repeatable Experience ranges, with legacy day-date compatibility and explicit migration preserving bodies, media, flags and references.
+- [x] Keep native CMS string fields and ordered Place/Trip rows; remove content types. Add post-save month maintenance with per-save manual overrides and build the maintained revision.
+- [x] Show one responsive date row and a compact deduplicated Explore in Atlas footer; remove RSS route, links and dependency.
+- [x] Production builds, month/schema/history tests, upstream CMS serialization, article/Atlas checks and Chrome regressions pass, including multiple ranges, empty states, both themes and 1280/768/390/320px. Hosted CMS interaction and workflow write-permission acceptance remain distinct from local checks.
 
 ## Current phase — Phase 4 Project Wiki
 
@@ -83,7 +90,7 @@ The earlier repository cleanup is complete: package identity, template cleanup, 
 - `/posts/` is the sole article browsing/search/filter interface. No standalone Search/Tags routes or internal links; published article URLs remain stable.
 - Tags use OR; text and tags use AND. Counts, Clear Filters, empty/error states, shareable URLs, and Back/Forward restoration work with publication newest-first as default and unchanged production draft exclusions.
 - Home and Posts share a compact accessible search input; Home submits on Enter. Layouts remain usable at desktop and phone widths.
-- `npm ci` and `npm run build` succeed; Pagefind, RSS, SEO, generated links, and GitHub Pages project paths work.
+- `npm ci` and `npm run build` succeed; Pagefind, SEO, generated links, and GitHub Pages project paths work.
 - User content/media, original license notices, CMS settings, and deployment configuration remain intact; uncertain items are retained and reported.
 
 ## Maintenance ownership

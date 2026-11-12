@@ -17,6 +17,7 @@ Use Node 24:
 npm ci
 node tests/atlas.test.mjs
 node tests/posts.test.mjs
+node tests/post-metadata.test.mjs
 node tests/wiki-links.test.mjs
 npm run build
 node tests/wiki.test.mjs
@@ -37,7 +38,7 @@ Isolated checkouts sharing symlinked dependencies need a distinct Astro `cacheDi
 
 ## Content and deployment invariants
 
-Confirm existing Post filenames/frontmatter/body, Gallery entries/categories, Places/Trips and media remain unchanged unless explicitly authorized. Preserve `.pages.yml` fields/media, deployment workflow, RSS/SEO, notices and existing base paths. Without published articles, test empty search; do not manufacture public content just to get a live test result.
+Confirm existing Post filenames/frontmatter/body, Gallery entries/categories, Places/Trips and media remain unchanged unless explicitly authorized. Preserve `.pages.yml` fields/media, deployment workflow, SEO, notices and existing base paths. Without published articles, test empty search; do not manufacture public content just to get a live test result.
 
 Use production HTML link checks for internal routes and heading fragments. Check Wiki icon, breadcrumbs, sidebar active state, previous/next, mobile disclosure, visible focus, both themes, narrow layouts and no-JavaScript navigation. Documentation must not include credentials, private data or machine-specific paths.
 
@@ -56,3 +57,9 @@ Real Chrome checked Wiki icon/grouping/active navigation, breadcrumbs, previous/
 A separate labeled fixture checkout with its own Astro cache verified five published demo articles plus a hidden draft alongside Wiki indexing. Existing populated Pagefind/text/tag/type/Place/Trip combinations, sorting, Back/Forward, ordered/repeated article Atlas links, reverse associations and draft exclusion passed. The real checkout retained its original content, and current empty Posts, Home, Gallery lightbox/Escape and Atlas Trip checks passed without browser exceptions. Temporary fixture content was removed after validation; it is not published travel data.
 
 Not verified by these checks: authenticated hosted CMS editing, physical-phone gestures or full screen-reader behavior. No deployment or release is included in this local validation record.
+
+## Post month regression checks
+
+`node tests/post-metadata.test.mjs` covers date migration, manual overrides, initialization and an isolated temporary Git repository. `PAGES_CMS_SOURCE=/path/to/pagescms node tests/cms-posts.test.mjs` runs the current configuration through the inspected upstream configuration schema, field validation, initialization, sanitization and frontmatter round trips. It needs an existing official CMS source checkout, not the hosted application. Tests cover create/edit/reopen, no Experience, multiple/reordered ranges and preserved repeated references. Run `node tests/posts-render.test.mjs` after the production build. `node tests/posts-browser.mjs BASE_URL [FIXTURE_BASE_URL]` covers article metadata, Atlas links, Posts search/sorting/history, both themes and four widths; the optional isolated fixture server adds multi-range and empty metadata cases.
+
+Hosted acceptance must separately confirm month entry, string validation, empty and multiple Experience rows, save/reopen and automatic workflow refresh. Months are not exact dates; generated HTML/JSON-LD must not fabricate day precision. Confirm no content-type controls or feed routes/links remain. Use [publishing acceptance](../publishing/posts.md#hosted-cms-acceptance).

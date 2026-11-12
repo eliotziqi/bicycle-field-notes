@@ -11,7 +11,6 @@ order: 12
 
 ## Filter dimensions
 
-- **Content type**: Ride, Travel, Guide or Field Note. An old unclassified article remains visible by default but will not match an active type choice.
 - **Tags**: flexible topics chosen by the author.
 - **Places** (under Places, Trips and sorting): explicit Place references plus Places belonging to an explicitly related Trip.
 - **Trips** (advanced): only journeys explicitly referenced by the article. Mentioning a Place does not associate an article with all Trips that visit it.
@@ -22,15 +21,15 @@ Active summaries and each group's Clear action remove that dimension alone. **Cl
 
 ## Dates and ordering
 
-Publication remains the default. Experience newest/oldest sorts by experience start date, or a known end date when that is the only endpoint. Undated articles come last in both directions, in an **Undated experience** group. Their displayed date is labeled Published; dates are never invented.
+Publication remains the default. Experience newest/oldest sorts by the latest known Experience range start month, independently of display order. Undated articles come last in both directions, in an **Undated experience** group. Their displayed date is labeled Published; dates are never invented.
 
 ## Share and return
 
-The URL carries search, tags, types, Places, Trips and nondefault sorting. Copy it to share the view. Checkbox, sort and clear actions create history entries; typing replaces the current entry. Back/Forward restores controls and results. A single-dimension clear keeps the rest of your query.
+The URL carries search, tags, Places, Trips and nondefault sorting. Copy it to share the view. Checkbox, sort and clear actions create history entries; typing replaces the current entry. Back/Forward restores controls and results. A single-dimension clear keeps the rest of your query.
 
 ## Article geography
 
-An article may show experience dates and a **Places and journeys** section. Related Places follow the author's narrative order and can repeat. Related Trips show unique links in first-authored order. These orders can differ from a Trip's chronological visiting sequence.
+Articles show Published, Updated and Experience months together at the top, hiding absent values. Experience ranges retain the author's display order. **Explore in Atlas** lists Trips and Places on separate wrapping lines. Both display lists show unique links in first-authored order; repeated source references are preserved. These orders can differ from a Trip's chronological visiting sequence.
 
 Atlas links preselect details without Focus. A Place discovery match derived from a Trip does not silently add it to the article's authored Place list or prove the author visited it. No large article map, GPX or terrain preview is implemented.
 

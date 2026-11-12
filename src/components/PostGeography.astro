@@ -1,27 +1,16 @@
 ---
 import { withBase, atlasSelectionPath } from "../utils/urls";
-import { formatDate } from "../utils/posts";
-import { SITE } from "../config";
 import type { ResolvedPost } from "../utils/atlas-graph";
-interface Props {
-  references: ResolvedPost;
-  experience?: { startDate?: string; endDate?: string };
-}
-const { references, experience } = Astro.props;
+interface Props { references: ResolvedPost }
+const { references } = Astro.props;
 const trips = [...new Map(references.trips.map((trip) => [trip.id, trip])).values()];
-const date = (value: string) => formatDate(new Date(`${value}T00:00:00Z`), SITE.lang);
+const places = [...new Map(references.places.map((place) => [place.id, place])).values()];
 ---
 
-{(references.places.length > 0 || trips.length > 0 || experience) && (
+{(places.length > 0 || trips.length > 0) && (
   <section class="post-geography" aria-labelledby="post-geography-title" data-pagefind-ignore>
-    <h2 id="post-geography-title">Places and journeys</h2>
-    {experience && <p class="experience-dates">Experience: {experience.startDate ? <time datetime={experience.startDate}>{date(experience.startDate)}</time> : "ended"}{experience.endDate && <Fragment>{experience.startDate ? " – " : " "}<time datetime={experience.endDate}>{date(experience.endDate)}</time></Fragment>}</p>}
-    {references.places.length > 0 && (
-      <div><h3>Related Places</h3><ol>{references.places.map((place) => <li><a href={withBase(atlasSelectionPath("place", place.id))}>{place.name}</a></li>)}</ol></div>
-    )}
-    {trips.length > 0 && (
-      <div><h3>Related Trips</h3><ul>{trips.map((trip) => <li><a href={withBase(atlasSelectionPath("trip", trip.id))}>{trip.name}</a></li>)}</ul></div>
-    )}
-    {(references.places.length > 0 || trips.length > 0) && <p class="filter-hint">Atlas links open details. Use Focus there to move the globe.</p>}
+    <h2 id="post-geography-title">Explore in Atlas</h2>
+    {trips.length > 0 && <p><strong>Trips:</strong> {trips.map((trip, index) => <Fragment>{index > 0 && ", "}<a href={withBase(atlasSelectionPath("trip", trip.id))}>{trip.name}</a></Fragment>)}</p>}
+    {places.length > 0 && <p><strong>Places:</strong> {places.map((place, index) => <Fragment>{index > 0 && ", "}<a href={withBase(atlasSelectionPath("place", place.id))}>{place.name}</a></Fragment>)}</p>}
   </section>
 )}

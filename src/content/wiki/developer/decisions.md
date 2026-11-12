@@ -174,3 +174,15 @@ These records consolidate decisions visible in the released implementation and t
 **Tradeoffs:** Search needs JS and a production build; Wiki has a static browse fallback and 20-result display cap.
 
 **Consequences:** Preserve article URL intersection and test populated/empty article collections when changing index behavior.
+
+## ADR 015: Month precision and repository-maintained Post dates
+
+**Context:** Posts need month precision, multiple experiences and reliable CMS saves; optional nested native dates caused a reproduced server serialization failure.
+
+**Chosen approach:** Store Post month strings and ordered `{start, end}` ranges; keep CMS string fields editable. Maintain automatic Published/Updated values after saves in the existing deployment workflow. Use native sequential fields because the CMS has no field-column layout. Remove content types and RSS, retain tag/geographic discovery, and display unique Atlas references below the article.
+
+**Rationale:** Avoid invented days, a custom CMS and the nested date writer while preserving authored references and month overrides.
+
+**Tradeoffs:** Automatic values require workflow completion and an editor refresh. Manual Updated changes apply to that edit; subsequent edits resume maintenance. Range ordering is validated by Astro, not a native CMS cross-field rule. Month-only dates are omitted from Schema.org Date fields instead of inventing a day.
+
+**Consequences:** Preserve legacy metadata during explicit month migration, never alter article bodies or publish drafts, and test complete CMS write serialization plus workflow concurrency. Source repeated references remain distinct from deduplicated footer links. Trip dates are outside this Post-only precision change.

@@ -1,3 +1,4 @@
+import { formatMonth } from "../utils/post-dates";
 import { comparePosts, matchesPost, postYear, readPostFilters, writePostFilters, type Dimension, type DiscoverablePost, type PostSort } from "../utils/post-discovery";
 
 interface SearchResult { data(): Promise<{ url: string }> }
@@ -15,8 +16,8 @@ const results = document.querySelector<HTMLElement>(".posts-results")!;
 const list = document.querySelector<HTMLElement>("#post-results-list")!;
 const summary = document.querySelector<HTMLElement>("#post-active-filters")!;
 const advanced = document.querySelector<HTMLDetailsElement>("#post-advanced")!;
-const dimensions: Dimension[] = ["types", "tags", "places", "trips"];
-const dimensionLabels = { types: "Content type", tags: "Tags", places: "Places", trips: "Trips" };
+const dimensions: Dimension[] = ["tags", "places", "trips"];
+const dimensionLabels = { tags: "Tags", places: "Places", trips: "Trips" };
 const sortLabels = { "published-desc": "Publication: newest first", "experience-desc": "Experience: newest first", "experience-asc": "Experience: oldest first" };
 const labels = new Map(checkboxes.map((checkbox) => [`${checkbox.name}:${checkbox.value}`, checkbox.dataset.label!]));
 const pathKey = (url: string) => decodeURI(new URL(url, location.href).pathname).replace(/\/$/, "");
@@ -101,8 +102,9 @@ function regroup(currentSort: PostSort) {
       section.append(heading, items); fragment.append(section); groups.set(year, { section, items });
     }
     const experience = currentSort !== "published-desc" ? row.experience : undefined;
-    row.time.dateTime = experience ?? row.published;
-    row.time.textContent = experience ? new Date(`${experience}T00:00:00Z`).toLocaleDateString(document.documentElement.lang || "en", { month: "short", day: "numeric", timeZone: "UTC" })
+    if (experience ?? row.published) row.time.dateTime = experience ?? row.published;
+    else row.time.removeAttribute("datetime");
+    row.time.textContent = experience ? formatMonth(experience, document.documentElement.lang || "en")
       : currentSort === "published-desc" ? row.publishedLabel : `Published ${row.publishedLabel}`;
     row.time.title = experience ? "Experience date" : "Publication date";
     groups.get(year)!.items.append(row.element);

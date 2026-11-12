@@ -1,11 +1,10 @@
 ---
 title: A First Post — Testing
 description: A sample post to test the blog's writing and publishing workflow.
-pubDate: 2026-11-09
-updatedDate: 2026-11-09
+pubDate: 2026-11
+updatedDate: 2026-11
 featured: false
 draft: false
-contentType: ride
 relatedPlaces:
   - place: test-place-a
   - place: test-place-b
@@ -13,8 +12,8 @@ relatedPlaces:
 relatedTrips:
   - trip: test-trip-order
 experience:
-  startDate: 2026-11-25
-  endDate: 2026-12-10
+  - start: 2026-11
+    end: 2026-12
 ---
 ## Welcome to Bicycle Field Notes
 

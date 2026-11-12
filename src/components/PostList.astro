@@ -10,7 +10,7 @@ const { posts, filterable = false, discovery } = Astro.props as { posts: Post[];
   {posts.map((p) => (
     <li data-post-tags={filterable ? JSON.stringify(p.data.tags) : undefined} data-post-info={filterable ? JSON.stringify(discovery?.get(p.id)) : undefined}>
       <a href={withBase(`/posts/${p.id}/`)}>
-        <time datetime={p.data.pubDate.toISOString()}>{formatShort(p.data.pubDate, SITE.lang)}</time>
+        <time datetime={p.data.pubDate}>{p.data.pubDate ? formatShort(p.data.pubDate, SITE.lang) : ""}</time>
         <span class="t">{p.data.title}</span>
       </a>
     </li>

@@ -2,7 +2,7 @@
 title: Beyond the Route
 description: Why exploration keeps me riding, how adventures fit into everyday
   life, and why I started Bicycle Field Notes.
-pubDate: 2026-11-12
+pubDate: 2026-11
 tags:
   - Personal
 featured: true

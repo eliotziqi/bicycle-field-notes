@@ -14,7 +14,7 @@ The book icon beside the theme toggle opens this Wiki without adding another mai
 ## Choose an activity
 
 - [Explore Atlas](atlas.md): select a Place or Trip and decide when to Focus the camera.
-- [Find an article](posts.md): combine text with topics, types and geographic references.
+- [Find an article](posts.md): combine text with topics and geographic references.
 - [Browse Gallery](gallery.md): filter photos and open the lightbox.
 
 ## Themes and reading

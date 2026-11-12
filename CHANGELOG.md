@@ -2,6 +2,10 @@
 
 ## 2026-11-12
 
+- Changed Post dates to month precision with ordered Experience ranges and a responsive top metadata row. Migrated existing explicit dates without changing article bodies, images, publication flags or geographic references.
+- Added repository-side Published initialization and Updated maintenance with manual per-save overrides. CMS uses month strings, avoiding the nested native-date serializer bug.
+- Simplified article geography to deduplicated Trips/Places in Explore in Atlas; removed content types, their filters, and RSS generation/links/dependency.
+
 - Prepared “Beyond the Route,” the first official introduction, as an English-only, text-only Post draft using existing Pages CMS fields and article layout. Publication remains pending owner authorization.
 
 ## 2026-11-10
