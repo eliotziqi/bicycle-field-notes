@@ -1,8 +1,12 @@
 ---
-title: A First Post — Testing
-description: A sample post to test the blog's writing and publishing workflow.
-pubDate: 2026-11
-updatedDate: 2026-11
+title: A First Post — Testing3
+description: A sample post to test the blog's writing and publishing workflow.3
+updatedDate: 2026-10
+experience:
+  - start: 2026-10
+    end: 2026-10
+  - start: 2026-11
+    end: 2026-11
 featured: false
 draft: false
 relatedPlaces:
@@ -11,11 +15,8 @@ relatedPlaces:
   - place: test-place-b
 relatedTrips:
   - trip: test-trip-order
-experience:
-  - start: 2026-11
-    end: 2026-12
 ---
-## Welcome to Bicycle Field Notes
+## Welcome to Bicycle Field Notes2
 
 ![Mount Wangwei](/bicycle-field-notes/media/MtWangwei-raw.jpg)
 
