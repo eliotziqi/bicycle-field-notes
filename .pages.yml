@@ -92,6 +92,7 @@ content:
       - name: experience
         label: Experience dates (optional)
         type: object
+        required: true
         description: "When the experience happened, independently of publication. Leave unknown dates blank."
         fields:
           - name: startDate
