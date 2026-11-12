@@ -39,6 +39,29 @@ test("CMS Post create/edit/save/reopen: month strings, optional lists, manual or
     assert(cms.generateZodSchema(fields).safeParse(incomplete).success);
     assert(!postEditorialSchema.safeParse({ [field]: [{}] }).success);
   }
+  // Trace the real client -> API path: the form submits raw latest values,
+  // the server validates, then deepMap rebuilds the absent row as an object.
+  const fixture = { title: "Fixture", description: "Test", experience: [{}] };
+  const rawState = cms.initializeState(fields, fixture);
+  assert.deepEqual(rawState.experience, [{ start: "", end: "" }]);
+  const validated = cms.generateZodSchema(fields).parse(rawState);
+  assert.deepEqual(validated.experience, [undefined]);
+  const apiMapped = cms.deepMap(validated, fields, (value) => value);
+  const apiJson = JSON.parse(JSON.stringify(apiMapped));
+  const saved = serial.parse(serial.stringify(cms.sanitizeObject(apiJson), { format: "yaml-frontmatter" }), { format: "yaml-frontmatter" });
+  assert.deepEqual(saved.experience, [{}]);
+  assert(!cms.generateZodSchema(fields).safeParse(cms.initializeState(fields, { ...fixture, experience: [{ start: "2026-11" }] })).success);
+  const experience = fields.find((field) => field.name === "experience");
+  const native = (overrides) => cms.generateZodSchema([{ ...experience, ...overrides }]);
+  for (const required of [true, false]) {
+    const schema = native({ required, list: { min: 0 } });
+    assert.equal(schema.safeParse({ experience: [] }).success, !required);
+    assert.equal(schema.safeParse({ experience: [{ start: "", end: "" }] }).success, !required);
+    assert(schema.safeParse({ experience: [{ start: "2026-11", end: "2026-11" }] }).success);
+  }
+  // List size validates count, not completeness; object-level pattern is not applied.
+  assert(native({ list: { min: 1 } }).safeParse({ experience: [{}] }).success);
+  assert(native({ pattern: "^never$" }).safeParse({ experience: [{}] }).success);
   const created = roundTrip({ title: "CMS fixture", description: "Test only", body: "## Original\n\n*Text*\n", draft: true });
   assert.equal(created.pubDate, "");
   assert.equal(created.updatedDate, "");

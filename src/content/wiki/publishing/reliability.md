@@ -28,6 +28,49 @@ When any entry is invalid, the entire snapshot waits and the previous site remai
 
 The preflight shares schemas with Astro (`src/schemas/content.ts`), checks drafts too, and reports source file, field path and corrective action. The actual configured Astro Markdown parser is reused without adding dependencies. A production build additionally catches component imports, image processing failures and other compilation errors. Dynamic MDX media expressions produce a preflight warning and require rendered verification. Remote resources are not availability-tested; valid syntax does not guarantee editorial accuracy, accessibility or every runtime link. Body image SVG/GIF references remain supported; Gallery and Place image fields retain their existing raster formats.
 
+## Hosted pre-save gap: still unresolved
+
+The owner's hosted test after `d7c26ba` saved an empty Experience row in commit `c95b63e`. **CMS Save validation is not fixed.** GitHub validation and deployment protection are separate, post-save safeguards. No authenticated editor interaction by the coding agent is claimed.
+
+The inspected official main revision remains `6f4e860a35d934406580287e7042e5e111e207a1`. Its [form resolver](https://github.com/hunvreus/pagescms/blob/6f4e860a35d934406580287e7042e5e111e207a1/components/entry/entry-form.tsx#L1045) and save API share `generateZodSchema`:
+
+1. The editor creates `{start: "", end: ""}`. The form's submit callback sends raw `form.getValues()` after its resolver accepts them.
+2. [Optional-object preprocessing](https://github.com/hunvreus/pagescms/blob/6f4e860a35d934406580287e7042e5e111e207a1/lib/schema.ts#L158) turns the entirely empty row into `undefined` before required children run. The object schema is wrapped in an array afterward, so this behavior applies to each row. A partly completed row is validated and its missing child fails.
+3. The [save API](https://github.com/hunvreus/pagescms/blob/6f4e860a35d934406580287e7042e5e111e207a1/app/api/%5Bowner%5D/%5Brepo%5D/%5Bbranch%5D/files/%5Bpath%5D/route.ts#L98) repeats the same acceptance. `deepMap` rebuilds the absent row into an object with undefined children; JSON conversion and sanitization leave `{}` in the array. YAML serialization writes `- {}`.
+
+There is no verified configuration-only pre-save rule for **an optional object list whose existing items must be complete** in this version. Parent `required: true` validates children but unconditionally imposes at least one item; `list.min: 0` cannot undo that. A minimum list count does not inspect row completeness. Patterns apply to string/text, not objects. The internal field-component before-submit hooks are application code, not repository-configurable validators. CMS Actions run after saved Git changes and cannot intercept Save.
+
+The smallest practical alternative keeps the current two-field rows: complete both months or explicitly remove an unfinished row **before Save**, then check Actions or run the native validation action. CMS helper text states that blank rows can save but block publication. No automatic filtering, invented default month, required dummy range, field-type migration or custom CMS is introduced. True inline prevention needs an upstream fix/feature (or separately approved application customization).
+
+### Observed GitHub protection
+
+[Run 43259748605](https://github.com/eliotziqi/bicycle-field-notes/actions/runs/43259748605) for `c95b63e` failed in **Validate saved source before changing metadata** with errors naming `src/content/posts/a-first-ride-testing-bicycle-field-notes.md`, `experience[0].start` and `experience[0].end`, plus instructions to complete or deliberately remove the row. Metadata, build, metadata commit and Pages artifact were skipped; deployment was skipped. The report step succeeded and uploaded [publishing-report](https://github.com/eliotziqi/bicycle-field-notes/actions/runs/43259748605/artifacts/13963696793), including the pending file and correction procedure. The previous successful deployment remained active.
+
+Only this deliberately added test row is restored to `experience: []`; the test save contained no other changes. Future normal saves remain untouched by the safety net.
+
+### Proposed upstream report (not submitted)
+
+Title: **Optional object lists accept blank items despite required children**.
+
+Minimal configuration:
+
+```yaml
+- name: experience
+  type: object
+  list: true
+  fields:
+    - name: start
+      type: string
+      required: true
+    - name: end
+      type: string
+      required: true
+```
+
+Reproduce by adding an empty row and saving in the hosted editor. Expected: `[]` or an absent list is allowed, but `[{}]`, both blank strings and one missing child are blocked before a Git commit with row/field diagnostics. Actual: the completely blank row passes client and API validation and is saved as `- {}`. Include source revision, hosted observation, and the local upstream schema/serialization test; do not assert the hosted deployment SHA, which is unknown.
+
+Request separate list optionality and item completeness, preserving the documented optional behavior of a single object. Cover absent/empty lists, blank/partial/complete rows, repeated ordered rows and direct API submissions. Do not silently drop rows as a fix. Mention [issue 188](https://github.com/hunvreus/pagescms/issues/188), which addressed optional single objects and does not resolve this list-specific requirement. A targeted search found no exact duplicate; check again before filing. Filing an upstream issue requires owner authorization.
+
 ## Correct a failed publication
 
 1. Open the failed run in [GitHub Actions](https://github.com/eliotziqi/bicycle-field-notes/actions). Read its summary and **publishing-report** artifact; build failures also include the build log.

@@ -79,3 +79,5 @@ Local current-configuration checks cover create/edit/save/reopen serialization, 
 ## Publishing validation boundary
 
 Optional object lists can accept completely empty rows even with required children; upstream schema execution reproduces `559caf6`. No native cross-field or repository-reference guard is assumed. Shared repository schemas and read-only preflight plus production compilation protect deployment while preserving invalid saves. The native Actions configuration is source/config verified; authenticated hosted dispatch/status acceptance remains manual. See [reliability audit and workflow](../publishing/reliability.md).
+
+Owner testing after `d7c26ba` confirmed empty Experience rows still save in hosted CMS (`c95b63e`). The expanded upstream integration test reproduces the complete raw-state/API serialization path to `[{}]`, and proves parent-required plus minimum-zero cannot preserve empty-list support. This is an unresolved pre-save limitation, distinct from the observed successful GitHub publication block. See [evidence and proposed upstream report](../publishing/reliability.md#hosted-pre-save-gap-still-unresolved).

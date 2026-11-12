@@ -2,6 +2,9 @@
 
 ## 2026-11-13
 
+- Confirmed the hosted CMS pre-save gap remains: optional blank object rows bypass child validation. Documented source-level evidence, a proposed upstream report, and the separate observed GitHub publication block.
+- Explicitly restored the owner-created empty Experience test row; clarified CMS helper text and expanded upstream serialization/configuration regressions.
+
 - Fixed workflow startup rejection by initializing diagnostic paths inside a runner step; added coverage for GitHub context availability.
 
 - Added shared-schema, read-only validation for all collections, local media and Markdown/MDX, with actionable file/field errors and regressions for incomplete CMS rows.

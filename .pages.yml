@@ -46,7 +46,7 @@ content:
           collapsible:
             collapsed: false
             summary: "{fields.start} – {fields.end}"
-        description: "Optional month ranges in display order. Complete both months in each added row, or delete the unfinished row. Saved content is checked before publication; end must be at or after start."
+        description: "Optional month ranges in display order. Complete both months in each row, or remove the row before Save. CMS can save completely blank rows, but GitHub validation blocks publication. End must be at or after start."
         fields:
           - name: start
             label: Start month

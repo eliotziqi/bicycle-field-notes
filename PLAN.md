@@ -8,6 +8,9 @@ Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home 
 
 ## Publishing reliability
 
+- [x] Verify hosted blank-row save (`c95b63e`) is blocked by GitHub, with diagnostic artifact and deployment skipped; explicitly restore only that test row.
+- [ ] Native pre-save completeness for optional object lists remains unsupported in the inspected CMS; retain post-save safeguards and propose an upstream report.
+
 - [x] Correct runner-only context placement after GitHub rejected workflow initialization; add a startup regression check.
 
 - [x] Audit all CMS collections and reproduce native optional-object validation gaps using `559caf6` and upstream helpers.
