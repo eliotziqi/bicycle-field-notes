@@ -2,7 +2,7 @@
 title: A First Post — Testing3
 description: A sample post to test the blog's writing and publishing workflow.3
 pubDate: 2026-11
-updatedDate: 2026-10
+updatedDate: 2026-11
 experience: []
 featured: false
 draft: false
