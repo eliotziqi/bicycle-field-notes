@@ -5,6 +5,16 @@ pubDate: 2026-11-09
 updatedDate: 2026-11-09
 featured: false
 draft: false
+contentType: ride
+relatedPlaces:
+  - place: test-place-a
+  - place: test-place-b
+  - place: test-place-b
+relatedTrips:
+  - trip: test-trip-order
+experience:
+  startDate: 2026-11-25
+  endDate: 2026-12-10
 ---
 ## Welcome to Bicycle Field Notes
 
