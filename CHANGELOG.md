@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-12
+
+- Prepared “Beyond the Route,” the first official introduction, as an English-only, text-only Post draft using existing Pages CMS fields and article layout. Publication remains pending owner authorization.
+
 ## 2026-11-10
 
 - Added the canonical Project Wiki with User, Publishing and Developer Guides, static responsive navigation, heading anchors, breadcrumbs, previous/next links and a documentation icon beside theme. Migrated technical guides and compatibility evidence; old docs paths remain pointers.

@@ -71,6 +71,9 @@ The earlier repository cleanup is complete: package identity, template cleanup, 
 
 ## Next steps (future)
 
+- “Beyond the Route” is prepared as an English-only, text-only draft in the existing Posts collection. Keep `draft: true` until the owner explicitly authorizes publication; photographs can be inserted later through the Pages CMS body editor.
+- Draft validation passed: Node 24 production build, 19 pure regression tests, Wiki route/link checks, and local Chrome article rendering at 1280/768/390/320px in both themes. Production preview confirms article 404 and exclusion from Home, Posts, RSS, sitemap, social preview and Pagefind Post results. Hosted Pages CMS discovery/edit/save/reopen remains a manual acceptance check.
+
 - Owner supplies further introduction, route/travel content, resource links, and contact details. Add a form only with a working submission service.
 - Complete remaining physical-phone, assistive-technology and hosted CMS acceptance. Future post-only terrain maps, GPX tracks, statistics and downloads require separate data/elevation sources and validation; no Atlas routes or connecting lines.
 
