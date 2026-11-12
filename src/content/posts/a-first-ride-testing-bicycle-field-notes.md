@@ -1,12 +1,10 @@
 ---
 title: A First Post — Testing3
 description: A sample post to test the blog's writing and publishing workflow.3
+pubDate: 2026-11
 updatedDate: 2026-10
 experience:
-  - start: 2026-10
-    end: 2026-10
-  - start: 2026-11
-    end: 2026-11
+  - {}
 featured: false
 draft: false
 relatedPlaces:
@@ -15,7 +13,6 @@ relatedPlaces:
   - place: test-place-b
 relatedTrips:
   - trip: test-trip-order
-pubDate: 2026-11
 ---
 ## Welcome to Bicycle Field Notes2
 
