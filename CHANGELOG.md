@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-13
+
+- Added shared-schema, read-only validation for all collections, local media and Markdown/MDX, with actionable file/field errors and regressions for incomplete CMS rows.
+- Gate metadata commits and full-snapshot publication behind validation/build. Preserve saved edits and the previous live site on failure; report pending content and offer a native CMS retry action.
+- Preserve manual month overrides and support recovery from invalid prior revisions. Removed only the owner-approved empty Experience row from the existing test Post.
+
 ## 2026-11-12
 
 - Changed Post dates to month precision with ordered Experience ranges and a responsive top metadata row. Migrated existing explicit dates without changing article bodies, images, publication flags or geographic references.

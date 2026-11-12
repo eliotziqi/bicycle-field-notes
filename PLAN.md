@@ -6,6 +6,14 @@ Astro generates static pages from `src/pages/` and Markdown/MDX articles from `s
 
 Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home with the existing introduction and a curated Gallery slideshow; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. Sitemap, social previews, themes, and reading controls remain active. Post dates use month precision; content types and RSS are removed.
 
+## Publishing reliability
+
+- [x] Audit all CMS collections and reproduce native optional-object validation gaps using `559caf6` and upstream helpers.
+- [x] Share Astro contracts with read-only file/field diagnostics, reference/media/syntax checks and regression fixtures.
+- [x] Keep main authoring saves; gate full-snapshot publication and automatic metadata commits behind validation/build, with pending-edit reports and native CMS retry action.
+- [x] Remove only the owner-approved empty Experience row; preserve other content and manual month overrides.
+- [ ] Owner confirms authenticated hosted CMS action dispatch/status and save/reopen acceptance; no staging/PR workflow introduced.
+
 ## Current Post metadata update
 
 - [x] Use month-only publication/update values and ordered repeatable Experience ranges, with legacy day-date compatibility and explicit migration preserving bodies, media, flags and references.

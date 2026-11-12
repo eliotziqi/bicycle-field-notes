@@ -1,5 +1,5 @@
 import { z } from "astro/zod";
-import { toMonth } from "../utils/post-dates.ts";
+import { toMonth, MONTH_PATTERN } from "../utils/post-dates.ts";
 
 const absent = (value: unknown) => value === "" || value === null ? undefined : value;
 const stableId = z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/);
@@ -8,8 +8,8 @@ export const postMonthSchema = z.unknown().transform((value, ctx) => {
   catch (error) { ctx.addIssue({ code: "custom", message: (error as Error).message }); return z.NEVER; }
 }).optional();
 const range = z.object({
-  start: postMonthSchema.pipe(z.string()),
-  end: postMonthSchema.pipe(z.string()),
+  start: z.string().regex(MONTH_PATTERN, "Enter a start month in YYYY-MM format."),
+  end: z.string().regex(MONTH_PATTERN, "Enter an end month in YYYY-MM format."),
 }).refine((value) => value.end >= value.start, { message: "Experience end must not be before start.", path: ["end"] });
 const legacyRange = z.object({ startDate: postMonthSchema, endDate: postMonthSchema }).strict()
   .refine((value) => !value.startDate || !value.endDate || value.endDate >= value.startDate, {

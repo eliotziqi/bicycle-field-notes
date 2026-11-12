@@ -33,6 +33,12 @@ test("CMS Post create/edit/save/reopen: month strings, optional lists, manual or
     const reopened = serial.parse(serial.stringify(cms.sanitizeObject(written), { format: "yaml-frontmatter" }), { format: "yaml-frontmatter" });
     return cms.initializeState(fields, reopened);
   };
+  // Verified native limitation: optional object lists accept unfinished rows.
+  for (const field of ["experience", "relatedPlaces", "relatedTrips"]) {
+    const incomplete = cms.initializeState(fields, { title: "Fixture", description: "Test", [field]: [{}] });
+    assert(cms.generateZodSchema(fields).safeParse(incomplete).success);
+    assert(!postEditorialSchema.safeParse({ [field]: [{}] }).success);
+  }
   const created = roundTrip({ title: "CMS fixture", description: "Test only", body: "## Original\n\n*Text*\n", draft: true });
   assert.equal(created.pubDate, "");
   assert.equal(created.updatedDate, "");

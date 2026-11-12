@@ -13,6 +13,8 @@ CMS saves write Git commits. Saving on `main` triggers the GitHub Pages workflow
 
 The CMS is an editor, not an automatic full-site preview. Use a local preview or an explicitly arranged nonpublishing branch to inspect drafts. GitHub Pages deploys `main`; a different branch does not automatically get a hosted preview.
 
+See [validation and publishing recovery](reliability.md) for collection checks, pending-edit reports and recovery. Only a validated full snapshot is deployed; saved edits remain in Git when publication fails.
+
 ## Collection source links
 
 Inspect saved files in GitHub when checking the CMS result: [Posts](https://github.com/eliotziqi/bicycle-field-notes/tree/main/src/content/posts), [Places](https://github.com/eliotziqi/bicycle-field-notes/tree/main/src/content/places), [Trips](https://github.com/eliotziqi/bicycle-field-notes/tree/main/src/content/trips), [Gallery](https://github.com/eliotziqi/bicycle-field-notes/tree/main/src/content/gallery), [Gallery Categories](https://github.com/eliotziqi/bicycle-field-notes/tree/main/src/content/gallery-categories) and [uploaded media](https://github.com/eliotziqi/bicycle-field-notes/tree/main/public/media). Use the branch selector to inspect the branch you actually edited.

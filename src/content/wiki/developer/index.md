@@ -13,7 +13,8 @@ Bicycle Field Notes is a static Astro site based on Inkline, deployed to GitHub 
 .pages.yml                  CMS collections and media output
 astro.config.ts             site/base, Markdown, MDX, sitemap
 src/config.ts               site identity, navigation, feature flags
-src/content.config.ts       content collection loaders and schemas
+src/content.config.ts       content collection loaders
+src/schemas/content.ts      shared Astro/preflight contracts
 src/content/posts/          Markdown/MDX articles
 src/content/places/         JSON geographic entities
 src/content/trips/          JSON ordered visits
@@ -25,6 +26,8 @@ src/components/             shared UI, rows, filters and related content
 src/utils/                  graph, adapters, filters, media and URL helpers
 src/scripts/                route-specific interactions
 scripts/post-metadata.mjs   month migration and post-save date maintenance
+scripts/validate-content.mjs read-only publishing preflight
+scripts/publication-report.mjs pending-edit and recovery reports
 src/styles/                 global tokens and feature styles
 public/media/               uploaded originals
 public/                     static assets and license notices
@@ -61,3 +64,5 @@ Use existing Astro/MDX/sitemap, Pagefind and image tooling. MapLibre is the only
 ## Planned extension points
 
 GPX attachments, downloads, statistics and article-level MapLibre terrain previews remain unimplemented. They would extend Post schema/CMS, public-media validation and a separate article-only renderer; they must not add routes to Atlas or load maps on every article by default. Expanded geographic metadata and additional filters need reliable authored data, migration rules and OR/AND semantics, not inferred regions. New collections should define ownership, IDs, validation, public/draft behavior and reference rules before adding UI. Record significant tradeoffs in [decisions](decisions.md).
+
+The production workflow validates source, prepares month updates and builds before committing metadata or publishing. Failed snapshots retain every saved edit and the previous live site; see [publishing reliability](../publishing/reliability.md).

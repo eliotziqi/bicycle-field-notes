@@ -3,19 +3,12 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { isDeepStrictEqual } from "node:util";
 import { pathToFileURL } from "node:url";
-import { parseDocument } from "yaml";
+import { parsePost } from "./content-source.mjs";
+import { postsSchema } from "../src/schemas/content.ts";
+export { parsePost } from "./content-source.mjs";
 import { toMonth } from "../src/utils/post-dates.ts";
 
 export const STAMP_COMMIT = "chore(posts): maintain month metadata";
-
-export function parsePost(source) {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/.exec(source);
-  if (!match) throw new Error("Expected YAML frontmatter.");
-  const document = parseDocument(match[1]);
-  if (document.errors.length) throw document.errors[0];
-  const body = source.slice(match[0].length);
-  return { document, body, newline: match[2] };
-}
 
 function normalizeData(data) {
   const result = { ...data };
@@ -47,21 +40,34 @@ export function maintainPost(source, previous, month, migrateOnly = false) {
   if (toMonth(month) !== month) throw new Error("Expected YYYY-MM stamping month.");
   const current = parsePost(source);
   const raw = current.document.toJS();
+  const checked = postsSchema.safeParse(raw);
+  if (!checked.success) throw new Error(`Post metadata is incomplete or invalid; correct the saved source before automatic updates. ${checked.error.message}`);
   const data = normalizeData(raw);
-  const old = previous === undefined ? undefined : parsePost(previous);
-  const oldData = old ? normalizeData(old.document.toJS()) : undefined;
+  let old;
+  if (previous !== undefined) {
+    try { old = parsePost(previous); }
+    catch { old = { document: { toJS: () => ({}) }, body: previous }; }
+  }
+  let oldData;
+  if (old) {
+    try { oldData = normalizeData(old.document.toJS()); }
+    catch { oldData = old.document.toJS(); } // A corrected edit must recover from an invalid parent.
+  }
   if (!migrateOnly) {
     if (!data.pubDate) data.pubDate = month;
     const edited = old && (!isDeepStrictEqual(normalizeData(raw), oldData) || current.body !== old.body);
     // A changed/cleared Updated value is an explicit choice for this edit.
-    const manualUpdated = old && !isDeepStrictEqual(toMonth(raw.updatedDate), toMonth(old.document.toJS().updatedDate));
+    let oldUpdated;
+    try { oldUpdated = toMonth(old?.document.toJS().updatedDate); }
+    catch { oldUpdated = old?.document.toJS().updatedDate; }
+    const manualUpdated = old && !isDeepStrictEqual(toMonth(raw.updatedDate), oldUpdated);
     if (edited && !manualUpdated) data.updatedDate = month;
   }
-  for (const field of ["pubDate", "updatedDate", "experience"]) {
+  for (const field of migrateOnly ? ["pubDate", "updatedDate", "experience"] : ["pubDate", "updatedDate"]) {
     if (data[field] === undefined) current.document.delete(field);
     else if (!isDeepStrictEqual(raw[field], data[field])) current.document.set(field, data[field]);
   }
-  current.document.delete("contentType");
+  if (migrateOnly) current.document.delete("contentType");
   const next = `---\n${current.document.toString()}---${current.newline}${current.body}`;
   return next;
 }
@@ -80,7 +86,9 @@ function run() {
     catch { exists = false; }
     const previous = exists ? execFileSync("git", ["show", `${revision}^:${file}`], { encoding: "utf8" }) : undefined;
     const source = fs.readFileSync(file, "utf8");
-    const next = maintainPost(source, previous, month, migrateOnly);
+    let next;
+    try { next = maintainPost(source, previous, month, migrateOnly); }
+    catch (error) { throw new Error(`${file}: ${error.message}`); }
     if (next !== source) pending.push([file, next]);
   }
   // Validate every candidate before writing any file.

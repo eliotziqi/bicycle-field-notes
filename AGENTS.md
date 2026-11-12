@@ -17,3 +17,5 @@
 - Whenever behavior, schemas, publishing workflow, architecture or UI changes, update the corresponding Wiki pages and affected decision records in the same change; add a record for significant new tradeoffs. Trivial code-only changes with no documented behavior impact need no prose update. Keep PLAN/CHANGELOG current without duplicating guides; validate internal documentation links.
 
 - Post dates use `YYYY-MM` strings and ordered Experience `{start, end}` month ranges; never restore native nested CMS date fields or content types. Preserve manual range order, reference source repeats and draft flags. `scripts/post-metadata.mjs` maintains months after saves; run its Git-history and CMS serialization tests. RSS is removed.
+
+- CMS saves are authoring history: never sanitize incomplete entries to pass publishing. Run `npm run validate:content`, `node tests/content-validation.test.mjs` and `node tests/publication.test.mjs`; keep collection schemas shared with Astro. Automatic month changes must validate/build before committing. See `src/content/wiki/publishing/reliability.md` for failure recovery and hosted CMS acceptance boundaries.

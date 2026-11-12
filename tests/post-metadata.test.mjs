@@ -6,7 +6,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { maintainPost, parsePost, STAMP_COMMIT } from "../scripts/post-metadata.mjs";
 
-const text = (fields, body = "\n## Original\n\n![Photo](/bicycle-field-notes/media/original.jpg)\n") => `---\ntitle: Example\ndraft: true\n${fields}---\n${body}`;
+const text = (fields, body = "\n## Original\n\n![Photo](/bicycle-field-notes/media/original.jpg)\n") => `---\ntitle: Example\ndescription: "Metadata test"\ndraft: true\n${fields}---\n${body}`;
 const data = (source) => parsePost(source).document.toJS();
 
 test("Published initializes once and Updated stamps subsequent edits without changing the body", () => {
@@ -67,5 +67,31 @@ test("Git automation initializes, updates, respects manual overrides and skips i
     fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace('updatedDate: 2026-11', 'updatedDate: "2025-01"').replace('updatedDate: "2026-11"', 'updatedDate: "2025-01"'));
     git("add", "."); git("commit", "-qm", "Manual month"); run();
     assert.equal(data(fs.readFileSync(file, "utf8")).updatedDate, "2025-01");
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("invalid current rows are rejected without sanitizing; correction recovers from an invalid parent", () => {
+  const broken = text('pubDate: "2026-11"\nexperience:\n  - {}\n');
+  assert.throws(() => maintainPost(broken, undefined, "2026-11"));
+  const corrected = broken.replace('experience:\n  - {}', 'experience: []');
+  const result = maintainPost(corrected, broken, "2026-11");
+  assert.deepEqual(data(result).experience, []);
+  assert.equal(parsePost(result).body, parsePost(broken).body);
+  assert.equal(data(result).updatedDate, "2026-11");
+});
+
+test("CLI validates every candidate before writing any automatic metadata", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bfn-months-invalid-"));
+  const git = (...args) => execFileSync("git", args, { cwd: dir, stdio: "pipe" });
+  try {
+    git("init", "-q"); git("config", "user.name", "Fixture"); git("config", "user.email", "fixture@example.invalid");
+    fs.mkdirSync(path.join(dir, "src/content/posts"), { recursive: true });
+    const good = path.join(dir, "src/content/posts/a.md"), bad = path.join(dir, "src/content/posts/z.md");
+    fs.writeFileSync(good, text("")); fs.writeFileSync(bad, text("experience: [{}]\n"));
+    git("add", "."); git("commit", "-qm", "Saved candidate snapshot");
+    const before = fs.readFileSync(good, "utf8");
+    assert.throws(() => execFileSync(process.execPath, [path.resolve("scripts/post-metadata.mjs")], { cwd: dir, stdio: "pipe" }), /z\.md/);
+    assert.equal(fs.readFileSync(good, "utf8"), before);
+    assert.equal(git("status", "--porcelain").toString(), "");
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });

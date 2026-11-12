@@ -9,6 +9,8 @@ order: 24
 
 CMS saves commit to the selected branch. On `main`, follow the matching commit in [GitHub Actions](https://github.com/eliotziqi/bicycle-field-notes/actions). Both build and deploy jobs must succeed. A failed build leaves the last successful site online. Allow deployment and cache propagation time; reload with the browser cache bypassed if you still see old controls.
 
+Failed checks now report file/field corrections and all saved content waiting for publication. Follow [validation and recovery](reliability.md); other edits remain saved and publish with the corrected snapshot.
+
 ## Content is missing
 
 A Post with `draft: true` is excluded from production Posts, Home and Atlas reverse links. Development previews include drafts. This is not repository privacy. Places, Trips and Gallery have no draft flag. Places/Trips need not have a Post to appear in Atlas; article filter options include only those associated with published articles.

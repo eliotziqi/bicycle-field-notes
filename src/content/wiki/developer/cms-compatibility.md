@@ -75,3 +75,7 @@ Empty collections can produce harmless Astro glob warnings. Production drafts re
 The optional nested Experience date object introduced in Phase 3 exposed a CMS server bug: validation collapses empty optional objects to undefined, then the write traversal still invokes date writers for their missing children. date-fns raises `Cannot read properties of undefined (reading 'match')`. The required-container workaround restored ordinary saves, but is superseded by the current optional repeatable list of string month ranges. No Post field invokes the CMS date writer now.
 
 Local current-configuration checks cover create/edit/save/reopen serialization, empty/reordered/multiple Experience rows and both existing Posts. Automatic date maintenance is tested separately against temporary Git history. These tests do not certify the authenticated hosted UI or workflow permissions. Manual CMS acceptance remains required; see [Post publishing](../publishing/posts.md).
+
+## Publishing validation boundary
+
+Optional object lists can accept completely empty rows even with required children; upstream schema execution reproduces `559caf6`. No native cross-field or repository-reference guard is assumed. Shared repository schemas and read-only preflight plus production compilation protect deployment while preserving invalid saves. The native Actions configuration is source/config verified; authenticated hosted dispatch/status acceptance remains manual. See [reliability audit and workflow](../publishing/reliability.md).

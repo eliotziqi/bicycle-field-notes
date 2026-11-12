@@ -186,3 +186,16 @@ These records consolidate decisions visible in the released implementation and t
 **Tradeoffs:** Automatic values require workflow completion and an editor refresh. Manual Updated changes apply to that edit; subsequent edits resume maintenance. Range ordering is validated by Astro, not a native CMS cross-field rule. Month-only dates are omitted from Schema.org Date fields instead of inventing a day.
 
 **Consequences:** Preserve legacy metadata during explicit month migration, never alter article bodies or publish drafts, and test complete CMS write serialization plus workflow concurrency. Source repeated references remain distinct from deduplicated footer links. Trip dates are outside this Post-only precision change.
+
+
+## ADR 016: Preserve authoring saves and gate complete publication
+
+**Context:** Native optional object lists accept empty rows; `559caf6` broke production after saving. Automatic metadata was previously committed before build success.
+
+**Chosen approach:** Keep hosted CMS editing on main. Share Astro schemas with a read-only preflight, then prepare metadata and build before committing it or uploading a Pages artifact. Report affected fields and all pending saved content. Add the documented native CMS workflow action for retry, and check revision freshness before metadata push and deployment.
+
+**Rationale:** Saved Git history preserves every edit; one validated artifact preserves cross-collection consistency without staging/PR machinery or a custom editor. Native validation remains useful but is not authoritative.
+
+**Tradeoffs:** A bad entry delays the entire next deployment, visibly reported; the previous site stays live. The author corrects the saved source and all pending changes publish together. GitHub cannot atomically lock branch advancement with Pages deployment, so a change arriving after the final revision check is handled by its subsequent validation run. Workflow reports require checking Actions, and hosted action permissions need manual acceptance.
+
+**Consequences:** Never silently discard incomplete user data or deploy a sanitized subset. Validate before automatic commits, preserve manual month overrides, use non-force pushes, and cover failure/correction in fixtures. No dependencies or staging branch are introduced. See [publishing reliability](../publishing/reliability.md).

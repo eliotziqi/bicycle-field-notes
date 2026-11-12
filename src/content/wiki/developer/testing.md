@@ -18,6 +18,9 @@ npm ci
 node tests/atlas.test.mjs
 node tests/posts.test.mjs
 node tests/post-metadata.test.mjs
+node tests/content-validation.test.mjs
+node tests/publication.test.mjs
+npm run validate:content
 node tests/wiki-links.test.mjs
 npm run build
 node tests/wiki.test.mjs
@@ -60,6 +63,13 @@ Not verified by these checks: authenticated hosted CMS editing, physical-phone g
 
 ## Post month regression checks
 
-`node tests/post-metadata.test.mjs` covers date migration, manual overrides, initialization and an isolated temporary Git repository. `PAGES_CMS_SOURCE=/path/to/pagescms node tests/cms-posts.test.mjs` runs the current configuration through the inspected upstream configuration schema, field validation, initialization, sanitization and frontmatter round trips. It needs an existing official CMS source checkout, not the hosted application. Tests cover create/edit/reopen, no Experience, multiple/reordered ranges and preserved repeated references. Run `node tests/posts-render.test.mjs` after the production build. `node tests/posts-browser.mjs BASE_URL [FIXTURE_BASE_URL]` covers article metadata, Atlas links, Posts search/sorting/history, both themes and four widths; the optional isolated fixture server adds multi-range and empty metadata cases.
+`node tests/post-metadata.test.mjs
+node tests/content-validation.test.mjs
+node tests/publication.test.mjs
+npm run validate:content` covers date migration, manual overrides, initialization and an isolated temporary Git repository. `PAGES_CMS_SOURCE=/path/to/pagescms node tests/cms-posts.test.mjs` runs the current configuration through the inspected upstream configuration schema, field validation, initialization, sanitization and frontmatter round trips. It needs an existing official CMS source checkout, not the hosted application. Tests cover create/edit/reopen, no Experience, multiple/reordered ranges and preserved repeated references. Run `node tests/posts-render.test.mjs` after the production build. `node tests/posts-browser.mjs BASE_URL [FIXTURE_BASE_URL]` covers article metadata, Atlas links, Posts search/sorting/history, both themes and four widths; the optional isolated fixture server adds multi-range and empty metadata cases.
 
 Hosted acceptance must separately confirm month entry, string validation, empty and multiple Experience rows, save/reopen and automatic workflow refresh. Months are not exact dates; generated HTML/JSON-LD must not fabricate day precision. Confirm no content-type controls or feed routes/links remain. Use [publishing acceptance](../publishing/posts.md#hosted-cms-acceptance).
+
+## Publishing recovery regressions
+
+`content-validation.test.mjs` covers all collections, `559caf6`, partial/empty rows, invalid months/ranges, missing targets/media, malformed YAML/JSON/MDX and correction without losing independent edits. `publication.test.mjs` verifies workflow gates and reports every pending content change across saved Git commits. Metadata tests reject invalid current rows while allowing recovery from an invalid parent. The optional upstream CMS test proves its empty-row acceptance gap. Never add intentionally invalid test entries to main; use temporary fixtures. Build also runs the read-only preflight, and final compiled-link/article checks remain required.

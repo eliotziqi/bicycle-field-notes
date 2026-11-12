@@ -18,9 +18,15 @@ content:
       - name: title
         type: string
         required: true
+        pattern:
+          regex: '\S'
+          message: "Enter meaningful text; spaces alone are not valid."
       - name: description
         type: text
         required: true
+        pattern:
+          regex: '\S'
+          message: "Enter meaningful text; spaces alone are not valid."
       - name: pubDate
         label: Published
         type: string
@@ -40,7 +46,7 @@ content:
           collapsible:
             collapsed: false
             summary: "{fields.start} – {fields.end}"
-        description: "Optional month ranges in display order. Add one row per range; end must be at or after start (checked by the build)."
+        description: "Optional month ranges in display order. Complete both months in each added row, or delete the unfinished row. Saved content is checked before publication; end must be at or after start."
         fields:
           - name: start
             label: Start month
@@ -70,7 +76,7 @@ content:
           collapsible:
             collapsed: false
             summary: "{index}: {fields.place}"
-        description: "Optional. Add one row per mention, including repeats. This is article order, independent of a Trip's visiting order."
+        description: "Optional. Select a Place in each added row, or delete the unfinished row. Repeated mentions and narrative order are preserved."
         fields:
           - name: place
             type: reference
@@ -87,7 +93,7 @@ content:
           collapsible:
             collapsed: false
             summary: "{index}: {fields.trip}"
-        description: "Optional. Order the Trips mentioned in this article. Adding a Trip does not assert a visit to all its Places."
+        description: "Optional. Select a Trip in each added row, or delete the unfinished row. Order is preserved; adding a Trip does not assert visits."
         fields:
           - name: trip
             type: reference
@@ -120,9 +126,15 @@ content:
       - name: title
         type: string
         required: true
+        pattern:
+          regex: '\S'
+          message: "Enter meaningful text; spaces alone are not valid."
       - name: description
         type: text
         required: true
+        pattern:
+          regex: '\S'
+          message: "Enter meaningful text; spaces alone are not valid."
       - name: categories
         type: reference
         required: true
@@ -159,6 +171,9 @@ content:
       - name: title
         type: string
         required: true
+        pattern:
+          regex: '\S'
+          message: "Enter meaningful text; spaces alone are not valid."
   - name: places
     label: Places
     type: collection
@@ -181,6 +196,9 @@ content:
       - name: name
         type: string
         required: true
+        pattern:
+          regex: '\S'
+          message: "Enter meaningful text; spaces alone are not valid."
       - name: latitude
         type: number
         required: true
@@ -198,6 +216,9 @@ content:
       - name: description
         type: text
         required: true
+        pattern:
+          regex: '\S'
+          message: "Enter meaningful text; spaces alone are not valid."
       - name: status
         type: select
         required: true
@@ -237,6 +258,9 @@ content:
       - name: name
         type: string
         required: true
+        pattern:
+          regex: '\S'
+          message: "Enter meaningful text; spaces alone are not valid."
       - name: startDate
         label: Start date (optional)
         type: date
@@ -271,3 +295,12 @@ content:
       - name: description
         label: Description (optional)
         type: text
+actions:
+  - name: validate-publish
+    label: Validate and publish saved changes
+    workflow: deploy.yml
+    ref: main
+    confirm:
+      title: Validate and publish saved changes?
+      message: "Checks all saved content on main. Only a successful validation and production build can deploy. Failed checks preserve your saved edits."
+      button: Validate and publish

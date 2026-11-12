@@ -1,9 +1,14 @@
-name: Deploy to GitHub Pages
+name: Validate and publish
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      payload:
+        description: Optional Pages CMS action context
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -13,68 +18,110 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  metadata:
+  validate-build:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: read
+      pages: write
     outputs:
-      revision: ${{ steps.revision.outputs.sha }}
+      validated_revision: ${{ steps.commit.outputs.revision }}
+    env:
+      PUBLICATION_REPORT_DIR: ${{ runner.temp }}/publishing-report
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.sha }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
+      - run: mkdir -p "$PUBLICATION_REPORT_DIR"
       - run: npm ci
-      - run: node scripts/post-metadata.mjs
-      - name: Commit automatic month metadata when needed
+      - name: Validate saved source before changing metadata
+        id: validation
+        run: node scripts/validate-content.mjs --report "$PUBLICATION_REPORT_DIR/validation.json"
+      - name: Prepare automatic months in the isolated working tree
+        id: metadata
+        run: node scripts/post-metadata.mjs
+      - uses: actions/configure-pages@v5
+      - name: Validate candidate and build production artifact
+        id: build
+        run: npm run build 2>&1 | tee "$PUBLICATION_REPORT_DIR/build.log"
+      - name: Preserve validated metadata only if main is unchanged
+        id: commit
         env:
-          TARGET_BRANCH: ${{ github.ref_name }}
+          SOURCE_REVISION: ${{ github.sha }}
         run: |
+          remote_revision=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$remote_revision" != "$SOURCE_REVISION" ]; then
+            echo "::error::main changed during validation. Newer saved edits are preserved; the newer run or a manual retry will validate the full snapshot."
+            exit 1
+          fi
           if ! git diff --quiet -- src/content/posts/; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add src/content/posts/
             git commit -m "chore(posts): maintain month metadata"
-            git push origin "HEAD:$TARGET_BRANCH"
+            git push origin HEAD:main
           fi
-      - id: revision
-        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-  build:
-    needs: metadata
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.metadata.outputs.revision }}
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - uses: actions/configure-pages@v5
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+          echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Upload validated artifact
+        id: artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
+      - name: Report errors and all pending saved edits
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PUBLISH_VALIDATION: ${{ steps.validation.outcome }}
+          PUBLISH_METADATA: ${{ steps.metadata.outcome }}
+          PUBLISH_BUILD: ${{ steps.build.outcome }}
+          PUBLISH_COMMIT: ${{ steps.commit.outcome }}
+          PUBLISH_ARTIFACT: ${{ steps.artifact.outcome }}
+        run: node scripts/publication-report.mjs
+      - name: Preserve diagnostic report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publishing-report
+          path: ${{ runner.temp }}/publishing-report/
+          if-no-files-found: warn
 
   deploy:
-    needs: build
+    needs: validate-build
     runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
+      contents: read
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy
+      - name: Reject a superseded artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VALIDATED_REVISION: ${{ needs.validate-build.outputs.validated_revision }}
+        run: |
+          current_revision=$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)
+          if [ "$current_revision" != "$VALIDATED_REVISION" ]; then
+            echo "::error::Newer edits reached main. This older artifact will not deploy; see the newer validation run."
+            exit 1
+          fi
+      - name: Deploy validated artifact
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Report publication result
+        if: always()
+        env:
+          DEPLOY_RESULT: ${{ steps.deployment.outcome }}
+        run: |
+          if [ "$DEPLOY_RESULT" = "success" ]; then
+            echo "Published the validated snapshot for saved revision $GITHUB_SHA. All edits in that snapshot are included." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Publication did not complete. Saved edits remain in main; check the failed step and retry. The last successful deployment is retained." >> "$GITHUB_STEP_SUMMARY"
+          fi
