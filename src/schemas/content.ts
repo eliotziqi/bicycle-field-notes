@@ -17,7 +17,13 @@ export const postsSchema = z.object({
   description: z.string().trim().min(1),
   pubDate: postMonthSchema,
   updatedDate: postMonthSchema,
-  tags: z.array(z.string().trim().min(1)).default([]),
+  tags: z.array(z.string().trim().min(1)).default([]).superRefine((tags, ctx) => {
+    const seen = new Set<string>();
+    tags.forEach((tag, index) => {
+      if (seen.has(tag)) ctx.addIssue({ code: "custom", path: [index], message: "Duplicate tag reference; select each Post Tag once." });
+      seen.add(tag);
+    });
+  }),
   featured: z.boolean().default(false),
   draft: z.boolean().default(false),
   ...postEditorialSchema.shape,
@@ -77,3 +83,8 @@ export const wikiSchema = z.object({
 });
 
 export const galleryCategoriesSchema = z.object({ title: z.string().trim().min(1) });
+
+// Major words start uppercase; common connecting words may remain lowercase.
+export const postTagsSchema = z.object({
+  title: z.string().regex(/^[A-Z][A-Za-z0-9'’]*(?:[ -](?:[A-Z][A-Za-z0-9'’]*|and|or|of|the|to|in|for|on|with|a|an))*$/, "Use English Title Case (for example Bikepacking or Route Guides); avoid blank or padded names."),
+});

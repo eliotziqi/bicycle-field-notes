@@ -30,7 +30,7 @@ Inspect saved files in GitHub when checking the CMS result: [Posts](https://gith
 
 1. Search **Places** before creating locations. Reuse an existing geographic entity; do not create a second Place for a return visit. Add missing Places using [workflow B](places-trips.md#b-add-a-place).
 2. Create a **Trip** with a stable `id`, `name` and chronological `places` rows. Include return visits as new rows. Optional Trip dates describe the journey; [workflow C](places-trips.md#c-create-a-trip) covers saving and Atlas verification.
-3. In **Blog Posts**, create a clearly titled draft with `title`, `description` and body. Published/Updated months are maintained after saving; optional `tags` and ordered `experience` month ranges describe topics and experiences. Do not invent dates.
+3. In **Posts**, create a clearly titled draft with `title`, `description` and body. Published/Updated months are maintained after saving; optional `tags` and ordered `experience` month ranges describe topics and experiences. Do not invent dates.
 4. Add `relatedPlaces` in article narrative order, including repeated mentions where intended. Add `relatedTrips` in article order. These fields are optional; a Trip article need not explicitly list every Place in that Trip.
 5. Upload photos via Media or an image picker. Insert selected images into the Post body with useful alternative text. This does not create Gallery records.
 6. If desired, separately create **Gallery** records with `image`, `title`, `description` and `categories`. Use **Related Posts** (`relatedPost`, a list of paths) to associate them with zero or more articles. Enable `showOnHomepage` only for selected homepage photos. [Photo workflow](media-gallery.md) explains the five independent actions.

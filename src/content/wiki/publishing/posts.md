@@ -1,13 +1,13 @@
 ---
 title: "Creating and editing Posts"
-description: "Actual Blog Posts fields, ordered references and multiple Experience ranges."
+description: "Actual Posts fields, ordered references and multiple Experience ranges."
 section: publishing
 order: 21
 ---
 
 ## A. Publish a normal Post
 
-1. Open **Blog Posts** in [Pages CMS](https://app.pagescms.org/), select the repository/branch, and create a draft with `title`, `description` and the rich-text **body**. New Posts default to `draft: true`.
+1. Open **Posts** in [Pages CMS](https://app.pagescms.org/), select the repository/branch, and create a draft with `title`, `description` and the rich-text **body**. New Posts default to `draft: true`.
 2. **Published** (`pubDate`) and **Updated** (`updatedDate`) use `YYYY-MM` strings. Published initializes to the current UTC month after the first save; later substantive edits automatically maintain Updated. A manually changed or cleared Updated value takes precedence for that save. Published remains editable. Wait for successful validation/build and metadata maintenance and refresh/reopen the entry before editing again.
 3. Add optional `tags` and `featured`. Featured is an editorial flag, independent of the homepage Gallery switch. Content types and their browser filter have been removed.
 4. Save, leave the entry and reopen it. Check body formatting, image paths and month strings. Preserve published filenames when changing titles. The three date groups are adjacent in the form; Pages CMS has no configured native field-column layout.
@@ -59,3 +59,25 @@ Create a clearly labeled temporary draft only with the owner's consent. Set mont
 Keep the draft out of public listings/Atlas. To verify a published article link, the owner can deliberately publish the temporary Post or use an isolated production preview: Place and Trip links must preselect Atlas details without Focus. Do not change or delete actual travel content to run this test. Hosted interaction acceptance is separate from local serialization evidence in [CMS compatibility](../developer/cms-compatibility.md).
 
 Repository checks reject every unfinished optional row, including `{}` accepted by native CMS validation. See [validation and recovery](reliability.md).
+
+
+## Central Post Tags
+
+Open **Post Tags** (`postTags`, JSON records in `src/content/post-tags/`) to create a topic with a single `title`. Use English Title Case: **Bikepacking**, **Route Guides**, **Gear Reviews**. Major words start uppercase; common connecting words may remain lowercase (for example **Planning for Adventure**). Acronyms such as **GPS** are allowed. Keep names concise; tags describe topics, not geographic Places, named Trips or dates. Topic relevance is an editorial judgment, not something a regex can reliably decide.
+
+In **Posts**, the optional **Tags** picker selects zero or more existing Post Tags. It stores title strings in the existing `tags` array, following Gallery Categories. No new tag slugs, pages, descriptions, images or hierarchies are introduced. Unused tag records are allowed in CMS; public controls and counts derive only from visible Posts, so unused and draft-only topics stay out of production filters. Multiple selected tags still match with OR; text, Place/Trip filters, sorting and shareable URLs keep their existing behavior.
+
+### Create, rename and delete safely
+
+1. Search Post Tags first and reuse an existing topic. Duplicate names, including case variants, are invalid. Save the tag before selecting it in a Post; select each tag only once.
+2. To rename a tag, update its title **and every Post reference, including drafts**, preserving other tags and their order. References store names rather than an internal ID; native CMS does not cascade a title rename. Keep an established record filename unless deliberately changing it; the filename is not a public slug.
+3. For a staged CMS rename, create the new name first, update all referring Posts to select it, then delete the now-unused old record. Each intermediate snapshot remains valid; the temporary unused record never appears publicly by itself. Avoid case-only duplicate records: update a case-only rename and its references together in Git, or use a distinct temporary topic name while migrating in CMS.
+4. Before deleting a tag, find every Post using its exact title and explicitly remove/replace those references. Delete only after no references remain. Deleting referenced tags blocks publication; previously saved edits stay in Git. Existing bookmarked filters using a renamed title are not automatically redirected because no tag pages or alias registry exists.
+
+Native reference pickers limit choices to collection entries, and the title field uses a Title Case pattern. They do not replace repository validation: raw/API edits can still create duplicates or dangling references. The repository checks every Post, including drafts, and reports file/field corrections before publication. Native CMS validation does not enforce semantic topic suitability or a safe multi-file rename transaction.
+
+### Migration and hosted acceptance
+
+The initial audit found only `Personal`, on the draft **Beyond the Route**. It already satisfied Title Case, so `Personal.json` registers it unchanged. The other Post has no tags. Neither article was rewritten, retitled or moved; existing `tags: ["Personal"]` data remains valid, and no public filter appears for this draft-only topic.
+
+Locally checked: optional/empty/multiple reference serialization, title rules, duplicates, missing/deleted targets, existing array compatibility and public filtering. Hosted acceptance still requires create/save/reopen of a Post Tag, select/clear/reopen of zero/one/multiple tags, label resolution and selection order. Do this on a nonpublishing branch or test repository. Do not claim local helper tests operated the authenticated editor.

@@ -16,6 +16,7 @@ src/config.ts               site identity, navigation, feature flags
 src/content.config.ts       content collection loaders
 src/schemas/content.ts      shared Astro/preflight contracts
 src/content/posts/          Markdown/MDX articles
+src/content/post-tags/      central Post Tag titles
 src/content/places/         JSON geographic entities
 src/content/trips/          JSON ordered visits
 src/content/gallery/        JSON curated photo metadata

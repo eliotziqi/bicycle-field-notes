@@ -225,3 +225,16 @@ These records consolidate decisions visible in the released implementation and t
 **Tradeoffs:** The field name remains singular internally for compatibility. CMS save/reopen and selection ordering need hosted acceptance; local serialization checks cannot certify the UI. No upper bound or minimum selection count is imposed.
 
 **Consequences:** Do not expose draft links or discard scalar references. Missing targets block publication. Preserve media files, category filtering, responsive transforms and modal focus behavior.
+
+
+## ADR 019: Central Post Tags by title reference
+
+**Context:** Posts used free-form tag strings; consistent topic names should be selectable without altering URLs or discovery semantics.
+
+**Chosen approach:** Add `postTags` JSON title records, following Gallery Categories. Keep Post `tags` arrays as title references selected by a native optional multiple-reference field. Label the existing `posts` collection Posts. Validate Title Case, unique catalog names and per-Post references, including drafts. Derive public facets/counts only from visible Posts.
+
+**Rationale:** Existing array content remains readable and the CMS gains consistent choices without IDs/slugs, new routes, dependencies or extra descriptive fields. The only existing tag, Personal, can be registered without rewriting articles.
+
+**Tradeoffs:** Title renames require updating every reference; CMS has no deletion cascade or cross-file transaction. Editorial topic suitability remains human judgment. Saved tag filter URLs using renamed titles are not redirected.
+
+**Consequences:** Allow unused catalog entries but keep them out of public filters. Reject duplicate/dangling references before publication. Document safe staged renames and hosted picker acceptance; preserve OR filtering, search, sorting and article paths.

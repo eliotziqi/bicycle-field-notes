@@ -5,7 +5,17 @@ export type Post = CollectionEntry<"posts">;
 
 /** All published posts, newest first. Drafts are hidden in production builds. */
 export async function getPosts(): Promise<Post[]> {
-  const posts = await getCollection("posts", ({ data }) => isPostVisible(data, import.meta.env.DEV));
+  const [posts, tags] = await Promise.all([
+    getCollection("posts", ({ data }) => isPostVisible(data, import.meta.env.DEV)),
+    getCollection("postTags"),
+  ]);
+  const titles = new Set(tags.map((tag) => tag.data.title));
+  if (new Set(tags.map((tag) => tag.data.title.toLowerCase())).size !== tags.length) {
+    throw new Error("Post Tag titles must be unique, including letter-case variants.");
+  }
+  for (const post of posts) for (const tag of post.data.tags) {
+    if (!titles.has(tag)) throw new Error(`Post ${post.id}: unknown Post Tag "${tag}". Select an existing Post Tag or restore its record.`);
+  }
   return posts.sort((a, b) => (b.data.pubDate ?? "").localeCompare(a.data.pubDate ?? "") || a.id.localeCompare(b.id));
 }
 

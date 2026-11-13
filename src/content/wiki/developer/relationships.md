@@ -15,6 +15,7 @@ A Place is one geographic entity. Its `id` is independent of `name`; IDs use low
 
 | Relationship | Meaning |
 | --- | --- |
+| Post → `tags` | Optional unique topic titles from Post Tags; no manual reverse associations |
 | Post → `relatedPlaces` | Ordered editorial mentions; repeats preserved |
 | Post → `relatedTrips` | Ordered explicit journeys; source repeats preserved, unique UI links use first occurrence |
 | Place → Posts | Unique published Posts mentioning it directly or linking a Trip that includes it |

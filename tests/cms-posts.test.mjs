@@ -84,6 +84,13 @@ test("CMS Post create/edit/save/reopen: month strings, optional lists, manual or
     const reopened = serial.parse(serial.stringify(cms.sanitizeObject(validated), { format: "yaml-frontmatter" }), { format: "yaml-frontmatter" });
     assert.deepEqual(cms.generateZodSchema([relatedField]).parse(cms.initializeState([relatedField], reopened)).relatedPost, expected);
   }
+  assert.equal(config.content.find((item) => item.name === "posts").label, "Posts");
+  assert.equal(config.content.find((item) => item.name === "postTags").path, "src/content/post-tags");
+  const tagField = fields.find((field) => field.name === "tags");
+  assert.equal(tagField.type, "reference"); assert.equal(tagField.options.multiple, true);
+  for (const tags of [[], ["Personal"], ["Bikepacking", "Route Guides"]]) {
+    assert.deepEqual(cms.generateZodSchema([tagField]).parse(roundTrip({ title: "Fixture", description: "Test", draft: true, tags })).tags, tags);
+  }
   const created = roundTrip({ title: "CMS fixture", description: "Test only", body: "## Original\n\n*Text*\n", draft: true });
   assert.equal(created.pubDate, "");
   assert.equal(created.updatedDate, "");

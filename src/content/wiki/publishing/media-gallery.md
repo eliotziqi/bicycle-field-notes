@@ -13,7 +13,7 @@ Preserve existing filenames and media paths. Do not move or delete an image with
 
 ## 2. Use an image inside a Post
 
-Insert the uploaded/selected file through the Blog Posts **body** editor and supply useful alternative text. Keep the CMS's generated public media path. This is independent of Gallery and `showOnHomepage`; no Gallery entry is required for an article image. Body image layout follows existing article styling and social previews remain generated.
+Insert the uploaded/selected file through the Posts **body** editor and supply useful alternative text. Keep the CMS's generated public media path. This is independent of Gallery and `showOnHomepage`; no Gallery entry is required for an article image. Body image layout follows existing article styling and social previews remain generated.
 
 ## 3. Create a Gallery entry
 
@@ -27,7 +27,7 @@ Enable **Show on homepage** (`showOnHomepage`) on the Gallery entry. It defaults
 
 ## 5. Associate a Gallery entry with an article
 
-Use **Related Posts** to select zero or more Blog Posts with the native multiple-reference picker. The stored key remains `relatedPost`, now an array of Post paths; no nested object rows are needed. An absent field or empty list means no related links. Existing single strings remain readable and are converted to a one-item list by native CMS serialization when saved.
+Use **Related Posts** to select zero or more Posts with the native multiple-reference picker. The stored key remains `relatedPost`, now an array of Post paths; no nested object rows are needed. An absent field or empty list means no related links. Existing single strings remain readable and are converted to a one-item list by native CMS serialization when saved.
 
 Gallery cards and the lightbox render all related published articles in stored selection order, deduplicated by resolved Post identity while preserving first occurrence. Drafts never create public links, including in development. Missing targets fail repository validation; restore the Post or correct the selection before publishing. Associations do not insert the image into Posts or copy their geographic references onto Gallery.
 

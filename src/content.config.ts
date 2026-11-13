@@ -1,10 +1,14 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
-import { postsSchema, gallerySchema, galleryCategoriesSchema, placesSchema, tripsSchema, wikiSchema } from "./schemas/content";
+import { postsSchema, postTagsSchema, gallerySchema, galleryCategoriesSchema, placesSchema, tripsSchema, wikiSchema } from "./schemas/content";
 
 const posts = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
   schema: postsSchema,
+});
+const postTags = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/post-tags" }),
+  schema: postTagsSchema,
 });
 const galleryCategories = defineCollection({
   loader: glob({ pattern: "**/*.json", base: "./src/content/gallery-categories" }),
@@ -27,4 +31,4 @@ const wiki = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/wiki" }),
   schema: wikiSchema,
 });
-export const collections = { posts, gallery, galleryCategories, places, trips, wiki };
+export const collections = { posts, postTags, gallery, galleryCategories, places, trips, wiki };

@@ -7,12 +7,13 @@ import { createRequire } from "node:module";
 // No additional package or dependency-manifest change is needed.
 const markdownRequire = createRequire(import.meta.resolve("@astrojs/markdown-satteri"));
 const { markdownToMdast, mdxToMdast, htmlToHast } = await import(pathToFileURL(markdownRequire.resolve("satteri")).href);
-import { postsSchema, gallerySchema, galleryCategoriesSchema, placesSchema, tripsSchema, wikiSchema } from "../src/schemas/content.ts";
+import { postsSchema, postTagsSchema, gallerySchema, galleryCategoriesSchema, placesSchema, tripsSchema, wikiSchema } from "../src/schemas/content.ts";
 import { SITE } from "../src/config.ts";
 import { parsePost } from "./content-source.mjs";
 
 const collections = {
   posts: { extension: /\.mdx?$/i, schema: postsSchema },
+  "post-tags": { extension: /\.json$/i, schema: postTagsSchema },
   gallery: { extension: /\.json$/i, schema: gallerySchema },
   "gallery-categories": { extension: /\.json$/i, schema: galleryCategoriesSchema },
   places: { extension: /\.json$/i, schema: placesSchema },
@@ -142,11 +143,19 @@ export function validateContent(root = process.cwd(), { base = new URL(process.e
     return result;
   }
   const places = index("places", "id"), trips = index("trips", "id"), categories = index("gallery-categories", "title");
+  const tags = index("post-tags", "title");
+  const foldedTags = new Map();
+  for (const [title, record] of tags) {
+    const key = title.toLowerCase();
+    if (foldedTags.has(key) && foldedTags.get(key).file !== record.file) add(record.file, "title", `Duplicate Post Tag name (case-insensitive): ${title}.`, "Choose one canonical topic and deliberately update all Post references before removing duplicates.");
+    else foldedTags.set(key, record);
+  }
   const posts = new Map(records.posts.map((post) => [post.id, post]));
   const requireReference = (record, field, id, targets) => {
     if (typeof id === "string" && id && !targets.has(id)) add(record.file, field, `Missing reference ${JSON.stringify(id)}.`, "Restore the referenced entry or select an existing target. Fix every occurrence before deleting or renaming targets.");
   };
   for (const post of records.posts) {
+    if (Array.isArray(post.raw?.tags)) post.raw.tags.forEach((tag, i) => requireReference(post, `tags[${i}]`, tag, tags));
     for (const [field, key, targets] of [["relatedPlaces", "place", places], ["relatedTrips", "trip", trips]]) {
       if (Array.isArray(post.raw?.[field])) post.raw[field].forEach((row, i) => requireReference(post, `${field}[${i}].${key}`, row?.[key], targets));
     }

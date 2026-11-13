@@ -114,3 +114,25 @@ test("missing alt fails without legacy warnings; multiple Gallery targets are ch
   assert(report.errors.some((issue) => issue.field === "relatedPost[1]"));
   assert.deepEqual(report.warnings, []);
 }));
+
+test("Post Tags allow unused names and validate exact references, duplicates and Title Case", () => use(({ root, write, post }) => {
+  write("src/content/post-tags/personal.json", { title: "Personal" });
+  write("src/content/post-tags/bikepacking.json", { title: "Bikepacking" });
+  write("src/content/post-tags/unused.json", { title: "Gear Reviews" });
+  write("src/content/posts/a.md", post('tags: [Personal, Bikepacking]\n'));
+  assert.deepEqual(validateContent(root).errors, []);
+  write("src/content/posts/a.md", post('tags: []\n'));
+  assert.deepEqual(validateContent(root).errors, []);
+  write("src/content/posts/a.md", post('tags: [Personal, Personal, Missing]\n'));
+  let errors = validateContent(root).errors;
+  assert(errors.some((issue) => issue.field === "tags[1]" && issue.message.includes("Duplicate")));
+  assert(errors.some((issue) => issue.field === "tags[2]" && issue.message.includes("Missing reference")));
+  write("src/content/post-tags/duplicate.json", { title: "Personal" });
+  write("src/content/post-tags/invalid.json", { title: "route guides" });
+  write("src/content/post-tags/gps.json", { title: "GPS" });
+  write("src/content/post-tags/gps-variant.json", { title: "Gps" });
+  errors = validateContent(root).errors;
+  assert(errors.some((issue) => issue.file.includes("post-tags/") && issue.field === "title" && issue.message.includes("Duplicate")));
+  assert(errors.some((issue) => issue.file.endsWith("invalid.json") && issue.field === "title"));
+  assert(errors.some((issue) => issue.message.includes("case-insensitive")));
+}));

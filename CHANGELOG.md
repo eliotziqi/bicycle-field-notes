@@ -2,6 +2,9 @@
 
 ## 2026-11-13
 
+- Renamed the CMS Posts label and centralized Post Tags through a title-only catalog and optional multiple-reference picker. Registered Personal without changing article content or paths.
+- Added Title Case, duplicate and reference validation plus authoring/rename guidance; retained visible-only tag counts and existing OR/search/sort behavior.
+
 - Removed Gallery/Place legacy alt review fields, warning exceptions and title/name fallback after the owner deleted all legacy Gallery records. Informative alt and explicit decoration remain validated.
 - Enabled native 0–N Gallery Related Posts while retaining the stored key and scalar compatibility; cards/lightbox show ordered, deduplicated published links only. No media files changed.
 

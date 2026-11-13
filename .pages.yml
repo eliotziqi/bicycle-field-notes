@@ -3,7 +3,7 @@ media:
   output: /bicycle-field-notes/media
 content:
   - name: posts
-    label: Blog Posts
+    label: Posts
     type: collection
     path: src/content/posts
     format: yaml-frontmatter
@@ -61,8 +61,14 @@ content:
             pattern: '^[0-9]{4}-(0[1-9]|1[0-2])$'
             description: "YYYY-MM; repeat the start month for a single month."
       - name: tags
-        type: string
-        list: true
+        label: Tags
+        type: reference
+        description: "Optional topics from Post Tags. Select each once; use Related Places/Trips for geography."
+        options:
+          collection: postTags
+          multiple: true
+          value: "{primary}"
+          label: "{primary}"
       - name: featured
         type: boolean
         default: false
@@ -105,6 +111,26 @@ content:
               label: "{primary} ({fields.id})"
       - name: body
         type: rich-text
+  - name: postTags
+    label: Post Tags
+    type: collection
+    path: src/content/post-tags
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: title
+      sort: [title]
+      default:
+        sort: title
+        order: asc
+    fields:
+      - name: title
+        type: string
+        required: true
+        pattern:
+          regex: "^[A-Z][A-Za-z0-9'’]*(?:[ -](?:[A-Z][A-Za-z0-9'’]*|and|or|of|the|to|in|for|on|with|a|an))*$"
+          message: "Use English Title Case, for example Bikepacking or Route Guides."
+        description: "A unique topic name. Do not use Places, Trips or dates. Renaming requires updating every Post reference, including drafts."
   - name: gallery
     label: Gallery
     type: collection

@@ -6,6 +6,13 @@ Astro generates static pages from `src/pages/` and Markdown/MDX articles from `s
 
 Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home with the existing introduction and a curated Gallery slideshow; and a unified Posts browser. Pagefind provides full-text matches, intersected with OR matching across selected tags. The generated article list retains newest-first order and production draft exclusions. Search and tag state use shareable URLs. Home submits its compact search input to Posts; filters sit right of the desktop list and above it on mobile. Sitemap, social previews, themes, and reading controls remain active. Post dates use month precision; content types and RSS are removed.
 
+## Central Post Tags
+
+- [x] Rename CMS Posts label and add title-only `postTags`, keeping existing collection IDs, article paths and array metadata.
+- [x] Register the sole existing tag Personal unchanged; no article rewrite required.
+- [x] Validate title conventions, unique catalog names and references; preserve visible-only public facets, OR matching, counts/search/sorting.
+- [ ] Owner accepts hosted Post Tags creation and zero/multiple Post tag select/save/reopen behavior.
+
 ## Image accessibility and reuse
 
 - [x] Separate Gallery/Place alternatives from visible titles; explicit decoration with required informative alt and no legacy fallback.
