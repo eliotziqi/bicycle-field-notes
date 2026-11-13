@@ -11,6 +11,8 @@ order: 22
 2. Create a record with **Stable ID** (`id`), `name`, numeric `latitude` and `longitude`, a short `description`, and one or more `status` choices. IDs use lowercase letters/digits separated by single hyphens. `example-location` is an illustration, not an existing travel record. Choose the real stable ID once.
 3. Coordinates use decimal degrees: latitude −90…90, longitude −180…180. Negative latitude is south; negative longitude is west. The CMS step is `0.000001`, permitting six decimal places. For example `30.123456` is a precision illustration, not a location claim. If a hosted editor offers only integers, stop and report its version rather than saving rounded coordinates.
 4. Select Ridden (`ridden`), Visited (`visited`) and/or Wishlist (`wishlist`). Status is authored, not inferred from Posts or Trips. Optionally choose **Cover photo** (`coverImage`) from media; the file must exist under `public/media/` and be JPG/JPEG, PNG, WebP or AVIF.
+If selecting a cover, supply meaningful **Cover alt text** or explicitly mark it decorative with blank alt. See [image accessibility and reuse](media-gallery.md#reuse-an-existing-upload).
+
 5. Save and reopen. The JSON filename must be the same as `id`, for example `example-location.json`. Verify numeric coordinates and the intended status. After deployment, find the Place in Atlas and activate Focus manually if desired.
 
 Places have no draft flag: saving to `main` publishes through the next successful build even without a Post.

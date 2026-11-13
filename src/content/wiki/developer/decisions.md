@@ -199,3 +199,16 @@ These records consolidate decisions visible in the released implementation and t
 **Tradeoffs:** A bad entry delays the entire next deployment, visibly reported; the previous site stays live. The author corrects the saved source and all pending changes publish together. GitHub cannot atomically lock branch advancement with Pages deployment, so a change arriving after the final revision check is handled by its subsequent validation run. Workflow reports require checking Actions, and hosted action permissions need manual acceptance.
 
 **Consequences:** Never silently discard incomplete user data or deploy a sanitized subset. Validate before automatic commits, preserve manual month overrides, use non-force pushes, and cover failure/correction in fixtures. No dependencies or staging branch are introduced. See [publishing reliability](../publishing/reliability.md).
+
+
+## ADR 017: Contextual image accessibility and read-only media inventory
+
+**Context:** Shared media files already support reuse; Gallery titles doubled as alternatives and Place covers used names. Existing visuals have no owner-written independent descriptions.
+
+**Chosen approach:** Keep the Gallery collection, storage paths, captions and image transforms. Add flat contextual alt/decorative fields to Gallery and Place covers, with repository cross-field validation. Explicit migration-only review flags preserve old alternatives with warnings until human remediation. Add a dependency-free, read-only usage/hash inventory. Keep Post captions unchanged.
+
+**Rationale:** Improve accessibility and authoring clarity without a shared media database, upload hooks, automatic renaming or extra services. Contextual alternatives need not match across uses of the same file.
+
+**Tradeoffs:** Legacy accessibility remains incomplete until human review. Native CMS conditional pre-save enforcement is not claimed. Static usage scanning is incomplete for dynamic/code references; identical bytes are not visual similarity. Gallery title/description remain visible, while alt conveys meaningful visual content independently.
+
+**Consequences:** Never invent descriptions or infer decoration from missing text. Only explicit Decorative renders empty alt. New informative records must have alt; review flags must not be added to bypass validation. Preserve filenames, publication behavior and manual controls. Hosted save/reopen and any future caption convention require separate acceptance.

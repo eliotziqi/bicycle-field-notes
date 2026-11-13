@@ -22,7 +22,7 @@ test("CMS Post create/edit/save/reopen: month strings, optional lists, manual or
   assert(!fields.some((field) => field.name === "contentType"));
   const schemas = {};
   for (const type of ["string", "text", "boolean", "reference", "rich-text"]) schemas[type] = load(`fields/core/${type}/index.tsx`, ["schema"], { z }).schema;
-  const cms = load("lib/schema.ts", ["initializeState", "generateZodSchema", "deepMap", "sanitizeObject"], { z, schemas, defaultValues: {} });
+  const cms = load("lib/schema.ts", ["initializeState", "generateZodSchema", "deepMap", "sanitizeObject"], { z, schemas, defaultValues: { boolean: false } });
   const serial = load("lib/serialization.ts", ["parse", "stringify"], { YAML: { parse: yamlParse, stringify: require("yaml").stringify } });
   const roundTrip = (input) => {
     const state = cms.initializeState(fields, input);
@@ -62,6 +62,19 @@ test("CMS Post create/edit/save/reopen: month strings, optional lists, manual or
   // List size validates count, not completeness; object-level pattern is not applied.
   assert(native({ list: { min: 1 } }).safeParse({ experience: [{}] }).success);
   assert(native({ pattern: "^never$" }).safeParse({ experience: [{}] }).success);
+  // Independent flat image metadata uses native text/boolean serialization.
+  for (const collection of ["gallery", "places"]) {
+    const names = collection === "gallery" ? ["alt", "decorative", "altNeedsReview"] : ["coverAlt", "coverDecorative", "coverAltNeedsReview"];
+    const imageFields = config.content.find((item) => item.name === collection).fields.filter((field) => names.includes(field.name));
+    const values = { [names[0]]: "Human-written alternative", [names[1]]: false, [names[2]]: true };
+    for (const input of [values, { [names[1]]: true }, {}]) {
+      const state = cms.initializeState(imageFields, input);
+      const checked = cms.generateZodSchema(imageFields).parse(state);
+      const saved = serial.parse(serial.stringify(cms.sanitizeObject(cms.deepMap(checked, imageFields, (value) => value)), { format: "yaml-frontmatter" }), { format: "yaml-frontmatter" });
+      const reopened = cms.initializeState(imageFields, saved);
+      for (const name of names) assert.equal(reopened[name], state[name]);
+    }
+  }
   const created = roundTrip({ title: "CMS fixture", description: "Test only", body: "## Original\n\n*Text*\n", draft: true });
   assert.equal(created.pubDate, "");
   assert.equal(created.updatedDate, "");

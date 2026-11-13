@@ -123,6 +123,20 @@ content:
         required: true
         options:
           extensions: [jpg, jpeg, png, webp, avif]
+      - name: alt
+        label: Alt text
+        type: text
+        description: "Describe meaningful visual content, independently of the visible title/caption. Required unless Decorative is explicitly enabled. GitHub validates this before publication."
+      - name: decorative
+        label: Decorative image
+        type: boolean
+        default: false
+        description: "Enable only when the image adds no meaningful information. Clear Alt text to render an intentionally empty alt attribute."
+      - name: altNeedsReview
+        label: Legacy alt review pending
+        type: boolean
+        readonly: true
+        description: "Migration marker only. Supply human-written Alt text or deliberately choose Decorative. Missing metadata uses the old label temporarily and produces a validation warning."
       - name: title
         type: string
         required: true
@@ -236,6 +250,20 @@ content:
         type: image
         options:
           extensions: [jpg, jpeg, png, webp, avif]
+      - name: coverAlt
+        label: Cover alt text
+        type: text
+        description: "Describe meaningful visual content, independently of the visible title/caption. Required unless Decorative is explicitly enabled. GitHub validates this before publication."
+      - name: coverDecorative
+        label: Decorative cover image
+        type: boolean
+        default: false
+        description: "Enable only when the image adds no meaningful information. Clear Cover alt text to render an intentionally empty alt attribute."
+      - name: coverAltNeedsReview
+        label: Legacy alt review pending
+        type: boolean
+        readonly: true
+        description: "Migration marker only. Supply human-written Cover alt text or deliberately choose Decorative. Missing metadata uses the old label temporarily and produces a validation warning."
   - name: trips
     label: Trips
     type: collection

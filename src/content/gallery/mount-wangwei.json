@@ -6,5 +6,6 @@
     "Landscape"
   ],
   "relatedPost": "src/content/posts/a-first-ride-testing-bicycle-field-notes.md",
-  "showOnHomepage": true
+  "showOnHomepage": true,
+  "altNeedsReview": true
 }

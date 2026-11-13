@@ -7,6 +7,9 @@ export interface Place {
   description: string;
   status: ("ridden" | "visited" | "wishlist")[];
   coverImage?: string;
+  coverAlt?: string;
+  coverDecorative?: boolean;
+  coverAltNeedsReview?: boolean;
 }
 
 export interface Trip {

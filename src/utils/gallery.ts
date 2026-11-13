@@ -2,6 +2,7 @@ import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import { getPosts } from "./posts";
+import { imageAlt } from "./image-accessibility";
 import { withBase } from "./urls";
 
 // Imports only supply metadata/transforms for explicit entries; uploads are never entries.
@@ -40,6 +41,7 @@ export async function getGallery() {
       || post.filePath?.replace(/^.*?src\/content\/posts\//, "").replace(/\.(md|mdx)$/i, "") === reference) : undefined;
     return {
       ...entry.data, id: entry.id,
+      alt: imageAlt(entry.data.alt, entry.data.decorative, entry.data.title),
       original: withBase(path), width: image.width, height: image.height,
       thumbnail: thumbnail.src,
       thumbnailSet: imageSet([[thumbnailSmall.src, Math.min(320, image.width)], [thumbnail.src, Math.min(640, image.width)]]),

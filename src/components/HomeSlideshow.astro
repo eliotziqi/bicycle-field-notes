@@ -8,7 +8,7 @@ const { photos } = Astro.props as { photos: GalleryPhoto[] };
   <section class="home-slideshow" aria-label="Photos from the gallery" aria-roledescription="carousel" tabindex="0">
     {photos.map((photo, index) => (
       <figure class="home-slide" data-slide hidden={index !== 0} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${photos.length}`}>
-        <img class="home-hero" src={photo.hero} srcset={photo.heroSet} sizes="(max-width: 1024px) 90vw, 960px" alt={photo.title} width={photo.width} height={photo.height} loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} decoding="async" />
+        <img class="home-hero" src={photo.hero} srcset={photo.heroSet} sizes="(max-width: 1024px) 90vw, 960px" alt={photo.alt} width={photo.width} height={photo.height} loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} decoding="async" />
         <figcaption><a href={`${withBase("/gallery/")}#photo-${photo.id}`}>{photo.title}</a></figcaption>
       </figure>
     ))}

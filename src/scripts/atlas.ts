@@ -1,3 +1,4 @@
+import { imageAlt } from "../utils/image-accessibility";
 import type { Map as LibreMap, GeoJSONSource, StyleSpecification } from "maplibre-gl";
 import type { AtlasData, AtlasPlace, RelatedPost } from "../utils/atlas-graph";
 import { geographicBounds, matchingPlaces, readSelection, selectedIds, type Filters, type Selection } from "../utils/atlas-state";
@@ -97,7 +98,7 @@ function renderDetails() {
     if (returnTrip) details.append(selectionLink("trip", returnTrip, "← Return to Trip"));
     details.append(node("h2", place.name), node("p", place.description), node("p", place.status.join(" · ")));
     if (place.coverImage) {
-      const image = node("img"); image.src = place.coverImage; image.alt = place.name; image.loading = "lazy"; details.append(image);
+      const image = node("img"); image.src = place.coverImage; image.alt = imageAlt(place.coverAlt, place.coverDecorative, place.name); image.loading = "lazy"; details.append(image);
     }
     if (place.tripIds.length) {
       details.append(node("h3", "Trips visiting this Place"));

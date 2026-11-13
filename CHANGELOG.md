@@ -2,6 +2,9 @@
 
 ## 2026-11-13
 
+- Added independent Gallery and Place cover alt/decorative fields, shared rendering rules and validation. Marked both legacy Gallery images for human-written alternatives while preserving existing fallback labels and visual behavior.
+- Added a read-only media usage/hash/missing-reference audit, accessibility regressions, reuse guidance and caption feasibility findings. No Post captions or media files were changed.
+
 - Confirmed the hosted CMS pre-save gap remains: optional blank object rows bypass child validation. Documented source-level evidence, a proposed upstream report, and the separate observed GitHub publication block.
 - Explicitly restored the owner-created empty Experience test row; clarified CMS helper text and expanded upstream serialization/configuration regressions.
 

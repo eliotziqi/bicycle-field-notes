@@ -11,8 +11,8 @@ export function contentFixture() {
   const post = (fields = "", body = "Valid **Markdown**.\n") => `---\ntitle: Fixture\ndescription: Fixture description\npubDate: "2026-11"\n${fields}---\n${body}`;
   write("src/content/posts/a.md", post('relatedPlaces:\n  - place: a\nrelatedTrips:\n  - trip: one\n'));
   write("src/content/gallery-categories/landscape.json", { title: "Landscape" });
-  write("src/content/gallery/photo.json", { image: "/bicycle-field-notes/media/photo.png", title: "Photo", description: "Fixture", categories: ["Landscape"], relatedPost: "src/content/posts/a.md", showOnHomepage: true });
-  write("src/content/places/a.json", { id: "a", name: "A", latitude: 30, longitude: 120, description: "Fixture", status: ["visited"], coverImage: "/bicycle-field-notes/media/photo.png" });
+  write("src/content/gallery/photo.json", { image: "/bicycle-field-notes/media/photo.png", alt: "Fixture pixel", title: "Photo", description: "Fixture", categories: ["Landscape"], relatedPost: "src/content/posts/a.md", showOnHomepage: true });
+  write("src/content/places/a.json", { id: "a", name: "A", latitude: 30, longitude: 120, description: "Fixture", status: ["visited"], coverImage: "/bicycle-field-notes/media/photo.png", coverAlt: "Fixture pixel" });
   write("src/content/trips/one.json", { id: "one", name: "One", places: [{ place: "a" }, { place: "a" }] });
   write("src/content/wiki/index.md", "---\ntitle: Wiki\ndescription: Fixture\norder: 0\n---\nStatic text.\n");
   fs.mkdirSync(path.join(root, "public/media"), { recursive: true });
@@ -91,7 +91,7 @@ test("Markdown, reference-style, HTML and MDX static media paths are checked wit
 }));
 
 test("failed validation preserves unrelated valid edits; correcting the bad row validates the full snapshot", () => use(({ root, write, read, post }) => {
-  const validEdit = { image: "/bicycle-field-notes/media/photo.png", title: "Edited caption", description: "Valid saved edit", categories: ["Landscape"] };
+  const validEdit = { image: "/bicycle-field-notes/media/photo.png", alt: "Fixture pixel", title: "Edited caption", description: "Valid saved edit", categories: ["Landscape"] };
   write("src/content/gallery/photo.json", validEdit);
   const invalid = post("experience: [{}]\n"); write("src/content/posts/a.md", invalid);
   const savedGallery = read("src/content/gallery/photo.json");
@@ -101,4 +101,17 @@ test("failed validation preserves unrelated valid edits; correcting the bad row 
   write("src/content/posts/a.md", invalid.replace("experience: [{}]", "experience: []"));
   assert.deepEqual(validateContent(root).errors, []);
   assert.equal(read("src/content/gallery/photo.json"), savedGallery);
+}));
+
+test("image alt validation blocks new omissions while explicit legacy review warns", () => use(({ root, write }) => {
+  const photo = { image: "/bicycle-field-notes/media/photo.png", title: "Title", description: "Caption context", categories: ["Landscape"] };
+  write("src/content/gallery/photo.json", photo);
+  assert(validateContent(root).errors.some((issue) => issue.field === "alt"));
+  write("src/content/gallery/photo.json", { ...photo, altNeedsReview: true });
+  let report = validateContent(root);
+  assert.deepEqual(report.errors, []); assert(report.warnings.some((issue) => issue.field === "alt"));
+  write("src/content/gallery/photo.json", { ...photo, altNeedsReview: true, alt: "Human-supplied fixture alternative" });
+  report = validateContent(root); assert.deepEqual(report.errors, []); assert.deepEqual(report.warnings, []);
+  write("src/content/gallery/photo.json", { ...photo, decorative: true });
+  assert.deepEqual(validateContent(root).errors, []);
 }));

@@ -73,6 +73,9 @@ export function validateContent(root = process.cwd(), { base = new URL(process.e
       }
       const record = { file, id: file.replace(`src/content/${name}/`, "").replace(/\.(json|mdx?)$/i, ""), raw, data: parsed.success ? parsed.data : undefined };
       records[name].push(record);
+      if ((name === "gallery" && raw?.altNeedsReview && !raw?.decorative && !(typeof raw?.alt === "string" && raw.alt.trim())) || (name === "places" && raw?.coverImage && raw?.coverAltNeedsReview && !raw?.coverDecorative && !(typeof raw?.coverAlt === "string" && raw.coverAlt.trim()))) {
+        add(file, name === "gallery" ? "alt" : "coverAlt", "Legacy image needs human-written alt text; its old label is only a compatibility fallback, not approved alt text.", "Describe the meaningful visual content in CMS, or explicitly choose Decorative only if appropriate. Do not invent a description.", 1, "warnings");
+      }
       if (body !== undefined) {
         try {
           const tree = file.endsWith(".mdx") ? mdxToMdast(body) : markdownToMdast(body);

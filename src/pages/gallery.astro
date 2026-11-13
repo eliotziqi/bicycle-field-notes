@@ -26,8 +26,8 @@ const { photos, categories } = await getGallery();
         <div class="gallery-grid">
           {photos.map((photo) => (
             <figure class="gallery-card" id={`photo-${photo.id}`} data-categories={JSON.stringify(photo.categories)}>
-              <a class="gallery-image-link" href={photo.original} data-lightbox data-full={photo.hero} aria-label={`View ${photo.title}`}>
-                <img src={photo.thumbnail} srcset={photo.thumbnailSet} sizes="(max-width: 36rem) 90vw, (max-width: 55rem) 45vw, 310px" alt={photo.title} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
+              <a class="gallery-image-link" href={photo.original} data-lightbox data-full={photo.hero} aria-label={photo.decorative ? `View ${photo.title}` : undefined}>
+                <img src={photo.thumbnail} srcset={photo.thumbnailSet} sizes="(max-width: 36rem) 90vw, (max-width: 55rem) 45vw, 310px" alt={photo.alt} width={photo.width} height={photo.height} loading="lazy" decoding="async" />
               </a>
               <figcaption>
                 <h2>{photo.title}</h2>
