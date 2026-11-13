@@ -23,22 +23,21 @@ export const postsSchema = z.object({
   ...postEditorialSchema.shape,
 });
 
-function checkImageAlt(data: { alt?: string; decorative?: boolean; altNeedsReview?: boolean }, ctx: z.RefinementCtx, field = "alt") {
+function checkImageAlt(data: { alt?: string; decorative?: boolean }, ctx: z.RefinementCtx, field = "alt") {
   if (data.decorative && data.alt?.trim()) ctx.addIssue({ code: "custom", path: [field], message: "Decorative images must have blank alt text; clear it or turn Decorative off." });
-  if (!data.decorative && !data.alt?.trim() && !data.altNeedsReview) ctx.addIssue({ code: "custom", path: [field], message: "Enter meaningful visual alt text, or explicitly mark this image decorative. Missing alt is not decorative." });
+  if (!data.decorative && !data.alt?.trim()) ctx.addIssue({ code: "custom", path: [field], message: "Enter meaningful visual alt text, or explicitly mark this image decorative. Missing alt is not decorative." });
 }
 
 export const gallerySchema = z.object({
   image: z.string().min(1),
   alt: z.string().optional(),
   decorative: z.boolean().default(false),
-  altNeedsReview: z.boolean().optional(),
   title: z.string().trim().min(1),
   description: z.string().trim().min(1),
   categories: z.array(z.string().min(1)).min(1),
   relatedPost: z.preprocess(
-    (value) => value === "" || value === null ? undefined : value,
-    z.string().optional(),
+    (value) => value === "" || value == null ? [] : Array.isArray(value) ? value : [value],
+    z.array(z.string().trim().min(1)),
   ),
   showOnHomepage: z.boolean().default(false),
 }).superRefine((data, ctx) => checkImageAlt(data, ctx));
@@ -53,9 +52,8 @@ export const placesSchema = z.object({
   coverImage: optionalText,
   coverAlt: z.string().optional(),
   coverDecorative: z.boolean().default(false),
-  coverAltNeedsReview: z.boolean().optional(),
 }).superRefine((data, ctx) => {
-  if (data.coverImage) checkImageAlt({ alt: data.coverAlt, decorative: data.coverDecorative, altNeedsReview: data.coverAltNeedsReview }, ctx, "coverAlt");
+  if (data.coverImage) checkImageAlt({ alt: data.coverAlt, decorative: data.coverDecorative }, ctx, "coverAlt");
 });
 
 export const tripsSchema = z.object({

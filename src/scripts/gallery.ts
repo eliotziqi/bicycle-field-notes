@@ -10,7 +10,7 @@ if (filters && dialog) {
   const image = dialog.querySelector<HTMLImageElement>("#lightbox-image")!;
   const title = dialog.querySelector<HTMLElement>("#lightbox-title")!;
   const description = dialog.querySelector<HTMLElement>("#lightbox-description")!;
-  const related = dialog.querySelector<HTMLAnchorElement>("#lightbox-related")!;
+  const related = dialog.querySelector<HTMLElement>("#lightbox-related")!;
   const original = dialog.querySelector<HTMLAnchorElement>("#lightbox-original")!;
   const status = dialog.querySelector<HTMLElement>("#lightbox-status")!;
   const previous = dialog.querySelector<HTMLButtonElement>("[data-lightbox-previous]")!;
@@ -47,10 +47,13 @@ if (filters && dialog) {
     image.alt = thumbnail.alt;
     title.textContent = card.querySelector("h2")!.textContent;
     description.textContent = card.querySelector(".photo-description")!.textContent;
-    const post = card.querySelector<HTMLAnchorElement>(".photo-related");
-    related.hidden = !post;
-    if (post) { related.href = post.href; related.textContent = post.textContent; }
-    else related.removeAttribute("href");
+    const posts = [...card.querySelectorAll<HTMLAnchorElement>(".photo-related")];
+    related.replaceChildren();
+    related.hidden = posts.length === 0;
+    posts.forEach((post, index) => {
+      if (index > 0) related.append(document.createTextNode(" · "));
+      related.append(post.cloneNode(true));
+    });
     original.href = link.href;
     const photos = visible();
     status.textContent = `${photos.indexOf(card) + 1} / ${photos.length}`;

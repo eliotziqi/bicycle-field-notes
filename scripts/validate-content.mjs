@@ -73,9 +73,6 @@ export function validateContent(root = process.cwd(), { base = new URL(process.e
       }
       const record = { file, id: file.replace(`src/content/${name}/`, "").replace(/\.(json|mdx?)$/i, ""), raw, data: parsed.success ? parsed.data : undefined };
       records[name].push(record);
-      if ((name === "gallery" && raw?.altNeedsReview && !raw?.decorative && !(typeof raw?.alt === "string" && raw.alt.trim())) || (name === "places" && raw?.coverImage && raw?.coverAltNeedsReview && !raw?.coverDecorative && !(typeof raw?.coverAlt === "string" && raw.coverAlt.trim()))) {
-        add(file, name === "gallery" ? "alt" : "coverAlt", "Legacy image needs human-written alt text; its old label is only a compatibility fallback, not approved alt text.", "Describe the meaningful visual content in CMS, or explicitly choose Decorative only if appropriate. Do not invent a description.", 1, "warnings");
-      }
       if (body !== undefined) {
         try {
           const tree = file.endsWith(".mdx") ? mdxToMdast(body) : markdownToMdast(body);
@@ -159,10 +156,12 @@ export function validateContent(root = process.cwd(), { base = new URL(process.e
   for (const photo of records.gallery) {
     fileReference(photo.file, "image", photo.raw?.image);
     if (Array.isArray(photo.raw?.categories)) photo.raw.categories.forEach((category, i) => requireReference(photo, `categories[${i}]`, category, categories));
-    if (typeof photo.raw?.relatedPost === "string" && photo.raw.relatedPost) {
-      const id = photo.raw.relatedPost.replace(/^\/?src\/content\/posts\//, "").replace(/\.(md|mdx)$/i, "");
-      requireReference(photo, "relatedPost", id, posts);
-    }
+    const references = photo.data?.relatedPost ?? (Array.isArray(photo.raw?.relatedPost) ? photo.raw.relatedPost : photo.raw?.relatedPost ? [photo.raw.relatedPost] : []);
+    references.forEach((reference, i) => {
+      if (typeof reference !== "string") return;
+      const id = reference.replace(/^\/?src\/content\/posts\//, "").replace(/\.(md|mdx)$/i, "");
+      requireReference(photo, Array.isArray(photo.raw?.relatedPost) ? `relatedPost[${i}]` : "relatedPost", id, posts);
+    });
   }
   return report;
 }

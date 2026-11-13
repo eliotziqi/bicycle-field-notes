@@ -2,6 +2,7 @@ import { getCollection } from "astro:content";
 import { getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import { getPosts } from "./posts";
+import { relatedGalleryPosts } from "./gallery-posts";
 import { imageAlt } from "./image-accessibility";
 import { withBase } from "./urls";
 
@@ -36,18 +37,15 @@ export async function getGallery() {
     const thumbnailSmall = await getImage({ src: image, width: Math.min(320, image.width), format: "webp", quality: 80 });
     const hero = await getImage({ src: image, width: Math.min(1600, image.width), format: "webp", quality: 85 });
     const heroSmall = await getImage({ src: image, width: Math.min(800, image.width), format: "webp", quality: 85 });
-    const reference = entry.data.relatedPost?.replace(/^\/?src\/content\/posts\//, "").replace(/\.(md|mdx)$/i, "");
-    const post = reference ? posts.find((post) => post.id === reference
-      || post.filePath?.replace(/^.*?src\/content\/posts\//, "").replace(/\.(md|mdx)$/i, "") === reference) : undefined;
     return {
       ...entry.data, id: entry.id,
-      alt: imageAlt(entry.data.alt, entry.data.decorative, entry.data.title),
+      alt: imageAlt(entry.data.alt, entry.data.decorative),
       original: withBase(path), width: image.width, height: image.height,
       thumbnail: thumbnail.src,
       thumbnailSet: imageSet([[thumbnailSmall.src, Math.min(320, image.width)], [thumbnail.src, Math.min(640, image.width)]]),
       hero: hero.src,
       heroSet: imageSet([[heroSmall.src, Math.min(800, image.width)], [hero.src, Math.min(1600, image.width)]]),
-      related: post ? { title: post.data.title, url: withBase(`/posts/${post.id}/`) } : undefined,
+      related: relatedGalleryPosts(entry.data.relatedPost, posts).map((post) => ({ ...post, url: withBase(post.url) })),
     };
   }));
   return { photos, categories: categoryNames };

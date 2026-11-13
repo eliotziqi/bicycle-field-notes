@@ -81,10 +81,15 @@ try {
   assert.equal(await evaluate('document.querySelector("#search-error").hidden'), true);
   assert.equal(await evaluate('document.querySelector("#result-count").textContent'), "0 posts");
   await navigate("gallery/");
-  await evaluate('document.querySelector("[data-lightbox]").click()');
-  assert.equal(await evaluate('document.querySelector("#gallery-lightbox").open'), true);
-  await key("Escape", "Escape", 27);
-  assert.equal(await evaluate('document.querySelector("#gallery-lightbox").open'), false);
+  if (await evaluate('!!document.querySelector("[data-lightbox]")')) {
+    await evaluate('document.querySelector("[data-lightbox]").click()');
+    assert.equal(await evaluate('document.querySelector("#gallery-lightbox").open'), true);
+    await key("Escape", "Escape", 27);
+    assert.equal(await evaluate('document.querySelector("#gallery-lightbox").open'), false);
+  } else {
+    assert.equal(await evaluate('document.querySelector(".gallery-page").textContent.includes("No gallery photos yet")'), true);
+    assert.equal(await evaluate('document.querySelector("#gallery-lightbox")'), null);
+  }
   await navigate("");
   assert.equal(await evaluate('!!document.querySelector(".home-slideshow, .hero-fallback")'), true);
   assert.equal(await evaluate('!![...document.querySelectorAll(".site-nav a")].find(a=>a.getAttribute("aria-label")==="Wiki / Documentation")'), true);

@@ -9,7 +9,6 @@ export interface Place {
   coverImage?: string;
   coverAlt?: string;
   coverDecorative?: boolean;
-  coverAltNeedsReview?: boolean;
 }
 
 export interface Trip {

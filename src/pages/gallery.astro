@@ -33,7 +33,7 @@ const { photos, categories } = await getGallery();
                 <h2>{photo.title}</h2>
                 <p class="photo-description">{photo.description}</p>
                 <p class="photo-categories">{photo.categories.join(" · ")}</p>
-                {photo.related && <p><a class="photo-related" href={photo.related.url}>Read: {photo.related.title}</a></p>}
+                {photo.related.length > 0 && <p>{photo.related.map((post, index) => <Fragment>{index > 0 && " · "}<a class="photo-related" href={post.url}>Read: {post.title}</a></Fragment>)}</p>}
               </figcaption>
             </figure>
           ))}
@@ -45,7 +45,7 @@ const { photos, categories } = await getGallery();
           <div class="lightbox-caption">
             <h2 id="lightbox-title"></h2>
             <p id="lightbox-description"></p>
-            <p><a id="lightbox-related" hidden></a></p>
+            <p id="lightbox-related" hidden></p>
             <a id="lightbox-original">Original image</a>
           </div>
           <div class="slideshow-controls">

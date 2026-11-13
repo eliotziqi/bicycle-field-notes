@@ -103,15 +103,14 @@ test("failed validation preserves unrelated valid edits; correcting the bad row 
   assert.equal(read("src/content/gallery/photo.json"), savedGallery);
 }));
 
-test("image alt validation blocks new omissions while explicit legacy review warns", () => use(({ root, write }) => {
-  const photo = { image: "/bicycle-field-notes/media/photo.png", title: "Title", description: "Caption context", categories: ["Landscape"] };
+test("missing alt fails without legacy warnings; multiple Gallery targets are checked independently", () => use(({ root, write }) => {
+  const photo = { image: "/bicycle-field-notes/media/photo.png", title: "Title", description: "Context", categories: ["Landscape"] };
   write("src/content/gallery/photo.json", photo);
   assert(validateContent(root).errors.some((issue) => issue.field === "alt"));
-  write("src/content/gallery/photo.json", { ...photo, altNeedsReview: true });
-  let report = validateContent(root);
-  assert.deepEqual(report.errors, []); assert(report.warnings.some((issue) => issue.field === "alt"));
-  write("src/content/gallery/photo.json", { ...photo, altNeedsReview: true, alt: "Human-supplied fixture alternative" });
-  report = validateContent(root); assert.deepEqual(report.errors, []); assert.deepEqual(report.warnings, []);
-  write("src/content/gallery/photo.json", { ...photo, decorative: true });
+  write("src/content/gallery/photo.json", { ...photo, decorative: true, relatedPost: [] });
   assert.deepEqual(validateContent(root).errors, []);
+  write("src/content/gallery/photo.json", { ...photo, alt: "Visual content", relatedPost: ["src/content/posts/a.md", "src/content/posts/missing.md"] });
+  const report = validateContent(root);
+  assert(report.errors.some((issue) => issue.field === "relatedPost[1]"));
+  assert.deepEqual(report.warnings, []);
 }));

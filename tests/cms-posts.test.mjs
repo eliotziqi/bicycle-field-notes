@@ -64,9 +64,9 @@ test("CMS Post create/edit/save/reopen: month strings, optional lists, manual or
   assert(native({ pattern: "^never$" }).safeParse({ experience: [{}] }).success);
   // Independent flat image metadata uses native text/boolean serialization.
   for (const collection of ["gallery", "places"]) {
-    const names = collection === "gallery" ? ["alt", "decorative", "altNeedsReview"] : ["coverAlt", "coverDecorative", "coverAltNeedsReview"];
+    const names = collection === "gallery" ? ["alt", "decorative"] : ["coverAlt", "coverDecorative"];
     const imageFields = config.content.find((item) => item.name === collection).fields.filter((field) => names.includes(field.name));
-    const values = { [names[0]]: "Human-written alternative", [names[1]]: false, [names[2]]: true };
+    const values = { [names[0]]: "Human-written alternative", [names[1]]: false };
     for (const input of [values, { [names[1]]: true }, {}]) {
       const state = cms.initializeState(imageFields, input);
       const checked = cms.generateZodSchema(imageFields).parse(state);
@@ -74,6 +74,15 @@ test("CMS Post create/edit/save/reopen: month strings, optional lists, manual or
       const reopened = cms.initializeState(imageFields, saved);
       for (const name of names) assert.equal(reopened[name], state[name]);
     }
+  }
+  const relatedField = config.content.find((item) => item.name === "gallery").fields.find((field) => field.name === "relatedPost");
+  assert.equal(relatedField.options.multiple, true);
+  assert.equal(relatedField.required, undefined);
+  for (const [input, expected] of [[undefined, []], ["", []], [[], []], ["a.md", ["a.md"]], [["b.md", "a.md"], ["b.md", "a.md"]]]) {
+    const state = cms.initializeState([relatedField], { relatedPost: input });
+    const validated = cms.generateZodSchema([relatedField]).parse(state);
+    const reopened = serial.parse(serial.stringify(cms.sanitizeObject(validated), { format: "yaml-frontmatter" }), { format: "yaml-frontmatter" });
+    assert.deepEqual(cms.generateZodSchema([relatedField]).parse(cms.initializeState([relatedField], reopened)).relatedPost, expected);
   }
   const created = roundTrip({ title: "CMS fixture", description: "Test only", body: "## Original\n\n*Text*\n", draft: true });
   assert.equal(created.pubDate, "");

@@ -205,10 +205,23 @@ These records consolidate decisions visible in the released implementation and t
 
 **Context:** Shared media files already support reuse; Gallery titles doubled as alternatives and Place covers used names. Existing visuals have no owner-written independent descriptions.
 
-**Chosen approach:** Keep the Gallery collection, storage paths, captions and image transforms. Add flat contextual alt/decorative fields to Gallery and Place covers, with repository cross-field validation. Explicit migration-only review flags preserve old alternatives with warnings until human remediation. Add a dependency-free, read-only usage/hash inventory. Keep Post captions unchanged.
+**Chosen approach:** Keep the Gallery collection, storage paths, captions and image transforms. Add flat contextual alt/decorative fields to Gallery and Place covers, with repository cross-field validation. Legacy review flags and label fallbacks were removed after the owner deleted the legacy Gallery records; Place covers had no legacy records to preserve. Add a dependency-free, read-only usage/hash inventory. Keep Post captions unchanged.
 
 **Rationale:** Improve accessibility and authoring clarity without a shared media database, upload hooks, automatic renaming or extra services. Contextual alternatives need not match across uses of the same file.
 
-**Tradeoffs:** Legacy accessibility remains incomplete until human review. Native CMS conditional pre-save enforcement is not claimed. Static usage scanning is incomplete for dynamic/code references; identical bytes are not visual similarity. Gallery title/description remain visible, while alt conveys meaningful visual content independently.
+**Tradeoffs:** Native CMS conditional pre-save enforcement is not claimed. Static usage scanning is incomplete for dynamic/code references; identical bytes are not visual similarity. Gallery title/description remain visible, while alt conveys meaningful visual content independently.
 
-**Consequences:** Never invent descriptions or infer decoration from missing text. Only explicit Decorative renders empty alt. New informative records must have alt; review flags must not be added to bypass validation. Preserve filenames, publication behavior and manual controls. Hosted save/reopen and any future caption convention require separate acceptance.
+**Consequences:** Never invent descriptions or infer decoration from missing text. Only explicit Decorative renders empty alt. All informative records must have alt, without legacy exceptions. Preserve filenames, publication behavior and manual controls. Hosted save/reopen and any future caption convention require separate acceptance.
+
+
+## ADR 018: Multiple Gallery articles with the existing reference key
+
+**Context:** Gallery needs zero or multiple related articles; the existing `relatedPost` key stored one path.
+
+**Chosen approach:** Keep the key and enable native reference `options.multiple: true`. Normalize absent/blank values to an empty array and existing scalar strings to one-item arrays. Validate every target. Resolve links against visible, explicitly non-draft Posts; deduplicate by Post ID, preserving first-occurrence selection order. Render the same links in cards and the lightbox.
+
+**Rationale:** Native multiple-reference editing avoids nested rows and a competing field or content-key migration.
+
+**Tradeoffs:** The field name remains singular internally for compatibility. CMS save/reopen and selection ordering need hosted acceptance; local serialization checks cannot certify the UI. No upper bound or minimum selection count is imposed.
+
+**Consequences:** Do not expose draft links or discard scalar references. Missing targets block publication. Preserve media files, category filtering, responsive transforms and modal focus behavior.

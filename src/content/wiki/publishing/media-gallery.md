@@ -27,7 +27,11 @@ Enable **Show on homepage** (`showOnHomepage`) on the Gallery entry. It defaults
 
 ## 5. Associate a Gallery entry with an article
 
-Use **Related post (optional)** (`relatedPost`) to choose an existing Blog Post. The picker stores its path; the site resolves it only against visible Posts. A draft/missing target does not create a public related link, though the Gallery photo itself remains public. This link does not insert the image into the Post or copy Post geographic references onto Gallery.
+Use **Related Posts** to select zero or more Blog Posts with the native multiple-reference picker. The stored key remains `relatedPost`, now an array of Post paths; no nested object rows are needed. An absent field or empty list means no related links. Existing single strings remain readable and are converted to a one-item list by native CMS serialization when saved.
+
+Gallery cards and the lightbox render all related published articles in stored selection order, deduplicated by resolved Post identity while preserving first occurrence. Drafts never create public links, including in development. Missing targets fail repository validation; restore the Post or correct the selection before publishing. Associations do not insert the image into Posts or copy their geographic references onto Gallery.
+
+Native reference configuration and local upstream helpers support multiple selections. Hosted acceptance still requires selecting zero, one and several Posts, saving and reopening, verifying retained ordering, and checking the Gallery/lightbox. Do not assume the picker offers drag-and-drop reordering; deselect/reselect or edit source to change stored order if necessary.
 
 ## Categories and verification
 
@@ -40,17 +44,13 @@ After a successful deployment check Gallery thumbnails, categories (OR), descrip
 
 Before uploading, browse Media and select the existing file in the Gallery image picker, Place cover picker or Post body image picker. All use the same `public/media/` source. Reuse the path instead of uploading another copy. A Gallery association does not insert an image into a Post, and a Post image does not create a Gallery entry. Trips can use their existing Place relationships; this change adds no Trip image field or shared image database.
 
-Place covers have separate **Cover alt text** (`coverAlt`) and **Decorative cover image** (`coverDecorative`) fields. These are contextual to the Place and do not inherit Gallery text. No cover means no alt requirement. Native CMS does not enforce the conditional alt/decorative relationship reliably; repository validation does before publication. A missing alternative is never automatically interpreted as decorative.
+Place covers have separate **Cover alt text** (`coverAlt`) and **Decorative cover image** (`coverDecorative`) fields. These are contextual to the Place and do not inherit Gallery text. No cover means no alt requirement. Native CMS does not enforce the conditional alt/decorative relationship reliably; repository validation does before publication. A missing alternative is never automatically interpreted as decorative. Legacy review exceptions and title/name fallbacks have been removed for both Gallery and Place covers; all informative images require meaningful alt text.
 
 For informative images, provide nonblank `alt` (Gallery) or `coverAlt` (Places). Explicit decorative images use `decorative: true` or `coverDecorative: true` and blank/absent alt; they render `alt=""`. Contradictory decorative plus nonblank alt is rejected. Gallery image links retain an accessible title-based link name for decorative images, and the lightbox copies the rendered alternative. Homepage uses the same Gallery alternative without changing slideshow controls or captions.
 
-### Legacy review
-
-Existing Gallery records are marked `altNeedsReview: true`, without invented descriptions. Until a human supplies alt text or deliberately chooses Decorative, rendering preserves the old title-based alternative and validation emits a warning naming the file. This is a temporary compatibility fallback, **not completed accessibility remediation**. The read-only CMS migration marker is not a new-content bypass: do not add it to new records. Once appropriate metadata is entered, the warning stops even if the marker remains. A future Git cleanup can remove completed markers. Existing Place records have no covers to migrate; an equivalent `coverAltNeedsReview` marker is supported for deliberate legacy migrations only.
-
 ### Read-only inventory
 
-Run `npm run audit:media` for JSON output, or `node scripts/media-audit.mjs` for clean JSON suitable for saving outside source. It lists file usages in Gallery, Posts (including drafts) and Place covers; SHA-256 groups identify identical bytes under different filenames. Missing references, legacy alt review and parsing/dynamic-expression diagnostics are separate. There are currently no direct Trip image references.
+Run `npm run audit:media` for JSON output, or `node scripts/media-audit.mjs` for clean JSON suitable for saving outside source. It lists file usages in Gallery, Posts (including drafts) and Place covers; SHA-256 groups identify identical bytes under different filenames. Missing references, missing-alt review and parsing/dynamic-expression diagnostics are separate. There are currently no direct Trip image references.
 
 The audit never changes files, deletes unused assets, repairs paths, or merges duplicates. Unreferenced means unobserved by this static scan, not safe to delete. Dynamic/imported MDX, CSS, responsive srcset and application-code references need manual inspection. External resources are not downloaded. Identical hashes do not detect resized/recompressed versions or visually similar photographs. Missing references or parsing/dynamic diagnostics return a nonzero status; duplicate groups and review reminders alone do not. `validate:content` remains the independent publication gate.
 
@@ -60,4 +60,4 @@ The official [rich-text documentation](https://pagescms.org/docs/configuration/f
 
 Recommend, pending owner approval, a plain italic paragraph immediately after the ordinary Markdown image for occasional visible captions. It uses basic editable Markdown but does not create semantic figure/figcaption association. If semantic captions become essential, investigate a tested rendering convention separately. No Post content, caption renderer or editor configuration is changed here.
 
-Local configuration/schema/rendering tests do not certify the authenticated hosted editor. Manual acceptance: select the same upload in each picker; save/reopen informative and decorative Gallery/Place fields; confirm the migration marker survives; verify the Gallery, Home and Atlas alternatives; test caption examples only in a nonpublishing branch, switching Editor/Source and saving/reopening. Do not add owner test content automatically to main.
+Local configuration/schema/rendering tests do not certify the authenticated hosted editor. Manual acceptance: select the same upload in each picker; save/reopen informative and decorative Gallery/Place fields; verify the Gallery, Home and Atlas alternatives; test caption examples only in a nonpublishing branch, switching Editor/Source and saving/reopening. Do not add owner test content automatically to main.

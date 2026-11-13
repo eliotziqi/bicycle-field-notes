@@ -132,11 +132,6 @@ content:
         type: boolean
         default: false
         description: "Enable only when the image adds no meaningful information. Clear Alt text to render an intentionally empty alt attribute."
-      - name: altNeedsReview
-        label: Legacy alt review pending
-        type: boolean
-        readonly: true
-        description: "Migration marker only. Supply human-written Alt text or deliberately choose Decorative. Missing metadata uses the old label temporarily and produces a validation warning."
       - name: title
         type: string
         required: true
@@ -159,10 +154,11 @@ content:
           value: "{primary}"
           label: "{primary}"
       - name: relatedPost
-        label: Related post (optional)
+        label: Related Posts
         type: reference
         options:
           collection: posts
+          multiple: true
           value: "{path}"
           label: "{primary}"
       - name: showOnHomepage
@@ -259,11 +255,6 @@ content:
         type: boolean
         default: false
         description: "Enable only when the image adds no meaningful information. Clear Cover alt text to render an intentionally empty alt attribute."
-      - name: coverAltNeedsReview
-        label: Legacy alt review pending
-        type: boolean
-        readonly: true
-        description: "Migration marker only. Supply human-written Cover alt text or deliberately choose Decorative. Missing metadata uses the old label temporarily and produces a validation warning."
   - name: trips
     label: Trips
     type: collection

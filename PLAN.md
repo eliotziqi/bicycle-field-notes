@@ -8,10 +8,12 @@ Completed: Home, Posts, Atlas, Gallery, and Contact navigation; responsive Home 
 
 ## Image accessibility and reuse
 
-- [x] Separate Gallery/Place alternatives from visible titles; explicit decoration and legacy human-review flags preserve existing content without invented descriptions.
+- [x] Separate Gallery/Place alternatives from visible titles; explicit decoration with required informative alt and no legacy fallback.
 - [x] Add read-only usage/hash/missing-reference audit; keep shared media files and Gallery architecture.
 - [x] Document reuse and caption findings; Post caption changes remain pending owner approval.
-- [ ] Owner writes alternatives for both legacy Gallery records and accepts hosted CMS picker/save/reopen behavior.
+- [x] Remove obsolete Gallery/Place review flags after legacy Gallery deletion; retain strict accessibility validation.
+- [x] Add native 0–N Related Posts, scalar compatibility and ordered/deduplicated published links in cards/lightbox.
+- [ ] Owner accepts hosted CMS multiple-reference picker/save/reopen and ordering behavior.
 
 ## Publishing reliability
 
