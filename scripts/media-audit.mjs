@@ -43,7 +43,12 @@ export function auditMedia(root = process.cwd(), base = new URL(process.env.SITE
   for (const absolute of walk(path.join(root, "src/content/posts")).filter((file) => /\.mdx?$/.test(file))) {
     const source = relative(absolute);
     try {
-      const { body, bodyLine } = parsePost(fs.readFileSync(absolute, "utf8"));
+      const { body, bodyLine, document } = parsePost(fs.readFileSync(absolute, "utf8"));
+      const data = document.toJS();
+      if (data?.coverImage) {
+        use(data.coverImage, source, "coverImage");
+        if (!data.coverDecorative && !data.coverAlt?.trim()) altReviews.push({ source, field: "coverAlt", message: "Human-written alt text needed; missing is not decorative." });
+      }
       const tree = absolute.endsWith(".mdx") ? mdxToMdast(body) : markdownToMdast(body);
       const nodes = [], visit = (node) => { nodes.push(node); node.children?.forEach(visit); }; visit(tree);
       const definitions = new Map(nodes.filter((node) => node.type === "definition").map((node) => [node.identifier.toLowerCase(), node.url]));

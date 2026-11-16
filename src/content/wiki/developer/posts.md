@@ -64,3 +64,9 @@ The deployment workflow checks out the triggering revision, validates source, pr
 ## Central tag references
 
 `postTags` loads JSON title records from `src/content/post-tags/`; Posts retain their existing string-array `tags` metadata. `getPosts()` checks references against the catalog while `tagCounts()` still derives options solely from visible Posts. The shared schema rejects duplicate Post references; preflight also rejects duplicate catalog names (case-insensitive), malformed Title Case and dangling references across drafts and published Posts. There are no tag routes or additional index. See [tag authoring and safe renames](../publishing/posts.md#central-post-tags).
+
+## Presentation and cover processing
+
+The same `PostList` rows power List and Cards. `posts-browser.ts` applies the browser-local `bfn-posts-view` preference (Cards default, List fallback without JavaScript) after the existing discovery update. No second search, dataset, filter state or URL parameter is introduced. Image sources attach only to visible Cards; List never creates hidden image requests on a fresh visit. Already downloaded images remain in the browser cache after a view change.
+
+`responsive-media.ts` shares the explicit-upload metadata and Astro WebP transforms previously used inside `gallery.ts`, retaining its 320/640/800/1600 widths and no-upscaling policy. Post covers do not alter the Gallery collection or original media. An image error removes only the failed image and leaves a stable frame, fallback label and usable article link. The only Phase 1 motion is native hover/color/image feedback with reduced-motion support. Advanced layout transitions and theme animation remain deferred.

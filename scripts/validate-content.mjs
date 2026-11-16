@@ -161,7 +161,7 @@ export function validateContent(root = process.cwd(), { base = new URL(process.e
     }
   }
   for (const trip of records.trips) if (Array.isArray(trip.raw?.places)) trip.raw.places.forEach((row, i) => requireReference(trip, `places[${i}].place`, row?.place, places));
-  for (const place of records.places) if (place.raw?.coverImage) fileReference(place.file, "coverImage", place.raw.coverImage);
+  for (const entry of [...records.places, ...records.posts]) if (entry.raw?.coverImage) fileReference(entry.file, "coverImage", entry.raw.coverImage);
   for (const photo of records.gallery) {
     fileReference(photo.file, "image", photo.raw?.image);
     if (Array.isArray(photo.raw?.categories)) photo.raw.categories.forEach((category, i) => requireReference(photo, `categories[${i}]`, category, categories));

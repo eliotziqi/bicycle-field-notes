@@ -69,6 +69,19 @@ content:
           multiple: true
           value: "{primary}"
           label: "{primary}"
+      - name: coverImage
+        label: Cover image
+        type: image
+        description: "Optional Post Card cover. Reuse an existing upload; this does not add it to the article, Gallery or Home slideshow."
+      - name: coverAlt
+        label: Cover alt text
+        type: text
+        description: "Describe meaningful visual content when a cover is selected, or explicitly mark it decorative."
+      - name: coverDecorative
+        label: Decorative cover image
+        type: boolean
+        default: false
+        description: "Enable deliberately for a decorative cover and leave cover alt text blank."
       - name: featured
         type: boolean
         default: false

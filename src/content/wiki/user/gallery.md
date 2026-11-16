@@ -11,7 +11,7 @@ order: 13
 
 ## Open the lightbox
 
-Activate a photo to open its larger view with description, original-image link and a related published Post when available. Use left/right arrows to move through the current filtered photos. Escape or Close exits and returns focus to the photo link. Without JavaScript the image link opens the original instead.
+Activate a photo to open its larger view with description, **Open original in new tab** link (opens the full-resolution file separately, preserving your Gallery/filter/lightbox state) and a related published Post when available. Use left/right arrows to move through the current filtered photos. Escape or Close exits and returns focus to the photo link. Without JavaScript the image link opens the original instead.
 
 ## Homepage slideshow
 

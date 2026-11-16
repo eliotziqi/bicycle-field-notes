@@ -27,6 +27,11 @@ export const postsSchema = z.object({
   featured: z.boolean().default(false),
   draft: z.boolean().default(false),
   ...postEditorialSchema.shape,
+  coverImage: optionalText,
+  coverAlt: z.string().optional(),
+  coverDecorative: z.boolean().default(false),
+}).superRefine((data, ctx) => {
+  if (data.coverImage) checkImageAlt({ alt: data.coverAlt, decorative: data.coverDecorative }, ctx, "coverAlt");
 });
 
 function checkImageAlt(data: { alt?: string; decorative?: boolean }, ctx: z.RefinementCtx, field = "alt") {

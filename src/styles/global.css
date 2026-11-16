@@ -296,3 +296,44 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .home-hero { aspect-ratio: 16 / 10; }
   .site-identity { flex-basis: 100%; }
 }
+
+/* Posts presentation: one set of discovery rows, two visual treatments. */
+:root { --post-hover-duration: 220ms; --post-image-scale: 1.04; }
+.post-cover, .post-card-details { display: none; }
+.post-view-switch { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.post-view-switch button {
+  min-height: 2.75rem; padding: 0.4rem 0.9rem; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--bg); color: var(--muted);
+}
+.post-view-switch button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+:root[data-posts-view="cards"] .posts-results .list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.25rem; }
+:root[data-posts-view="cards"] .posts-results .list li { min-width: 0; }
+:root[data-posts-view="cards"] .posts-results .list a {
+  display: flex; flex-direction: column; gap: 0.5rem; height: 100%; padding: 0 0 1rem;
+  border-radius: 4px; transition: background-color var(--post-hover-duration), box-shadow var(--post-hover-duration);
+}
+:root[data-posts-view="cards"] .posts-results .post-cover {
+  display: grid; place-items: center; position: relative; overflow: hidden;
+  aspect-ratio: 2.4 / 1; width: 100%; border-radius: 4px; background: var(--code-bg);
+}
+.post-cover-fallback { font: 500 1rem/1.4 var(--font-serif); color: var(--muted); }
+.post-cover img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; transition: transform var(--post-hover-duration); }
+:root[data-posts-view="cards"] .posts-results .post-card-details { display: grid; gap: 0.5rem; }
+.post-card-description { font-size: 0.95rem; }
+.post-card-experience, .post-card-tags { font-size: 0.8rem; color: var(--muted); overflow-wrap: anywhere; }
+:root[data-posts-view="cards"] .posts-results .list .t { transition: color var(--post-hover-duration); }
+:root[data-posts-view="cards"] .posts-results .list a:focus-visible { outline-offset: 4px; }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-posts-view="cards"] .posts-results .list a:hover { background: var(--code-bg); box-shadow: 0 1px 0 var(--muted); }
+  :root[data-posts-view="cards"] .posts-results .list a:hover img { transform: scale(var(--post-image-scale)); }
+}
+@media (max-width: 36rem) {
+  :root[data-posts-view="cards"] .posts-results .list { grid-template-columns: minmax(0, 1fr); }
+  :root[data-posts-view="cards"] .posts-results .post-cover { aspect-ratio: 16 / 10; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root[data-posts-view="cards"] .posts-results .list a:hover img { transform: none; }
+}
+
+/* The early preference script reserves the controls and cover frames before hydration. */
+:root[data-posts-view] .post-view-switch[hidden] { display: flex !important; }

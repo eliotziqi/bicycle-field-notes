@@ -36,3 +36,9 @@ Atlas links preselect details without Focus. A Place discovery match derived fro
 ## Empty states
 
 With no published Posts the browser reports zero results. Drafts are excluded in production. Search requires a production build and JavaScript; if unavailable, clear the query and browse the static list. Without JavaScript all published article links remain available, but filtering is disabled.
+
+## List and Cards
+
+Posts initially uses Cards, with an optional author-selected cover, description, dates and tags. Use **List** for the original compact editorial rows. Your choice is saved in this browser when storage is available; otherwise it applies for the current visit. Without JavaScript all published Posts remain readable as a plain list.
+
+Both presentations show the same matching articles in the same order. Switching never clears search, filters or sorting and does not change the URL. There is no pagination or Content Type filter. Missing covers have a quiet text fallback; a failed image shows “Cover unavailable” while its title/link remain usable. Cover frames follow Home's 2.4:1 desktop and 16:10 mobile proportions; other image roles keep their own treatment.

@@ -1,17 +1,29 @@
 ---
 import { withBase } from "../utils/urls";
 import { formatShort, type Post } from "../utils/posts";
+import { responsiveMedia } from "../utils/responsive-media";
+import { imageAlt } from "../utils/image-accessibility";
+import { formatMonthRange } from "../utils/post-dates";
 import { SITE } from "../config";
 import type { DiscoverablePost } from "../utils/post-discovery";
 const { posts, filterable = false, discovery } = Astro.props as { posts: Post[]; filterable?: boolean; discovery?: Map<string, DiscoverablePost> };
+const covers = new Map(await Promise.all(filterable ? posts.map(async (post) => [post.id, post.data.coverImage ? await responsiveMedia(post.data.coverImage) : undefined] as const) : []));
 ---
 
 <ul class="list">
   {posts.map((p) => (
     <li data-post-tags={filterable ? JSON.stringify(p.data.tags) : undefined} data-post-info={filterable ? JSON.stringify(discovery?.get(p.id)) : undefined}>
       <a href={withBase(`/posts/${p.id}/`)}>
+        {filterable && <span class="post-cover" data-cover={covers.has(p.id) && covers.get(p.id) ? JSON.stringify({ src: covers.get(p.id)!.thumbnail, srcset: covers.get(p.id)!.thumbnailSet, width: covers.get(p.id)!.width, height: covers.get(p.id)!.height, alt: imageAlt(p.data.coverAlt, p.data.coverDecorative) }) : undefined}>
+          <span class="post-cover-fallback">Field notes</span>
+        </span>}
         <time datetime={p.data.pubDate}>{p.data.pubDate ? formatShort(p.data.pubDate, SITE.lang) : ""}</time>
         <span class="t">{p.data.title}</span>
+        {filterable && <span class="post-card-details">
+          <span class="post-card-description">{p.data.description}</span>
+          {p.data.experience.length > 0 && <span class="post-card-experience">Experience: {p.data.experience.map((range) => formatMonthRange(range, SITE.lang)).join(", ")}</span>}
+          {p.data.tags.length > 0 && <span class="post-card-tags">{p.data.tags.join(" · ")}</span>}
+        </span>}
       </a>
     </li>
   ))}

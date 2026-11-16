@@ -61,3 +61,7 @@ The official [rich-text documentation](https://pagescms.org/docs/configuration/f
 Recommend, pending owner approval, a plain italic paragraph immediately after the ordinary Markdown image for occasional visible captions. It uses basic editable Markdown but does not create semantic figure/figcaption association. If semantic captions become essential, investigate a tested rendering convention separately. No Post content, caption renderer or editor configuration is changed here.
 
 Local configuration/schema/rendering tests do not certify the authenticated hosted editor. Manual acceptance: select the same upload in each picker; save/reopen informative and decorative Gallery/Place fields; verify the Gallery, Home and Atlas alternatives; test caption examples only in a nonpublishing branch, switching Editor/Source and saving/reopening. Do not add owner test content automatically to main.
+
+## Post covers are another independent role
+
+A Post's optional **Cover image**, **Cover alt text** and **Decorative cover image** apply only to its Cards presentation. Reuse existing media without duplicating uploads. This does not change the body, Gallery membership, Home inclusion or Place cover. See [Post cover authoring](posts.md#optional-post-card-cover) for validation and pending hosted acceptance. Gallery retains its existing 4:3 thumbnails; article bodies, Place covers and analytical graphics do not inherit the panoramic Post Card crop.

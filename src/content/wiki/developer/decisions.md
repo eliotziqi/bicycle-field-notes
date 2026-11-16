@@ -238,3 +238,13 @@ These records consolidate decisions visible in the released implementation and t
 **Tradeoffs:** Title renames require updating every reference; CMS has no deletion cascade or cross-file transaction. Editorial topic suitability remains human judgment. Saved tag filter URLs using renamed titles are not redirected.
 
 **Consequences:** Allow unused catalog entries but keep them out of public filters. Reject duplicate/dangling references before publication. Document safe staged renames and hosted picker acceptance; preserve OR filtering, search, sorting and article paths.
+
+## ADR 020: Shared Posts presentations and optional covers
+
+**Context:** Readers want photographic browsing while retaining the compact editorial list and established discovery behavior.
+
+**Chosen approach:** One set of stable published Post rows is presented as List or Cards; existing discovery/Pagefind/filter/sort/history remains authoritative. Cards is the initial enhanced default; a browser-local preference selects List without changing query URLs. Optional coverImage/coverAlt/coverDecorative follows Place accessibility conventions and reuses responsive media transforms. Frames follow Home's 2.4:1 desktop / 16:10 mobile; Gallery/body/Place/analytical imagery is unaffected.
+
+**Tradeoffs:** Without JavaScript the static List remains available. Cover sources are attached only for visible Cards; previously downloaded bytes cannot be undone when switching to List. Native CMS conditional validation and picker path round trips still require separate hosted acceptance. Missing covers are valid; missing referenced files block publication.
+
+**Consequences:** Never create duplicate interactive result sets, restore Content Type, infer covers from body images, auto-create Gallery entries, or connect Trip Places with lines. Phase 1 uses only restrained CSS hover/focus; advanced motion, comments and global search remain independent future work.

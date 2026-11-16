@@ -81,3 +81,11 @@ Native reference pickers limit choices to collection entries, and the title fiel
 The initial audit found only `Personal`, on the draft **Beyond the Route**. It already satisfied Title Case, so `Personal.json` registers it unchanged. The other Post has no tags. Neither article was rewritten, retitled or moved; existing `tags: ["Personal"]` data remains valid, and no public filter appears for this draft-only topic.
 
 Locally checked: optional/empty/multiple reference serialization, title rules, duplicates, missing/deleted targets, existing array compatibility and public filtering. Hosted acceptance still requires create/save/reopen of a Post Tag, select/clear/reopen of zero/one/multiple tags, label resolution and selection order. Do this on a nonpublishing branch or test repository. Do not claim local helper tests operated the authenticated editor.
+
+## Optional Post Card cover
+
+Choose **Cover image** from existing media or upload once, then supply meaningful **Cover alt text**. Alternatively deliberately enable **Decorative cover image** and leave its alt blank. With no cover, existing Posts stay valid and Cards shows a text fallback. Repository validation blocks missing files and contradictory or incomplete accessibility fields; native CMS alone does not certify the conditional rule.
+
+This selection does not insert a body image, create a Gallery record, enable Home slideshow inclusion or change Place covers. The same uploaded file can serve these independent roles without duplication. No caption/crop-position field or automatic first-body-image selection is used. Review the panoramic desktop crop and taller mobile crop before publishing.
+
+Hosted acceptance for this change remains pending: select/reuse/clear a cover, informative/decorative variants, save/reopen, confirm retained media path/alt/boolean and unchanged body/months/ordered references. Check Actions for validated publication. Local upstream serialization checks do not certify the authenticated hosted picker or its media read/write hooks.

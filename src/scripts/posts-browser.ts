@@ -32,6 +32,49 @@ let state = readPostFilters(new URLSearchParams(location.search));
 let revision = 0;
 let pagefind: Promise<Pagefind> | undefined;
 
+// Presentation never changes discovery state, URLs, row identity or ordering.
+const viewSwitch = document.querySelector<HTMLElement>(".post-view-switch")!;
+let view = document.documentElement.dataset.postsView === "list" ? "list" : "cards";
+function present() {
+  results.dataset.view = view;
+  document.documentElement.dataset.postsView = view;
+  viewSwitch.hidden = false;
+  viewSwitch.querySelectorAll<HTMLButtonElement>("[data-post-view]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.postView === view));
+  });
+  let first = true;
+  for (const row of rows) {
+    const frame = row.element.querySelector<HTMLElement>(".post-cover");
+    if (!frame) continue;
+    if (view === "list" || row.element.hidden) {
+      frame.querySelector("img")?.remove();
+      continue;
+    }
+    if (!frame.dataset.cover || frame.dataset.failed || frame.querySelector("img")) continue;
+    const cover = JSON.parse(frame.dataset.cover) as { src: string; srcset: string; width: number; height: number; alt: string };
+    const image = new Image();
+    image.alt = cover.alt; image.width = cover.width; image.height = cover.height;
+    const aboveFold = first && frame.getBoundingClientRect().top < innerHeight;
+    image.loading = aboveFold ? "eager" : "lazy";
+    image.fetchPriority = aboveFold ? "high" : "auto";
+    first = false;
+    image.decoding = "async";
+    image.sizes = "(max-width: 36rem) 90vw, (max-width: 48rem) 44vw, 320px";
+    image.addEventListener("error", () => {
+      frame.dataset.failed = "true";
+      image.remove();
+      frame.querySelector(".post-cover-fallback")!.textContent = "Cover unavailable";
+    }, { once: true });
+    image.srcset = cover.srcset; image.src = cover.src;
+    frame.append(image);
+  }
+}
+viewSwitch.querySelectorAll<HTMLButtonElement>("[data-post-view]").forEach((button) => button.addEventListener("click", () => {
+  view = button.dataset.postView!;
+  try { localStorage.setItem("bfn-posts-view", view); } catch {}
+  present();
+}));
+
 function loadSearch(): Promise<Pagefind> {
   // Retain the shared promise and the one existing Pagefind full-text index.
   pagefind ??= import(/* @vite-ignore */ `${import.meta.env.BASE_URL}pagefind/pagefind.js`)
@@ -144,6 +187,7 @@ async function update() {
     if (!row.element.hidden) visible++;
   }
   regroup(snapshot.sort);
+  present();
   count.textContent = `${visible} ${visible === 1 ? "post" : "posts"}`;
   empty.hidden = visible > 0 || !error.hidden;
   results.setAttribute("aria-busy", "false");

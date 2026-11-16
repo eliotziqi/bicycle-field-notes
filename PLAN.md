@@ -125,3 +125,16 @@ The earlier repository cleanup is complete: package identity, template cleanup, 
 ## Maintenance ownership
 
 Detailed development/deployment instructions and regression requirements live in the [Wiki](src/content/wiki/developer/index.md); publishing procedures live in [Publishing](src/content/wiki/publishing/index.md). This roadmap tracks milestones and unresolved work rather than duplicating those guides. Preserve historical favicon source attribution in repository history and existing assets/notices.
+
+## UX Phase 1 — Posts presentation (local review)
+
+- [x] Branch from verified remote `aa5a7e6`, retaining newer Gallery/category CMS saves.
+- [x] Optional Post coverImage/coverAlt/coverDecorative; shared responsive media transforms and validation/audit.
+- [x] Cards default, persistent List/Card preference and one unchanged discovery/search/history model; cinematic 2.4:1 / 16:10 covers.
+- [ ] Owner accepts hosted CMS cover picker/save/reopen and actual photograph crops before release.
+- [x] Owner approved Phase 1 visuals; Gallery original-image new-tab usability fix verified locally.
+- [ ] Final release approval and authenticated hosted CMS cover save/reopen remain pending; no main merge or deployment authorized.
+
+Phase 2 retains advanced layout motion, theme transitions and article reveal/loading. Phase 3 prefers Artalk pending separate host/cost/credentials approval, immutable discussion IDs and provider migration/notification checks. Global Search and targeted Home/Contact work remain later; Route Intelligence proceeds independently. No Content Type taxonomy or batching is planned for Phase 1.
+
+- [x] Verify local/remote Personal tag and recover stale development collection state; preserve draft visibility only in development.

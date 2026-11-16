@@ -31,6 +31,14 @@ const tripOptions = graph.trips.map((trip) => ({ value: trip.id, label: trip.nam
 ---
 
 <Base title="Posts" description="Browse, search, and filter posts by topic, Place or Trip.">
+  <script slot="head" is:inline>
+    // Reserve the selected presentation before first paint; no-JS keeps the plain list.
+    (() => {
+      let view = "cards";
+      try { if (localStorage.getItem("bfn-posts-view") === "list") view = "list"; } catch {}
+      document.documentElement.dataset.postsView = view;
+    })();
+  </script>
   <div class="frame posts-browser">
     <h1 class="page-title">Posts</h1>
     <p class="page-lede">Field notes, newest first. Explore by topic, Place or journey.</p>
@@ -53,6 +61,10 @@ const tripOptions = graph.trips.map((trip) => ({ value: trip.id, label: trip.nam
         <button id="clear-filters" class="clear-filters" type="button" hidden>Clear Filters</button>
       </form>
       <section class="posts-results" aria-label="Articles" aria-busy="false">
+        <div class="post-view-switch" role="group" aria-label="Post presentation" hidden>
+          <button type="button" data-post-view="list" aria-pressed="false">List</button>
+          <button type="button" data-post-view="cards" aria-pressed="true">Cards</button>
+        </div>
         <p id="result-count" class="result-count" role="status" aria-live="polite">{posts.length} {posts.length === 1 ? "post" : "posts"}</p>
         <div id="post-active-filters" class="post-active-filters" role="group" aria-label="Active filters" hidden></div>
         <p id="search-error" role="alert" hidden></p>

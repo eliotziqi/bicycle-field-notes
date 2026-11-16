@@ -27,3 +27,11 @@ for (const file of (fs.existsSync(path.join(root, "src/content/gallery")) ? fs.r
 }
 assert(fs.readFileSync("src/scripts/gallery.ts", "utf8").includes("image.alt = thumbnail.alt"));
 console.log("PASS Gallery/Home alt attributes, responsive images and lightbox alt propagation");
+
+if (fs.existsSync(path.join(root, "src/content/gallery")) && fs.readdirSync(path.join(root, "src/content/gallery")).some((file) => file.endsWith(".json"))) {
+  const original = gallery.match(/<a\b[^>]*id="lightbox-original"[^>]*>([^<]+)<\/a>/)?.[0];
+  assert(original, "Lightbox original link exists");
+  assert(original.includes('target="_blank"'));
+  assert(original.includes('rel="noopener noreferrer"'));
+  assert(original.includes("Open original in new tab"));
+}

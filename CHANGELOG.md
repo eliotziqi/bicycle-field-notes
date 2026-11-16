@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased — UX Phase 1
+
+- Gallery lightbox now labels its full-resolution link “Open original in new tab” and uses a separate tab with noopener/noreferrer, preserving the current photo, filters and scroll position.
+
+- Diagnosed stale development Post Tags state despite the existing Personal record; restarted/resynced development and documented safe recovery without weakening validation or editing content.
+
+- Added optional accessible Post covers without assigning images or changing article bodies, Gallery membership, Home selection or Place covers.
+- Added a Cards-default, persistent List/Card presentation using the existing published rows, Pagefind, tags/geographic filters, sorting and history. List retains its plain editorial layout.
+- Reused responsive WebP transforms for covers, with 2.4:1 desktop and 16:10 mobile frames, missing/failed-cover states and restrained reduced-motion-aware hover/focus feedback. No later UX features or dependencies added.
+- Hosted CMS cover selection/save/reopen and owner crop acceptance remain pending; no deployment included.
+
 ## 2026-11-13
 
 - Renamed the CMS Posts label and centralized Post Tags through a title-only catalog and optional multiple-reference picker. Registered Personal without changing article content or paths.
